@@ -280,8 +280,9 @@
         <UniformGrid Grid.Row="3"
                      HorizontalAlignment="Left"
                      VerticalAlignment="Top"
-                     Margin="20,15,20,0">
-            <TextBlock>Original:</TextBlock>
+                     Margin="20,15,20,0"
+                     Width="110">
+            <TextBlock>Original: </TextBlock>
             <TextBlock>
                 <TextBlock.Text>
                     <Binding Path="OldValue"/>
