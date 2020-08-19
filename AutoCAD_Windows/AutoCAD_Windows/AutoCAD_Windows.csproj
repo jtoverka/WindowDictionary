@@ -13,6 +13,7 @@
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
     <Deterministic>true</Deterministic>
+    <LangVersion>8.0</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -37,8 +38,12 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="netDxf">
+      <HintPath>..\..\..\netDxf\netDxf\bin\Debug\netDxf.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -53,20 +58,43 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Layer.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Linetype.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Lineweight.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Compile Include="Converters\LayerImageConverter.cs" />
+    <Compile Include="Converters\LineweightConverter.cs" />
+    <Compile Include="Layer.xaml.cs">
+      <DependentUpon>Layer.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Linetype.xaml.cs">
+      <DependentUpon>Linetype.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Lineweight.xaml.cs">
       <DependentUpon>Lineweight.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="LoadLinetype.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="StyleDictionary.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="LoadLinetype.xaml.cs">
+      <DependentUpon>LoadLinetype.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -98,6 +126,22 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Application\Splash.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Application\LayerFrozen.bmp" />
+    <Resource Include="Application\LayerLocked.bmp" />
+    <Resource Include="Application\LayerNoPlot.bmp" />
+    <Resource Include="Application\LayerOff.bmp" />
+    <Resource Include="Application\LayerOn.bmp" />
+    <Resource Include="Application\LayerPlot.bmp" />
+    <Resource Include="Application\LayerThawed.bmp" />
+    <Resource Include="Application\LayerUnlocked.bmp" />
+    <Resource Include="Application\ViewportOff.bmp" />
+    <Resource Include="Application\ViewportOn.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Application\DeleteLayer.bmp" />
+    <Resource Include="Application\NewLayer.bmp" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

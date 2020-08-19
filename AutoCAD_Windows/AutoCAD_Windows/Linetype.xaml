@@ -1,0 +1,118 @@
+﻿<Window x:Class="AutoCAD_Windows.Linetype"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:AutoCAD_Windows"
+        mc:Ignorable="d"
+        Height="350"
+        Width="450"
+        BorderThickness="1"
+        BorderBrush="Black"
+        ResizeMode="NoResize"
+        WindowStartupLocation="CenterScreen"
+        WindowStyle="None">
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="StyleDictionary.xaml" />
+                <ResourceDictionary>
+                    <Style x:Key="layer"
+                           TargetType="Image">
+                        <Setter Property="Visibility"
+                                Value="Visible" />
+                        <Setter Property="Height"
+                                Value="15" />
+                        <Setter Property="Width"
+                                Value="15" />
+                    </Style>
+                </ResourceDictionary>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="25" />
+            <RowDefinition Height="30" />
+            <RowDefinition />
+            <RowDefinition Height="50" />
+        </Grid.RowDefinitions>
+        <TextBlock Text="Select Linetype" />
+        <TextBlock MouseDown="Menu_Grid_MouseDown" />
+        <UniformGrid Columns="1"
+                     HorizontalAlignment="Right">
+            <UniformGrid.Resources>
+                <Style TargetType="Button">
+                    <Setter Property="Width"
+                            Value="25" />
+                    <Setter Property="Background"
+                            Value="Transparent" />
+                    <Setter Property="BorderThickness"
+                            Value="0" />
+                </Style>
+            </UniformGrid.Resources>
+            <Button Click="Cancel_Click"
+                    ToolTip="Close"
+                    Width="25">
+                <Button.Style>
+                    <Style TargetType="{x:Type Button}">
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="{x:Type Button}">
+                                    <Border x:Name="Border"
+                                            Background="{TemplateBinding Background}">
+                                        <Image x:Name="imageExitApp"
+                                               Source="Application/exitAppIcon.ico"
+                                               Height="10" />
+                                    </Border>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsMouseOver"
+                                                 Value="True">
+                                            <Setter Property="Background"
+                                                    Value="Red"
+                                                    TargetName="Border" />
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                        <Setter Property="Background"
+                                Value="Transparent" />
+                    </Style>
+                </Button.Style>
+            </Button>
+        </UniformGrid>
+        <TextBlock Grid.Row="1"
+                   Margin="5,0,0,2"
+                   Text="Loaded linetypes"
+                   VerticalAlignment="Bottom" />
+        <ListView Grid.Row="2"
+                  ItemsSource="{Binding Path=LinetypeCollection}"
+                  Margin="5,0,5,0">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn DisplayMemberBinding="{Binding Path=DefaultName}"
+                                    Header="Linetype"
+                                    Width="150" />
+                    <GridViewColumn Header="Appearance"
+                                    Width="100" />
+                    <GridViewColumn DisplayMemberBinding="{Binding Path=Description}"
+                                    Header="Description"
+                                    Width="150" />
+                </GridView>
+            </ListView.View>
+        </ListView>
+        <UniformGrid Columns="3"
+                     Grid.Row="3"
+                     HorizontalAlignment="Right"
+                     Margin="0,0,10,10"
+                     VerticalAlignment="Bottom">
+            <Button Click="OK_Click"
+                    Content="OK" />
+            <Button Click="Cancel_Click"
+                    Content="Cancel" />
+            <Button Click="LoadLinetype_Click"
+                    Content="Load..." />
+        </UniformGrid>
+    </Grid>
+</Window>

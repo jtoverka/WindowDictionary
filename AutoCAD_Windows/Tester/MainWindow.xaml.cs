@@ -27,7 +27,7 @@ namespace Tester
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            var window = new AutoCAD_Windows.Lineweight(0);
+            var window = new AutoCAD_Windows.Linetype();
             window.ShowDialog();
         }
     }

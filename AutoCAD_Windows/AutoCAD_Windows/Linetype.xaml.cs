@@ -1,14 +1,24 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
 using System.Windows.Input;
-// using netDxf;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Shapes;
 
 namespace AutoCAD_Windows
 {
     /// <summary>
-    /// Interaction logic for Lineweight.xaml
+    /// Interaction logic for Linetype.xaml
     /// </summary>
-    public partial class Lineweight : Window, INotifyPropertyChanged
+    public partial class Linetype : Window, INotifyPropertyChanged
     {
         #region Fields
 
@@ -18,56 +28,34 @@ namespace AutoCAD_Windows
 
         #region Properties
 
-        private netDxf.Lineweight _InitialLineweight = netDxf.Lineweight.Default;
-        public netDxf.Lineweight InitialLineweight
-        {
-            get { return this._InitialLineweight; }
-            protected set
-            {
-                if (this._InitialLineweight == value)
-                    return;
-
-                this._InitialLineweight = value;
-                OnPropertyChanged("InitialLineweight");
-            }
-        }
-
-        private netDxf.Lineweight _SelectedLineweight = netDxf.Lineweight.Default;
-
-        public netDxf.Lineweight SelectedLineweight
-        {
-            get { return this._SelectedLineweight; }
-            set
-            {
-                if (this._SelectedLineweight == value)
-                    return;
-
-                this._SelectedLineweight = value;
-                OnPropertyChanged("SelectedLineweight");
-            }
-        }
-
         public System.Windows.Forms.DialogResult Result
         {
             get;
             protected set;
         } = System.Windows.Forms.DialogResult.None;
 
+
+        private netDxf.DxfDocument _document;
+        public netDxf.Collections.Linetypes LinetypeCollection
+        {
+            get { return this._document.Linetypes; }
+        }
+
         #endregion
 
         #region Constructors
 
-        public Lineweight()
+        public Linetype()
         {
             DataContext = this;
+            _document = new netDxf.DxfDocument();
+            _document.Linetypes.Clear();
             InitializeComponent();
         }
-
-        public Lineweight(netDxf.Lineweight lineweight)
+        public Linetype(netDxf.DxfDocument document)
         {
             DataContext = this;
-            this.InitialLineweight = lineweight;
-            this.SelectedLineweight = lineweight;
+            _document = document;
             InitializeComponent();
         }
 
@@ -110,17 +98,35 @@ namespace AutoCAD_Windows
                 this.DragMove();
             }
         }
-        private void Window_Exit_Click(object sender, RoutedEventArgs e)
+
+        private void Cancel_Click(object sender, RoutedEventArgs e)
         {
             this.Result = System.Windows.Forms.DialogResult.Cancel;
             CloseApplication();
         }
+
         private void OK_Click(object sender, RoutedEventArgs e)
         {
             this.Result = System.Windows.Forms.DialogResult.OK;
             CloseApplication();
         }
 
+        private void LoadLinetype_Click(object sender, RoutedEventArgs e)
+        {
+            var window = new LoadLinetype();
+            window.ShowDialog();
+
+            if (window.Result == System.Windows.Forms.DialogResult.OK)
+            {
+                foreach (netDxf.Tables.Linetype item in window.SelectedItems)
+                {
+                    this._document.Linetypes.Add(item);
+                }
+            }
+        }
+
         #endregion
+
+
     }
 }

@@ -4,28 +4,36 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:AutoCAD_Windows"
+        xmlns:converter="clr-namespace:AutoCAD_Windows.Converters"
         mc:Ignorable="d"
-        WindowStyle="None"
-        Title=""
-        Height="425"
-        Width="300"
-        ResizeMode="NoResize"
         BorderThickness="1"
-        BorderBrush="Black">
+        BorderBrush="Black"
+        Height="425"
+        Icon="Application/logo.ico"
+        ResizeMode="NoResize"
+        WindowStyle="None"
+        WindowStartupLocation="CenterScreen"
+        Width="300">
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="StyleDictionary.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
     <WindowChrome.WindowChrome>
         <WindowChrome CaptionHeight="0"
                       ResizeBorderThickness="5" />
     </WindowChrome.WindowChrome>
-    <Window.Resources>
-        <ResourceDictionary Source="StyleDictionary.xaml" />
-    </Window.Resources>
     <Grid>
+        <Grid.Resources>
+            <converter:LineweightConverter x:Key="LineweightConverter" />
+        </Grid.Resources>
         <Grid.RowDefinitions>
             <RowDefinition Height="25" />
-            <RowDefinition Height="35" />
-            <RowDefinition Height="200*" />
-            <RowDefinition Height="60" />
-            <RowDefinition Height="50" />
+            <RowDefinition Height="200" />
+            <RowDefinition Height="100" />
+            <RowDefinition Height="100" />
         </Grid.RowDefinitions>
         <Grid x:Name="MenuGrid"
               MouseDown="Menu_Grid_MouseDown">
@@ -41,11 +49,12 @@
                             Value="25" />
                 </Style>
             </Grid.Resources>
-            <TextBlock>Lineweight</TextBlock>
+            <TextBlock>Schematic Wires Editor</TextBlock>
             <TextBlock Grid.ColumnSpan="2"
                        Height="25"
                        Margin="0,0,75,0" />
             <Button x:Name="Window_Exit_Button"
+                    Background="Transparent"
                     Click="Window_Exit_Click"
                     HorizontalAlignment="Right"
                     Width="25"
@@ -76,14 +85,9 @@
                 </Button.Style>
             </Button>
         </Grid>
-        <TextBlock Grid.Row="1"
-                   Margin="15,0,0,0">Lineweights:</TextBlock>
-        <ListView Grid.Row="2"
+        <ListView Grid.Row="1"
                   Margin="15,0,15,0"
                   SelectionMode="Single">
-            <ListView.SelectedIndex>
-                <Binding Path="SelectedIndex" />
-            </ListView.SelectedIndex>
             <ListView.Resources>
                 <Style TargetType="Line">
                     <Setter Property="X1"
@@ -98,11 +102,30 @@
                             Value="Black" />
                 </Style>
             </ListView.Resources>
+            <ListView.SelectedIndex>
+                <Binding Converter="{StaticResource LineweightConverter}"
+                         ConverterParameter="1"
+                         Path="SelectedLineweight" />
+            </ListView.SelectedIndex>
             <ListViewItem>
                 <UniformGrid Columns="2"
                              Width="226">
                     <Line StrokeThickness="1" />
                     <TextBlock>Default</TextBlock>
+                </UniformGrid>
+            </ListViewItem>
+            <ListViewItem>
+                <UniformGrid Columns="2"
+                             Width="226">
+                    <Line StrokeThickness="1" />
+                    <TextBlock>By Block</TextBlock>
+                </UniformGrid>
+            </ListViewItem>
+            <ListViewItem>
+                <UniformGrid Columns="2"
+                             Width="226">
+                    <Line StrokeThickness="1" />
+                    <TextBlock>By Layer</TextBlock>
                 </UniformGrid>
             </ListViewItem>
             <ListViewItem>
@@ -274,36 +297,38 @@
                 </UniformGrid>
             </ListViewItem>
         </ListView>
-        <Border Grid.Row="3"
+        <Border Grid.Row="2"
                 Margin="15,10,15,0"
                 Style="{StaticResource GroupBoxBorder}" />
-        <UniformGrid Grid.Row="3"
+        <UniformGrid Grid.Row="2"
                      HorizontalAlignment="Left"
                      VerticalAlignment="Top"
                      Margin="20,15,20,0"
                      Width="110">
-            <TextBlock>Original: </TextBlock>
+            <TextBlock>Original:</TextBlock>
             <TextBlock>
                 <TextBlock.Text>
-                    <Binding Path="OldValue"/>
+                    <Binding Converter="{StaticResource LineweightConverter}"
+                             ConverterParameter="2"
+                             FallbackValue="Default"
+                             Path="InitialLineweight" />
                 </TextBlock.Text>
             </TextBlock>
             <TextBlock>New:</TextBlock>
             <TextBlock>
                 <TextBlock.Text>
-                    <Binding Path="NewValue"/>
-                </TextBlock.Text>
-            </TextBlock>
+                    <Binding Converter="{StaticResource LineweightConverter}"
+                             ConverterParameter="2"
+                             FallbackValue="Default"
+                             Path="SelectedLineweight" />
+                </TextBlock.Text></TextBlock>
         </UniformGrid>
-        <UniformGrid Columns="2" 
-                     Grid.Row="4"
+        <UniformGrid Grid.Row="3"
                      HorizontalAlignment="Right"
-                     Margin="5,5,5,10"
-                     VerticalAlignment="Bottom">
+                     VerticalAlignment="Bottom"
+                     Margin="0,0,10,10">
             <Button Click="OK_Click"
-                    Content="OK"/>
-            <Button Click="Window_Exit_Click"
-                    Content="Cancel"/>
+                    Content="OK" />
         </UniformGrid>
     </Grid>
 </Window>
