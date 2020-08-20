@@ -12,7 +12,11 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-
+using System.Drawing;
+using System.Drawing.Text;
+using System.Collections.ObjectModel;
+using FF = System.Drawing.FontFamily;
+using OC_FF = System.Collections.ObjectModel.ObservableCollection<System.Drawing.FontFamily>;
 namespace AutoCAD_Windows
 {
     /// <summary>
@@ -21,70 +25,75 @@ namespace AutoCAD_Windows
     public partial class Textstyle : Window, INotifyPropertyChanged
     {
         #region Constructors
-
-        public Textstyle(int weight)
-        {
-            DataContext = this;
-
-            if (weight > 0 && weight < weights.Count)
-            {
-                _OldValue = weight;
-                _NewValue = weight;
-            }
-
-            if (_contentLoaded)
-            {
-                return;
-            }
-            _contentLoaded = true;
-            System.Uri resourceLocater = new System.Uri("/AutoCAD_Windows;component/Lineweight.xaml", System.UriKind.Relative);
-
-            System.Windows.Application.LoadComponent(this, resourceLocater);
-        }
-
+        
         public Textstyle()
         {
             DataContext = this;
 
-            if (_contentLoaded)
-            {
-                return;
-            }
-            _contentLoaded = true;
-            System.Uri resourceLocater = new System.Uri("/AutoCAD_Windows;component/Lineweight.xaml", System.UriKind.Relative);
-
-            System.Windows.Application.LoadComponent(this, resourceLocater);
+            InitializeComponent();
         }
 
         #endregion
 
         #region Properties
 
-        public bool OKCancel { get; set; }
-
-        private int _OldValue = 0;
-        public string OldValue
+        private System.Windows.Forms.DialogResult _Result;
+        public System.Windows.Forms.DialogResult Result
         {
-            get { return weights[_OldValue]; }
-        }
-
-        private int _NewValue = 0;
-        public string NewValue
-        {
-            get { return weights[_NewValue]; }
-        }
-
-        public int SelectedIndex
-        {
-            get { return _NewValue; }
-            set
+            get { return this._Result; }
+            protected set
             {
-                if (_NewValue == value)
+                if (this._Result == value)
                     return;
 
-                _NewValue = value;
-                OnPropertyChanged("SelectedIndex");
-                OnPropertyChanged("NewValue");
+                this._Result = value;
+                OnPropertyChanged("Result");
+            }
+        }
+
+        public OC_FF FontCollection { get; } = new OC_FF(FF.Families.ToList<FF>());
+
+        private FF _SelectedFont;
+        public FF SelectedFont
+        {
+            get { return this._SelectedFont; }
+            set
+            {
+                if (this._SelectedFont == value)
+                    return;
+
+                this._SelectedFont = value;
+                OnPropertyChanged("SelectedFont");
+            }
+        }
+
+
+        private string _FontBox1;
+        public string FontBox1
+        {
+            get { return this._FontBox1; }
+            set
+            {
+                if (this._FontBox1 == value)
+                    return;
+
+                this._FontBox1 = value;
+                OnPropertyChanged("FontBox1");
+            }
+        }
+
+
+        private string _SizeName;
+        public string SizeName
+        {
+            get { return this._SizeName; }
+            set
+            {
+                if (this._SizeName == value)
+                    return;
+
+                this._SizeName = value;
+                OnPropertyChanged("SizeName");
             }
         }
 
@@ -93,40 +102,10 @@ namespace AutoCAD_Windows
         #region fields
 
         private bool mRestoreForDragMove;
-
-        private readonly List<string> weights = new List<string>()
-        {
-            "Default",
-            "0.00 mm",
-            "0.05 mm",
-            "0.09 mm",
-            "0.13 mm",
-            "0.15 mm",
-            "0.18 mm",
-            "0.20 mm",
-            "0.25 mm",
-            "0.30 mm",
-            "0.35 mm",
-            "0.40 mm",
-            "0.50 mm",
-            "0.53 mm",
-            "0.60 mm",
-            "0.70 mm",
-            "0.80 mm",
-            "0.90 mm",
-            "1.00 mm",
-            "1.06 mm",
-            "1.20 mm",
-            "1.40 mm",
-            "1.58 mm",
-            "2.00 mm",
-            "2.11 mm",
-        };
-
+        
         #endregion
 
         #region Delegates, Events, Handlers
-
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -134,10 +113,6 @@ namespace AutoCAD_Windows
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
         }
-
-        #endregion
-
-        #region Functions
 
         private void Menu_Grid_MouseDown(object sender, MouseButtonEventArgs e)
         {
@@ -160,22 +135,27 @@ namespace AutoCAD_Windows
             }
         }
 
-        private void Window_Exit_Click(object sender, RoutedEventArgs e)
+        private void Cancel_Click(object sender, RoutedEventArgs e)
         {
+            Result = System.Windows.Forms.DialogResult.Cancel;
             CloseApplication();
         }
+
+        private void OK_Click(object sender, RoutedEventArgs e)
+        {
+            Result = System.Windows.Forms.DialogResult.OK;
+            CloseApplication();
+        }
+
+        #endregion
+
+        #region Functions
+
         private void CloseApplication()
         {
             this.Close();
         }
 
-        private void OK_Click(object sender, RoutedEventArgs e)
-        {
-            OKCancel = true;
-            this.Close();
-        }
-
         #endregion
-
     }
 }

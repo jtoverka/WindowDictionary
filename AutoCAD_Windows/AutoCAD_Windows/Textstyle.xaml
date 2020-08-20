@@ -39,12 +39,11 @@
                             Value="25" />
                 </Style>
             </Grid.Resources>
-            <TextBlock>Lineweight</TextBlock>
+            <TextBlock>Textstyle</TextBlock>
             <TextBlock Grid.ColumnSpan="2"
                        Height="25"
                        Margin="0,0,75,0" />
-            <Button x:Name="Window_Exit_Button"
-                    Click="Window_Exit_Click"
+            <Button Click="Cancel_Click"
                     HorizontalAlignment="Right"
                     Width="25"
                     ToolTip="Close">
@@ -100,11 +99,14 @@
                             <Binding Path="FontBox1"
                                      FallbackValue="Font Style:" />
                         </TextBlock.Text></TextBlock>
-                    <ComboBox Grid.Row="1"
+                    <ComboBox DisplayMemberPath="Name"
+                              ItemsSource="{Binding Path=FontCollection}"
+                              Grid.Row="1"
                               Height="25"
                               HorizontalAlignment="Left"
                               Width="150"
-                              Margin="5,0,5,0" />
+                              Margin="5,0,5,0">
+                    </ComboBox>
                     <ComboBox Grid.Row="1"
                               Height="25"
                               HorizontalAlignment="Left"
@@ -161,8 +163,10 @@
         <UniformGrid Columns="2"
                      Grid.Row="2"
                      HorizontalAlignment="Right">
-            <Button Content="OK" />
-            <Button Content="Cancel" />
+            <Button Click="OK_Click"
+                    Content="OK" />
+            <Button Click="Cancel_Click"
+                    Content="Cancel" />
         </UniformGrid>
     </Grid>
 </Window>
