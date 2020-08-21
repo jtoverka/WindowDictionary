@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
@@ -22,12 +22,7 @@ namespace AutoCAD_Windows
     {
         private bool mRestoreForDragMove;
 
-        public netDxf.DxfDocument document;
-
-        public netDxf.Collections.Layers LayerCollection
-        {
-            get { return document.Layers; }
-        }
+        public ObservableCollection<netDxf.Tables.Layer> LayerCollection { get; }
 
         private System.Windows.Forms.DialogResult _Result;
         public System.Windows.Forms.DialogResult Result
@@ -45,7 +40,10 @@ namespace AutoCAD_Windows
 
         public Layer()
         {
-            document = new netDxf.DxfDocument();
+            LayerCollection = new ObservableCollection<netDxf.Tables.Layer>
+            {
+                new netDxf.Tables.Layer("0")
+            };
             DataContext = this;
             InitializeComponent();
         }
@@ -65,6 +63,10 @@ namespace AutoCAD_Windows
         public void OnPropertyChanged(string property)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
+        }
+        public void OnPropertyChanged(object sender, string property)
+        {
+            PropertyChanged?.Invoke(sender, new PropertyChangedEventArgs(property));
         }
         private void Menu_Grid_MouseDown(object sender, MouseButtonEventArgs e)
         {
@@ -148,7 +150,7 @@ namespace AutoCAD_Windows
             }
         }
 
-        private void Window_Exit_Click(object sender, RoutedEventArgs e)
+        private void Cancel_Click(object sender, RoutedEventArgs e)
         {
             this.Result = System.Windows.Forms.DialogResult.Cancel;
             CloseApplication();
@@ -161,9 +163,40 @@ namespace AutoCAD_Windows
 
         #endregion
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void Image_MouseDown(object sender, MouseButtonEventArgs e)
         {
+            var image = sender as Image;
 
+            if (e.LeftButton != MouseButtonState.Pressed || image == null)
+                return;
+
+            var tag = image.Tag as string;
+            var layer = image.DataContext as netDxf.Tables.Layer;
+
+            switch (tag)
+            {
+                case "IsVisible":
+                    layer.IsVisible = !layer.IsVisible;
+                    image.GetBindingExpression(Image.SourceProperty).UpdateTarget();
+                    break;
+                case "IsFrozen":
+                    layer.IsFrozen = !layer.IsFrozen;
+                    image.GetBindingExpression(Image.SourceProperty).UpdateTarget();
+                    break;
+                case "IsLocked":
+                    layer.IsLocked = !layer.IsLocked;
+                    image.GetBindingExpression(Image.SourceProperty).UpdateTarget();
+                    break;
+                case "Plot":
+                    layer.Plot = !layer.Plot;
+                    image.GetBindingExpression(Image.SourceProperty).UpdateTarget();
+                    break;
+            }
+        }
+
+        private void New_Layer_Click(object sender, RoutedEventArgs e)
+        {
+            LayerCollection.Add(new netDxf.Tables.Layer("Layer"));
         }
     }
 }

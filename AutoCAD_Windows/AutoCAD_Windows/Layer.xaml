@@ -71,7 +71,7 @@
                        Height="10" />
             </Button>
             <Button x:Name="Window_Exit_Button"
-                    Click="Window_Exit_Click"
+                    Click="Cancel_Click"
                     ToolTip="Close"
                     Width="25">
                 <Button.Style>
@@ -118,7 +118,8 @@
                      Grid.Row="1"
                      HorizontalAlignment="Left"
                      VerticalAlignment="Bottom">
-            <Button Background="Transparent"
+            <Button Click="New_Layer_Click"
+                    Background="Transparent"
                     BorderThickness="0"
                     Height="15"
                     Margin="0"
@@ -136,23 +137,46 @@
             </Button>
         </UniformGrid>
         <ListView Grid.Row="2">
+            <ListView.Resources>
+                <Style TargetType="Button">
+                    <Setter Property="Height"
+                            Value="15"/>
+                    <Setter Property="Width"
+                            Value="15" />
+                    <Setter Property="Background"
+                            Value="Transparent" />
+                    <Setter Property="BorderThickness"
+                            Value="0" />
+                </Style>
+            </ListView.Resources>
             <ListView.ItemsSource>
                 <Binding Path="LayerCollection" />
             </ListView.ItemsSource>
             <ListView.View>
                 <GridView>
-                    <GridViewColumn DisplayMemberBinding="{Binding Path=DefaultName}" 
-                                    Header="Name"
+                    
+                    <GridViewColumn Header="Name"
                                     Width="150">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock>
+                                    <TextBlock.Text>
+                                        <Binding Path="Name" />
+                                    </TextBlock.Text>
+                                </TextBlock>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
                     </GridViewColumn>
                     <GridViewColumn Header="On"
                                     Width="50">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <Image Style="{StaticResource layer}">
+                                <Image MouseDown="Image_MouseDown"
+                                       Style="{StaticResource layer}"
+                                       Tag="IsVisible">
                                     <Image.Source>
                                         <Binding Converter="{StaticResource LayerImageConverter}"
-                                                 ConverterParameter="IsVisible" 
+                                                 ConverterParameter="IsVisible"
                                                  Path="IsVisible" />
                                     </Image.Source>
                                 </Image>
@@ -163,7 +187,9 @@
                                     Width="50">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <Image Style="{StaticResource layer}">
+                                <Image MouseDown="Image_MouseDown"
+                                       Style="{StaticResource layer}"
+                                       Tag="IsFrozen">
                                     <Image.Source>
                                         <Binding Converter="{StaticResource LayerImageConverter}"
                                                  ConverterParameter="IsFrozen"
@@ -177,11 +203,13 @@
                                     Width="50">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <Image Style="{StaticResource layer}">
+                                <Image MouseDown="Image_MouseDown"
+                                       Style="{StaticResource layer}"
+                                       Tag="IsLocked">
                                     <Image.Source>
                                         <Binding Converter="{StaticResource LayerImageConverter}"
-                                                    ConverterParameter="IsLocked"
-                                                    Path="IsLocked" />
+                                                 ConverterParameter="IsLocked"
+                                                 Path="IsLocked" />
                                     </Image.Source>
                                 </Image>
                             </DataTemplate>
@@ -191,11 +219,13 @@
                                     Width="50">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <Image Style="{StaticResource layer}">
+                                <Image MouseDown="Image_MouseDown"
+                                       Style="{StaticResource layer}"
+                                       Tag="Plot">
                                     <Image.Source>
                                         <Binding Converter="{StaticResource LayerImageConverter}"
-                                                 ConverterParameter="Plot"
-                                                 Path="Plot" />
+                                                    ConverterParameter="Plot"
+                                                    Path="Plot" />
                                     </Image.Source>
                                 </Image>
                             </DataTemplate>
@@ -225,7 +255,7 @@
                      HorizontalAlignment="Right">
             <Button Click="OK_Click"
                     Content="OK" />
-            <Button Click="Button_Click"
+            <Button Click="Cancel_Click"
                     Content="Cancel" />
         </UniformGrid>
     </Grid>
