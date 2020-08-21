@@ -59,6 +59,7 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Extensions\DxfLayerExtended.cs" />
     <Compile Include="Textstyle.xaml.cs">
       <DependentUpon>Textstyle.xaml</DependentUpon>
     </Compile>

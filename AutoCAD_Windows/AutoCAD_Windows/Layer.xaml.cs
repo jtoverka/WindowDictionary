@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
@@ -11,18 +12,21 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
+using System.Text.RegularExpressions;
+using AutoCAD_Windows.Extensions;
 
 namespace AutoCAD_Windows
 {
+    
     /// <summary>
     /// Interaction logic for Layer.xaml
     /// </summary>
     public partial class Layer : Window, INotifyPropertyChanged
     {
         private bool mRestoreForDragMove;
+        private readonly char[] invalidCharacters = { '\\', '/', ':', '*', '?', '"', '<', '>', '|', ';', ',', '=', '`' };
 
-        public ObservableCollection<netDxf.Tables.Layer> LayerCollection { get; }
+        public ObservableCollection<DxfLayerExtended> LayerCollection { get; }
 
         private System.Windows.Forms.DialogResult _Result;
         public System.Windows.Forms.DialogResult Result
@@ -40,13 +44,14 @@ namespace AutoCAD_Windows
 
         public Layer()
         {
-            LayerCollection = new ObservableCollection<netDxf.Tables.Layer>
+            LayerCollection = new ObservableCollection<DxfLayerExtended>
             {
-                new netDxf.Tables.Layer("0")
+                new DxfLayerExtended("0"),
             };
             DataContext = this;
             InitializeComponent();
         }
+
         #region Function
 
         private void CloseApplication()
@@ -64,10 +69,7 @@ namespace AutoCAD_Windows
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
         }
-        public void OnPropertyChanged(object sender, string property)
-        {
-            PropertyChanged?.Invoke(sender, new PropertyChangedEventArgs(property));
-        }
+
         private void Menu_Grid_MouseDown(object sender, MouseButtonEventArgs e)
         {
             if (e.ChangedButton == MouseButton.Left)
@@ -160,9 +162,6 @@ namespace AutoCAD_Windows
             this.Result = System.Windows.Forms.DialogResult.OK;
             CloseApplication();
         }
-
-        #endregion
-
         private void Image_MouseDown(object sender, MouseButtonEventArgs e)
         {
             var image = sender as Image;
@@ -170,33 +169,128 @@ namespace AutoCAD_Windows
             if (e.LeftButton != MouseButtonState.Pressed || image == null)
                 return;
 
+            var mainLayer = image.DataContext as DxfLayerExtended;
             var tag = image.Tag as string;
-            var layer = image.DataContext as netDxf.Tables.Layer;
+
+
+            if (!LayerList.SelectedItems.Contains(mainLayer))
+                LayerList.SelectedItems.Clear();
+
+            if (LayerList.SelectedItems.Count == 0)
+                LayerList.SelectedItems.Add(mainLayer);
+
+            foreach (DxfLayerExtended layer in LayerList.SelectedItems)
+            {
+                if (layer != mainLayer)
+                {
+                    switch (tag)
+                    {
+                        case "IsVisible":
+                            layer.IsVisible = !mainLayer.IsVisible;
+                            break;
+                        case "IsFrozen":
+                            layer.IsFrozen = !mainLayer.IsFrozen;
+                            break;
+                        case "IsLocked":
+                            layer.IsLocked = !mainLayer.IsLocked;
+                            break;
+                        case "Plot":
+                            layer.Plot = !mainLayer.Plot;
+                            break;
+                    }
+                    layer.OnPropertyChanged(tag);
+                }
+            }
 
             switch (tag)
             {
                 case "IsVisible":
-                    layer.IsVisible = !layer.IsVisible;
-                    image.GetBindingExpression(Image.SourceProperty).UpdateTarget();
+                    mainLayer.IsVisible = !mainLayer.IsVisible;
                     break;
                 case "IsFrozen":
-                    layer.IsFrozen = !layer.IsFrozen;
-                    image.GetBindingExpression(Image.SourceProperty).UpdateTarget();
+                    mainLayer.IsFrozen = !mainLayer.IsFrozen;
                     break;
                 case "IsLocked":
-                    layer.IsLocked = !layer.IsLocked;
-                    image.GetBindingExpression(Image.SourceProperty).UpdateTarget();
+                    mainLayer.IsLocked = !mainLayer.IsLocked;
                     break;
                 case "Plot":
-                    layer.Plot = !layer.Plot;
-                    image.GetBindingExpression(Image.SourceProperty).UpdateTarget();
+                    mainLayer.Plot = !mainLayer.Plot;
                     break;
             }
+            mainLayer.OnPropertyChanged(tag);
+
+            e.Handled = true;
         }
 
         private void New_Layer_Click(object sender, RoutedEventArgs e)
         {
-            LayerCollection.Add(new netDxf.Tables.Layer("Layer"));
+            string name = null;
+            bool found;
+            for (int i = 0; (i < LayerCollection.Count + 1) && (name == null); i++)
+            {
+                found = false;
+                for (int j = 0; (j < LayerCollection.Count) && !found; j++)
+                {
+                    if (LayerCollection[j].Name == "Layer" + (i + 1))
+                        found = true;
+                }
+                if (!found)
+                    name = "Layer" + (i + 1);
+            }
+            if (name != null)
+                LayerCollection.Add(new DxfLayerExtended(name));
         }
+
+        private void Delete_Layer_Click(object sender, RoutedEventArgs e)
+        {
+            ObservableCollection<DxfLayerExtended> layers = new ObservableCollection<DxfLayerExtended>(LayerList.SelectedItems.OfType<DxfLayerExtended>());
+
+            int index = LayerList.SelectedIndex;
+
+            for (int i = 0; i < layers.Count; i++)
+            {
+                DxfLayerExtended layer = layers[i];
+
+                if (layer.Name != "0")
+                {
+                    LayerList.SelectedItems.Remove(layer);
+                    LayerCollection.Remove(layer);
+                }
+                else
+                    MessageBox.Show("Cannot Delete Default Layer \"0\"", "Warning");
+            }
+
+            if (LayerList.Items.Count > index)
+                LayerList.SelectedIndex = index;
+            else
+                LayerList.SelectedIndex = LayerList.Items.Count - 1;
+        }
+
+        /// <summary>
+        /// Checks if a string is valid as a table object name.
+        /// </summary>
+        /// <param name="name">String to check.</param>
+        /// <returns>True if the string is valid as a table object name, or false otherwise.</returns>
+        public bool IsValidName(string name)
+        {
+            if (string.IsNullOrEmpty(name))
+                return false;
+
+            return name.IndexOfAny(invalidCharacters) == -1;
+        }
+
+        private void TextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            var textbox = sender as TextBox;
+            var layer = textbox.DataContext as DxfLayerExtended;
+
+            if (layer.Name == "0" || !IsValidName(e.Text))
+            {
+                e.Handled = true;
+            }
+        }
+
+        #endregion
+
     }
 }

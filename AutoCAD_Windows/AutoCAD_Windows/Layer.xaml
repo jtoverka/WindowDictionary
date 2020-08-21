@@ -37,7 +37,7 @@
         </Grid.Resources>
         <Grid.RowDefinitions>
             <RowDefinition Height="25" />
-            <RowDefinition Height="50" />
+            <RowDefinition Height="30" />
             <RowDefinition />
             <RowDefinition Height="50" />
         </Grid.RowDefinitions>
@@ -102,22 +102,12 @@
                 </Button.Style>
             </Button>
         </UniformGrid>
-        <TextBlock Grid.Row="1" 
-                   Margin="5,5,0,0"
-                   Text="Current Layer: "
-                   VerticalAlignment="Top"/>
-        <TextBlock Grid.Row="1"
-                   Margin="100,5,0,0"
-                   VerticalAlignment="Top">
-            <TextBlock.Text>
-                <Binding Path="CurrentLayer"
-                         FallbackValue="0"/>
-            </TextBlock.Text>
-        </TextBlock>
         <UniformGrid Columns="2"
                      Grid.Row="1"
                      HorizontalAlignment="Left"
-                     VerticalAlignment="Bottom">
+                     Margin="50,0,0,0"
+                     VerticalAlignment="Bottom"
+                     Width="40">
             <Button Click="New_Layer_Click"
                     Background="Transparent"
                     BorderThickness="0"
@@ -127,7 +117,8 @@
                     Width="15">
                 <Image Source="Application/NewLayer.bmp" />
             </Button>
-            <Button Background="Transparent"
+            <Button Click="Delete_Layer_Click"
+                    Background="Transparent"
                     BorderThickness="0"
                     Height="15"
                     Margin="0"
@@ -136,7 +127,12 @@
                 <Image Source="Application/DeleteLayer.bmp" />
             </Button>
         </UniformGrid>
-        <ListView Grid.Row="2">
+        <ListView x:Name="LayerList"
+                  Grid.Row="2"
+                  SelectionMode="Extended">
+            <ListView.ItemsSource>
+                <Binding Path="LayerCollection" />
+            </ListView.ItemsSource>
             <ListView.Resources>
                 <Style TargetType="Button">
                     <Setter Property="Height"
@@ -149,21 +145,72 @@
                             Value="0" />
                 </Style>
             </ListView.Resources>
-            <ListView.ItemsSource>
-                <Binding Path="LayerCollection" />
-            </ListView.ItemsSource>
+            <ListView.ItemContainerStyle>
+                <Style TargetType="ListViewItem">
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="{x:Type ListViewItem}">
+                                <Border Padding="{TemplateBinding Padding}"
+                                        Background="{TemplateBinding Background}"
+                                        BorderBrush="{TemplateBinding BorderBrush}"
+                                        BorderThickness="{TemplateBinding BorderThickness}"
+                                        SnapsToDevicePixels="true">
+                                    <GridViewRowPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                                          SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                                </Border>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                    <Setter Property="Margin"
+                            Value="0" />
+                    <Style.Triggers>
+                        <Trigger Property="IsMouseOver"
+                                 Value="True">
+                            <Setter Property="Background"
+                                    Value="Transparent" />
+                            <Setter Property="BorderBrush"
+                                    Value="Transparent" />
+                        </Trigger>
+                        <Trigger Property="IsSelected"
+                                 Value="True">
+                            <Setter Property="Background"
+                                    Value="#d4d4d4" />
+                            <Setter Property="BorderBrush"
+                                    Value="#d4d4d4" />
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </ListView.ItemContainerStyle>
             <ListView.View>
                 <GridView>
-                    
                     <GridViewColumn Header="Name"
                                     Width="150">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBlock>
-                                    <TextBlock.Text>
+                                <TextBox PreviewTextInput="TextBox_PreviewTextInput"
+                                         AcceptsReturn="False"
+                                         AcceptsTab="False">
+                                    <TextBox.Style>
+                                        <Style TargetType="TextBox">
+                                            <Setter Property="BorderBrush"
+                                                    Value="Transparent" />
+                                            <Setter Property="Background"
+                                                    Value="Transparent" />
+                                            <Setter Property="CaretBrush"
+                                                    Value="#a3a3a3" />
+                                            <Setter Property="SelectionBrush"
+                                                    Value="Transparent" />
+                                            <Setter Property="IsInactiveSelectionHighlightEnabled"
+                                                    Value="False" />
+                                            <Setter Property="BorderThickness"
+                                                    Value="0" />
+                                        </Style>
+                                    </TextBox.Style>
+                                    <TextBox.Text>
                                         <Binding Path="Name" />
-                                    </TextBlock.Text>
-                                </TextBlock>
+                                    </TextBox.Text>
+                                </TextBox>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
@@ -177,7 +224,7 @@
                                     <Image.Source>
                                         <Binding Converter="{StaticResource LayerImageConverter}"
                                                  ConverterParameter="IsVisible"
-                                                 Path="IsVisible" />
+                                                 Path="IsVisible"/>
                                     </Image.Source>
                                 </Image>
                             </DataTemplate>
@@ -193,7 +240,7 @@
                                     <Image.Source>
                                         <Binding Converter="{StaticResource LayerImageConverter}"
                                                  ConverterParameter="IsFrozen"
-                                                 Path="IsFrozen" />
+                                                 Path="IsFrozen"/>
                                     </Image.Source>
                                 </Image>
                             </DataTemplate>
