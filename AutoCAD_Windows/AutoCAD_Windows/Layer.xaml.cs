@@ -292,5 +292,35 @@ namespace AutoCAD_Windows
 
         #endregion
 
+        private void Lineweight_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.LeftButton != MouseButtonState.Pressed)
+                return;
+
+            var layer = ((TextBlock)sender).DataContext as DxfLayerExtended;
+            var window = new AutoCAD_Windows.Lineweight(layer.Lineweight, Lineweight.LineweightMode.Layer);
+
+            window.ShowDialog();
+
+            layer.Lineweight = window.SelectedLineweight;
+            layer.OnPropertyChanged("Lineweight");
+        }
+
+        private void TextBlock_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.LeftButton != MouseButtonState.Pressed)
+                return;
+
+            var layer = ((TextBlock)sender).DataContext as DxfLayerExtended;
+            var window = new AutoCAD_Windows.LayerTransparency();
+
+            window.ShowDialog();
+
+            if (window.Result == System.Windows.Forms.DialogResult.OK)
+            {
+                layer.Transparency = new netDxf.Transparency(window.Transparency);
+                layer.OnPropertyChanged("Transparency");
+            }
+        }
     }
 }

@@ -60,10 +60,17 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Extensions\DxfLayerExtended.cs" />
+    <Compile Include="LayerTransparency.xaml.cs">
+      <DependentUpon>LayerTransparency.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Textstyle.xaml.cs">
       <DependentUpon>Textstyle.xaml</DependentUpon>
     </Compile>
     <Page Include="Layer.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="LayerTransparency.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

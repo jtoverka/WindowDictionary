@@ -34,6 +34,7 @@
     <Grid>
         <Grid.Resources>
             <converters:LayerImageConverter x:Key="LayerImageConverter" />
+            <converters:LineweightConverter x:Key="LineweightConverter" />
         </Grid.Resources>
         <Grid.RowDefinitions>
             <RowDefinition Height="25" />
@@ -286,13 +287,75 @@
                                     Header="LineType"
                                     Width="100">
                     </GridViewColumn>
-                    <GridViewColumn DisplayMemberBinding="{Binding Path=Lineweight}"
-                                    Header="Lineweight"
-                                    Width="100">
+                    <GridViewColumn Header="Lineweight"
+                                    Width="150">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <Grid>
+                                    <ListViewItem>
+                                        <ListViewItem.Style>
+                                            <Style TargetType="ListViewItem">
+                                                <Setter Property="BorderBrush"
+                                                        Value="Transparent" />
+                                                <Setter Property="BorderThickness"
+                                                        Value="0" />
+                                                <Setter Property="Background"
+                                                        Value="Transparent" />
+                                                <Setter Property="Margin"
+                                                        Value="0" />
+                                                <Style.Triggers>
+                                                    <Trigger Property="IsMouseOver"
+                                                             Value="True">
+                                                        <Setter Property="Background"
+                                                                Value="Transparent" />
+                                                        <Setter Property="BorderBrush"
+                                                                Value="Transparent" />
+                                                    </Trigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </ListViewItem.Style>
+                                        <Binding Converter="{StaticResource LineweightConverter}"
+                                                 ConverterParameter="3"
+                                                 Path="Lineweight" />
+                                    </ListViewItem>
+                                    <TextBlock MouseDown="Lineweight_MouseDown" />
+                                </Grid>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
                     </GridViewColumn>
-                    <GridViewColumn DisplayMemberBinding="{Binding Path=Transparency}"
-                                    Header="Transparency"
+                    <GridViewColumn Header="Transparency"
                                     Width="100">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <Grid>
+                                    <ListViewItem>
+                                        <ListViewItem.Style>
+                                            <Style TargetType="ListViewItem">
+                                                <Setter Property="BorderBrush"
+                                                        Value="Transparent" />
+                                                <Setter Property="BorderThickness"
+                                                        Value="0" />
+                                                <Setter Property="Background"
+                                                        Value="Transparent" />
+                                                <Setter Property="Margin"
+                                                        Value="0" />
+                                                <Style.Triggers>
+                                                    <Trigger Property="IsMouseOver"
+                                                             Value="True">
+                                                        <Setter Property="Background"
+                                                                Value="Transparent" />
+                                                        <Setter Property="BorderBrush"
+                                                                Value="Transparent" />
+                                                    </Trigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </ListViewItem.Style>
+                                        <Binding Path="Transparency" />
+                                    </ListViewItem>
+                                    <TextBlock MouseDown="TextBlock_MouseDown" />
+                                </Grid>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
                     </GridViewColumn>
                 </GridView>
             </ListView.View>
