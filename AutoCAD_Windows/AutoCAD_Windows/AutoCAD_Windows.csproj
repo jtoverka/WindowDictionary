@@ -24,6 +24,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Debug\AutoCAD_Windows.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -59,10 +60,15 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Converters\LayerTransparencyConverter.cs" />
     <Compile Include="Extensions\DxfLayerExtended.cs" />
     <Compile Include="LayerTransparency.xaml.cs">
       <DependentUpon>LayerTransparency.xaml</DependentUpon>
     </Compile>
+    <Compile Include="PropertyEditor.xaml.cs">
+      <DependentUpon>PropertyEditor.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Resources\UILibrary.cs" />
     <Compile Include="Textstyle.xaml.cs">
       <DependentUpon>Textstyle.xaml</DependentUpon>
     </Compile>
@@ -95,6 +101,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="LoadLinetype.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="PropertyEditor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:AutoCAD_Windows"
+        xmlns:converter="clr-namespace:AutoCAD_Windows.Converters"
         mc:Ignorable="d"
         Title="LayerTransparency" 
         Height="175"
@@ -19,6 +20,9 @@
         </ResourceDictionary>
     </Window.Resources>
     <Grid>
+        <Grid.Resources>
+            <converter:LayerTransparencyConverter x:Key="LayerTransparencyConverter" />
+        </Grid.Resources>
         <Grid.RowDefinitions>
             <RowDefinition Height="25" />
             <RowDefinition Height="*" />
@@ -62,18 +66,36 @@
                      Margin="50,20,50,0"
                      VerticalAlignment="Top">
             <TextBlock>Transparency Value (0-90):</TextBlock>
-            <ComboBox Height="25"
+            <ComboBox x:Name="Combo"
                       Background="Transparent"
-                      BorderBrush="Transparent">
-                
+                      BorderBrush="Transparent"
+                      Height="25"
+                      IsEditable="True"
+                      PreviewTextInput="Combo_PreviewTextInput">
+                <ComboBox.Text>
+                    <Binding Path="Transparency"
+                             Converter="{StaticResource LayerTransparencyConverter}"/>
+                </ComboBox.Text>
+                <ComboBoxItem Content="0" />
+                <ComboBoxItem Content="10" />
+                <ComboBoxItem Content="20" />
+                <ComboBoxItem Content="30" />
+                <ComboBoxItem Content="40" />
+                <ComboBoxItem Content="50" />
+                <ComboBoxItem Content="60" />
+                <ComboBoxItem Content="70" />
+                <ComboBoxItem Content="80" />
+                <ComboBoxItem Content="90" />
             </ComboBox>
         </UniformGrid>
         <UniformGrid Columns="2" 
                      Grid.Row="2"
                      HorizontalAlignment="Center"
                      Width="250">
-            <Button Content="OK" />
-            <Button Content="Cancel" />
+            <Button Click="OK_Click"
+                    Content="OK" />
+            <Button Click="Cancel_Click"
+                    Content="Cancel" />
         </UniformGrid>
     </Grid>
 </Window>

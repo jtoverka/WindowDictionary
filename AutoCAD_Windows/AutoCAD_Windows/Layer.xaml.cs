@@ -1,34 +1,39 @@
 ﻿using System;
 using System.Collections.ObjectModel;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Text.RegularExpressions;
 using AutoCAD_Windows.Extensions;
 
 namespace AutoCAD_Windows
 {
-    
+
     /// <summary>
     /// Interaction logic for Layer.xaml
     /// </summary>
     public partial class Layer : Window, INotifyPropertyChanged
     {
+        #region Fields
+
         private bool mRestoreForDragMove;
         private readonly char[] invalidCharacters = { '\\', '/', ':', '*', '?', '"', '<', '>', '|', ';', ',', '=', '`' };
 
+        #endregion
+
+        #region Properties
+
+        /// <summary>
+        /// Stores collection of netDxf.Tables.Layer objects extended to implement INotifyPropertyChanged.
+        /// </summary>
         public ObservableCollection<DxfLayerExtended> LayerCollection { get; }
 
         private System.Windows.Forms.DialogResult _Result;
+        /// <summary>
+        /// Dialog Box Result
+        /// </summary>
         public System.Windows.Forms.DialogResult Result
         {
             get { return this._Result; }
@@ -42,6 +47,13 @@ namespace AutoCAD_Windows
             }
         }
 
+        #endregion
+        
+        #region Constructors
+
+        /// <summary>
+        /// Default layer constructor
+        /// </summary>
         public Layer()
         {
             LayerCollection = new ObservableCollection<DxfLayerExtended>
@@ -51,6 +63,34 @@ namespace AutoCAD_Windows
             DataContext = this;
             InitializeComponent();
         }
+
+        /// <summary>
+        /// Clone layer collection in document for modification
+        /// </summary>
+        /// <param name="dxfDocument"></param>
+        public Layer(netDxf.DxfDocument dxfDocument)
+        {
+            foreach (netDxf.Tables.Layer layer in dxfDocument.Layers)
+            {
+                var newLayer = new DxfLayerExtended(layer.Name)
+                {
+                    IsVisible = layer.IsVisible,
+                    IsFrozen = layer.IsFrozen,
+                    IsLocked = layer.IsLocked,
+                    Plot = layer.Plot,
+                    Color = layer.Color,
+                    Linetype = layer.Linetype,
+                    Lineweight = layer.Lineweight,
+                    Transparency = layer.Transparency,
+                };
+                LayerCollection.Add(newLayer);
+            }
+            DataContext = this;
+
+            InitializeComponent();
+        }
+
+        #endregion
 
         #region Function
 
@@ -63,8 +103,16 @@ namespace AutoCAD_Windows
 
         #region Delegates, Events, Handlers
 
+        /// <summary>
+        /// Property Changed Event
+        /// Updates all bindings when property changes
+        /// </summary>
         public event PropertyChangedEventHandler PropertyChanged;
 
+        /// <summary>
+        /// Invokes property changed event
+        /// </summary>
+        /// <param name="property"></param>
         public void OnPropertyChanged(string property)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
@@ -157,11 +205,13 @@ namespace AutoCAD_Windows
             this.Result = System.Windows.Forms.DialogResult.Cancel;
             CloseApplication();
         }
+
         private void OK_Click(object sender, RoutedEventArgs e)
         {
             this.Result = System.Windows.Forms.DialogResult.OK;
             CloseApplication();
         }
+
         private void Image_MouseDown(object sender, MouseButtonEventArgs e)
         {
             var image = sender as Image;
@@ -290,8 +340,6 @@ namespace AutoCAD_Windows
             }
         }
 
-        #endregion
-
         private void Lineweight_MouseDown(object sender, MouseButtonEventArgs e)
         {
             if (e.LeftButton != MouseButtonState.Pressed)
@@ -306,13 +354,13 @@ namespace AutoCAD_Windows
             layer.OnPropertyChanged("Lineweight");
         }
 
-        private void TextBlock_MouseDown(object sender, MouseButtonEventArgs e)
+        private void LayerTransparency_MouseDown(object sender, MouseButtonEventArgs e)
         {
             if (e.LeftButton != MouseButtonState.Pressed)
                 return;
 
             var layer = ((TextBlock)sender).DataContext as DxfLayerExtended;
-            var window = new AutoCAD_Windows.LayerTransparency();
+            var window = new AutoCAD_Windows.LayerTransparency(layer.Transparency);
 
             window.ShowDialog();
 
@@ -322,5 +370,7 @@ namespace AutoCAD_Windows
                 layer.OnPropertyChanged("Transparency");
             }
         }
+
+        #endregion
     }
 }

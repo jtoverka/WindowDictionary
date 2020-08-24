@@ -352,7 +352,7 @@
                                         </ListViewItem.Style>
                                         <Binding Path="Transparency" />
                                     </ListViewItem>
-                                    <TextBlock MouseDown="TextBlock_MouseDown" />
+                                    <TextBlock MouseDown="LayerTransparency_MouseDown" />
                                 </Grid>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>

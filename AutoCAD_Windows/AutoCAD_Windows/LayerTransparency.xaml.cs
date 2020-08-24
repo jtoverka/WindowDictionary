@@ -1,16 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
+﻿using System.Windows;
 using System.ComponentModel;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
+using System;
 
 namespace AutoCAD_Windows
 {
@@ -19,9 +10,21 @@ namespace AutoCAD_Windows
     /// </summary>
     public partial class LayerTransparency : Window, INotifyPropertyChanged
     {
+        #region Fields
+
+        /// <summary>
+        /// Move dialog box boolean
+        /// </summary>
         private bool mRestoreForDragMove;
 
+        #endregion
+
+        #region Properties
+
         private System.Windows.Forms.DialogResult _Result;
+        /// <summary>
+        /// Dialog Box Result
+        /// </summary>
         public System.Windows.Forms.DialogResult Result
         {
             get { return this._Result; }
@@ -35,9 +38,11 @@ namespace AutoCAD_Windows
             }
         }
 
-
-        private byte _Transparency = 0;
-        public byte Transparency
+        private short _Transparency = 0;
+        /// <summary>
+        /// Layer Transparency
+        /// </summary>
+        public short Transparency
         {
             get { return _Transparency; }
             set
@@ -45,18 +50,49 @@ namespace AutoCAD_Windows
                 if (_Transparency == value)
                     return;
 
-                _Transparency = value;
+                if (value < 0 || value > 90)
+                {
+                    _ = MessageBox.Show("Transparency values must be between 0 and 90", "Warning");
+                }
+                else
+                    _Transparency = value;
+
                 OnPropertyChanged("Transparency");
             }
         }
 
+        #endregion
+
+        #region Constructors
+
+        /// <summary>
+        /// Default Constructor
+        /// </summary>
         public LayerTransparency()
         {
+            Transparency = 0;
+            DataContext = this;
             InitializeComponent();
         }
 
-        #region Function
+        /// <summary>
+        /// Constructor with transparency
+        /// </summary>
+        /// <param name="transparency"></param>
+        public LayerTransparency(netDxf.Transparency transparency)
+        {
+            Transparency = transparency.Value;
+            DataContext = this;
+            InitializeComponent();
+        }
 
+        #endregion
+
+        #region Functions
+
+        /// <summary>
+        /// Close window process
+        /// </summary>
         private void CloseApplication()
         {
             this.Close();
@@ -64,15 +100,27 @@ namespace AutoCAD_Windows
 
         #endregion
 
+        #region Delegates, Events, Handlers
 
+        /// <summary>
+        /// Event that is raised when a property is changed on a component
+        /// </summary>
         public event PropertyChangedEventHandler PropertyChanged;
 
+        /// <summary>
+        /// Method to invoke a property changed event
+        /// </summary>
+        /// <param name="property"></param>
         public void OnPropertyChanged(string property)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
         }
 
-
+        /// <summary>
+        /// Allows user to move the dialog box from the menu bar
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Menu_Grid_MouseDown(object sender, MouseButtonEventArgs e)
         {
             if (e.ChangedButton == MouseButton.Left)
@@ -103,15 +151,47 @@ namespace AutoCAD_Windows
             WindowState = WindowState.Minimized;
         }
 
+        /// <summary>
+        /// Cancel action on dialog box
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Cancel_Click(object sender, RoutedEventArgs e)
         {
             this.Result = System.Windows.Forms.DialogResult.Cancel;
             CloseApplication();
         }
+
+        /// <summary>
+        /// Ok action on dialog box
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void OK_Click(object sender, RoutedEventArgs e)
         {
             this.Result = System.Windows.Forms.DialogResult.OK;
             CloseApplication();
+        }
+
+        #endregion
+
+        private void Combo_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            try
+            {
+                short value = System.Convert.ToSByte(e.Text);
+
+                if (value < 0 || value > 90)
+                {
+                    _ = MessageBox.Show("Transparency values must be between 0 and 90", "Warning");
+                    e.Handled = true;
+                }
+            }
+            catch (Exception)
+            {
+                _ = MessageBox.Show("Transparency values must be between 0 and 90", "Warning");
+                e.Handled = true;
+            }
         }
     }
 }
