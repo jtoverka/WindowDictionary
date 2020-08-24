@@ -1,0 +1,119 @@
+﻿using System;
+using System.Threading;
+
+namespace WindowDictionary.Property
+{
+    /// <summary>
+    /// Represents an integer range of two integers.
+    /// </summary>
+    public class IntegerRange : Range, IEquatable<IntegerRange>
+    {
+        #region Properties
+
+        /// <summary>
+        /// Gets or Sets the Min Component.
+        /// </summary>
+        public new int Min { get; set; }
+        /// <summary>
+        /// Gets or Sets the Max Component.
+        /// </summary>
+        public new int Max { get; set; }
+
+        #endregion
+
+        #region Constructors
+
+        /// <summary>
+        /// Initializes a new instance of IntegerRange.
+        /// </summary>
+        /// <param name="min"></param>
+        /// <param name="max"></param>
+        public IntegerRange(int min, int max)
+        {
+            this.Min = min;
+            this.Max = max;
+        }
+
+        #endregion
+
+        #region Functions
+
+        /// <summary>
+        /// Check if the components of two IntegerRanges are equal.
+        /// </summary>
+        /// <param name="other"></param>
+        /// <returns></returns>
+        public bool Equals(IntegerRange other)
+        {
+            return Equals(this, other);
+        }
+
+        /// <summary>
+        /// Check if the comopnents of two IntegerRanges are equal.
+        /// </summary>
+        /// <param name="a"></param>
+        /// <param name="b"></param>
+        /// <returns></returns>
+        public static bool Equals(IntegerRange a, IntegerRange b)
+        {
+            return (a.Min == b.Min) && (a.Max == b.Max);
+        }
+
+        /// <summary>
+        /// Check if an integer is valid with this range.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public override bool IsValid(object value)
+        {
+            if (value.GetType() != typeof(int))
+                throw new ArgumentException("The value needs to be integer");
+
+            var convert = Convert.ToInt32(value);
+
+            if (convert < this.Min)
+                return false;
+
+            if (convert > this.Max)
+                return false;
+        
+            return true;
+        }
+
+        /// <summary>
+        /// Check if an integer is valid with the given range.
+        /// </summary>
+        /// <param name="a"></param>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static bool IsValid(IntegerRange a, int value)
+        {
+            return a.IsValid(value);
+        }
+
+        #endregion
+
+        #region overrides
+
+        /// <summary>
+        /// Obtains a string that represents the IntegerRange.
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString()
+        {
+            return string.Format("{0}{2}{1}", this.Min, this.Max, Thread.CurrentThread.CurrentCulture.TextInfo.ListSeparator);
+        }
+
+        /// <summary>
+        /// Obtains a string that represents the IntegerRange.
+        /// </summary>
+        /// <param name="provider">An IFormatProvider interface implementation that supplies culture-specific formatting information. </param>
+        /// <returns>A string text.</returns>
+        public string ToString(IFormatProvider provider)
+        {
+            return string.Format("{0}{2} {1}", this.Min.ToString(provider), this.Max.ToString(provider), Thread.CurrentThread.CurrentCulture.TextInfo.ListSeparator);
+        }
+
+        #endregion
+    }
+}

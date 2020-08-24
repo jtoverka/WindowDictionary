@@ -17,7 +17,7 @@ using System.Drawing.Text;
 using System.Collections.ObjectModel;
 using FF = System.Drawing.FontFamily;
 using OC_FF = System.Collections.ObjectModel.ObservableCollection<System.Drawing.FontFamily>;
-namespace AutoCAD_Windows
+namespace WindowDictionary
 {
     /// <summary>
     /// Interaction logic for Lineweight.xaml

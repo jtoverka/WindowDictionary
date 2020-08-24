@@ -3,7 +3,7 @@ using System.ComponentModel;
 using System.Windows.Input;
 using System;
 
-namespace AutoCAD_Windows
+namespace WindowDictionary
 {
     /// <summary>
     /// Interaction logic for LayerTransparency.xaml

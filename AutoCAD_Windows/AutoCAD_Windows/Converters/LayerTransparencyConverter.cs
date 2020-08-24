@@ -3,7 +3,7 @@ using System.Windows.Forms;
 using System.Globalization;
 using System.Windows.Data;
 
-namespace AutoCAD_Windows.Converters
+namespace WindowDictionary.Converters
 {
     public class LayerTransparencyConverter : IValueConverter
     {

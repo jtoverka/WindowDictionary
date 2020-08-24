@@ -3,10 +3,10 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
-using AutoCAD_Windows.Converters;
+using WindowDictionary.Converters;
 // using netDxf;
 
-namespace AutoCAD_Windows
+namespace WindowDictionary
 {
     /// <summary>
     /// Interaction logic for Lineweight.xaml

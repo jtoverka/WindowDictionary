@@ -7,7 +7,7 @@ using System.Linq;
 using System.Collections.ObjectModel;
 using System.Collections;
 
-namespace AutoCAD_Windows.Resources
+namespace WindowDictionary.Resources
 {
     public static class UILibrary
     {

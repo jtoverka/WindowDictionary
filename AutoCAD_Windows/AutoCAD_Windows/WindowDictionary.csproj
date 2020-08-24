@@ -60,15 +60,29 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Converters\ListViewPropertyConverter.cs" />
+    <Compile Include="Property\BooleanRange.cs" />
     <Compile Include="Converters\LayerTransparencyConverter.cs" />
+    <Compile Include="Property\DoubleRange.cs" />
     <Compile Include="Extensions\DxfLayerExtended.cs" />
+    <Compile Include="Property\ListItemBoolean.xaml.cs">
+      <DependentUpon>ListItemBoolean.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Property\LogicalGate.cs" />
+    <Compile Include="Property\IntegerRange.cs" />
     <Compile Include="LayerTransparency.xaml.cs">
       <DependentUpon>LayerTransparency.xaml</DependentUpon>
     </Compile>
-    <Compile Include="PropertyEditor.xaml.cs">
+    <Compile Include="Property\LogicalOperator.cs" />
+    <Compile Include="Property\PropertyEditor.xaml.cs">
       <DependentUpon>PropertyEditor.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Property\PropertyGroup.cs" />
+    <Compile Include="Property\PropertyType.cs" />
+    <Compile Include="Property\PropertyItem.cs" />
+    <Compile Include="Property\Range.cs" />
     <Compile Include="Resources\UILibrary.cs" />
+    <Compile Include="Property\StringRange.cs" />
     <Compile Include="Textstyle.xaml.cs">
       <DependentUpon>Textstyle.xaml</DependentUpon>
     </Compile>
@@ -104,7 +118,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="PropertyEditor.xaml">
+    <Page Include="Property\ListItemBoolean.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Property\PropertyEditor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

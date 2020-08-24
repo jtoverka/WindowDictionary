@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace AutoCAD_Windows.Properties
+namespace WindowDictionary.Properties
 {
 
 

@@ -6,7 +6,7 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Shapes;
 using System.Windows.Media;
 
-namespace AutoCAD_Windows.Converters
+namespace WindowDictionary.Converters
 {
     public class LineweightConverter : IValueConverter
     {

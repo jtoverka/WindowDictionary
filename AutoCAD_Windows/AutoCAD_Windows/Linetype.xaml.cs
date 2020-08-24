@@ -13,7 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
-namespace AutoCAD_Windows
+namespace WindowDictionary
 {
     /// <summary>
     /// Interaction logic for Linetype.xaml

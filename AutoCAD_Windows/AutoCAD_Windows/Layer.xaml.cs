@@ -6,9 +6,9 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
-using AutoCAD_Windows.Extensions;
+using WindowDictionary.Extensions;
 
-namespace AutoCAD_Windows
+namespace WindowDictionary
 {
 
     /// <summary>
@@ -346,7 +346,7 @@ namespace AutoCAD_Windows
                 return;
 
             var layer = ((TextBlock)sender).DataContext as DxfLayerExtended;
-            var window = new AutoCAD_Windows.Lineweight(layer.Lineweight, Lineweight.LineweightMode.Layer);
+            var window = new WindowDictionary.Lineweight(layer.Lineweight, Lineweight.LineweightMode.Layer);
 
             window.ShowDialog();
 
@@ -360,7 +360,7 @@ namespace AutoCAD_Windows
                 return;
 
             var layer = ((TextBlock)sender).DataContext as DxfLayerExtended;
-            var window = new AutoCAD_Windows.LayerTransparency(layer.Transparency);
+            var window = new WindowDictionary.LayerTransparency(layer.Transparency);
 
             window.ShowDialog();
 

@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 
-namespace AutoCAD_Windows.Extensions
+namespace WindowDictionary.Extensions
 {
     public class DxfLayerExtended : netDxf.Tables.Layer, INotifyPropertyChanged
     {

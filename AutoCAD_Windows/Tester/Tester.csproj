@@ -99,9 +99,9 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\AutoCAD_Windows\AutoCAD_Windows.csproj">
+    <ProjectReference Include="..\AutoCAD_Windows\WindowDictionary.csproj">
       <Project>{f5d25712-5584-495c-9925-9a832638ea14}</Project>
-      <Name>AutoCAD_Windows</Name>
+      <Name>WindowDictionary</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
