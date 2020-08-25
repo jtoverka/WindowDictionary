@@ -58,6 +58,7 @@
         <ListView x:Name="Properties"
                   Grid.Column="1"
                   Grid.Row="2"
+                  HorizontalContentAlignment="Stretch"
                   Margin="10,10,10,10">
             <ListView.ItemsSource>
                 <Binding Path="SelectedPropertyGroup.PropertyItems"

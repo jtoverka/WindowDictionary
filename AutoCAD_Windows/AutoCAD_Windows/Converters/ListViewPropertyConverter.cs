@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Globalization;
 using System.Windows.Data;
+using System.Collections.ObjectModel;
 using System.Windows.Controls;
 using WindowDictionary.Property;
+using System.Windows;
 
 namespace WindowDictionary.Converters
 {
@@ -10,25 +12,31 @@ namespace WindowDictionary.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            var propertyGroup = value as PropertyGroup;
-            foreach(PropertyItem item in propertyGroup.PropertyItems)
-            {
+            var propertyGroup = value as ObservableCollection<PropertyItem>;
+            var list = new ListView();
 
+            foreach(PropertyItem item in propertyGroup)
+            {
                 switch (item.ValueType)
                 {
                     case PropertyType.Boolean:
-                        return new ListItemBoolean()
+                        list.Items.Add(new ListItemBoolean()
                         {
                             IsChecked = System.Convert.ToBoolean(item.Value),
                             Text = item.PropertyName,
-                        };
+                        });
+                        break;
                     case PropertyType.Double:
-                        return new ListItemBoolean()
+                        list.Items.Add(new ListItemDouble()
                         {
-                            IsChecked = System.Convert.ToBoolean(item.Value),
-                            Text = item.PropertyName,
-                        };
+                            Item = item,
+                        });
+                        break;
                     case PropertyType.Integer:
+                        list.Items.Add(new ListItemInteger()
+                        {
+                            Item = item,
+                        });
                         break;
                     case PropertyType.SelectionString:
                         break;
@@ -48,7 +56,8 @@ namespace WindowDictionary.Converters
                         break;
                 }
             }
-            throw new NotImplementedException();
+
+            return list.Items;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

@@ -10,14 +10,31 @@ namespace WindowDictionary.Property
     {
         #region Properties
 
+        private int _Min;
         /// <summary>
         /// Gets or Sets the Min Component.
         /// </summary>
-        public new int Min { get; set; }
+        public override object Min
+        {
+            get { return this._Min; }
+            protected set
+            {
+                this._Min = Convert.ToInt32(value);
+            }
+        }
+
+        private int _Max;
         /// <summary>
         /// Gets or Sets the Max Component.
         /// </summary>
-        public new int Max { get; set; }
+        public override object Max
+        {
+            get { return this._Max; }
+            protected set
+            {
+                this._Max = Convert.ToInt32(value);
+            }
+        }
 
         #endregion
 
@@ -71,10 +88,10 @@ namespace WindowDictionary.Property
 
             var convert = Convert.ToInt32(value);
 
-            if (convert < this.Min)
+            if (convert < this._Min)
                 return false;
 
-            if (convert > this.Max)
+            if (convert > this._Max)
                 return false;
         
             return true;
@@ -101,7 +118,7 @@ namespace WindowDictionary.Property
         /// <returns></returns>
         public override string ToString()
         {
-            return string.Format("{0}{2}{1}", this.Min, this.Max, Thread.CurrentThread.CurrentCulture.TextInfo.ListSeparator);
+            return string.Format("{0}{2}{1}", this._Min, this._Max, Thread.CurrentThread.CurrentCulture.TextInfo.ListSeparator);
         }
 
         /// <summary>
@@ -111,7 +128,7 @@ namespace WindowDictionary.Property
         /// <returns>A string text.</returns>
         public string ToString(IFormatProvider provider)
         {
-            return string.Format("{0}{2} {1}", this.Min.ToString(provider), this.Max.ToString(provider), Thread.CurrentThread.CurrentCulture.TextInfo.ListSeparator);
+            return string.Format("{0}{2} {1}", this._Min.ToString(provider), this._Max.ToString(provider), Thread.CurrentThread.CurrentCulture.TextInfo.ListSeparator);
         }
 
         #endregion

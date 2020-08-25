@@ -10,15 +10,31 @@ namespace WindowDictionary.Property
     {
         #region Properties
 
-        /// <summary>
-        /// Gets or Sets the Max Component.
-        /// </summary>
-        public new char Max { get; set; }
-
+        private char _Min;
         /// <summary>
         /// Gets or Sets the Min Component.
         /// </summary>
-        public new char Min { get; set; }
+        public override object Min
+        {
+            get { return this._Min; }
+            protected set
+            {
+                this._Min = Convert.ToChar(value);
+            }
+        }
+
+        private char _Max;
+        /// <summary>
+        /// Gets or Sets the Max Component.
+        /// </summary>
+        public override object Max
+        {
+            get { return this._Max; }
+            protected set
+            {
+                this._Max = Convert.ToChar(value);
+            }
+        }
 
         #endregion
 
@@ -75,10 +91,10 @@ namespace WindowDictionary.Property
             char[] characters = convert.ToCharArray();
             foreach (char character in characters)
             {
-                if (character < this.Min)
+                if (character < this._Min)
                     return false;
 
-                if (character > this.Max)
+                if (character > this._Max)
                     return false;
             }
 
@@ -116,7 +132,7 @@ namespace WindowDictionary.Property
         /// <returns>A string text.</returns>
         public string ToString(IFormatProvider provider)
         {
-            return string.Format("{0}{2} {1}", this.Min.ToString(provider), this.Max.ToString(provider), Thread.CurrentThread.CurrentCulture.TextInfo.ListSeparator);
+            return string.Format("{0}{2} {1}", this._Min.ToString(provider), this._Max.ToString(provider), Thread.CurrentThread.CurrentCulture.TextInfo.ListSeparator);
         }
 
         #endregion

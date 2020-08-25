@@ -10,17 +10,34 @@ namespace WindowDictionary.Property
     {
         #region Properties
 
+        private bool _Min = false;
         /// <summary>
         /// Gets or Sets the Min Component.
         /// </summary>
-        public new bool Min { get; } = false;
+        public override object Min
+        {
+            get { return this._Min; }
+            protected set
+            {
+                this._Min = Convert.ToBoolean(value);
+            }
+        }
+
+        private bool _Max = true;
         /// <summary>
         /// Gets or Sets the Max Component.
         /// </summary>
-        public new bool Max { get; } = true;
+        public override object Max
+        {
+            get { return this._Max; }
+            protected set
+            {
+                this._Max = Convert.ToBoolean(value);
+            }
+        }
 
         #endregion
-        
+
         #region Functions
 
         /// <summary>
@@ -80,7 +97,7 @@ namespace WindowDictionary.Property
         /// <returns></returns>
         public override string ToString()
         {
-            return string.Format("{0}{2}{1}", this.Min, this.Max, Thread.CurrentThread.CurrentCulture.TextInfo.ListSeparator);
+            return string.Format("{0}{2}{1}", this._Min, this._Max, Thread.CurrentThread.CurrentCulture.TextInfo.ListSeparator);
         }
 
         /// <summary>
@@ -90,7 +107,7 @@ namespace WindowDictionary.Property
         /// <returns>A string text.</returns>
         public string ToString(IFormatProvider provider)
         {
-            return string.Format("{0}{2} {1}", this.Min.ToString(provider), this.Max.ToString(provider), Thread.CurrentThread.CurrentCulture.TextInfo.ListSeparator);
+            return string.Format("{0}{2} {1}", this._Min.ToString(provider), this._Max.ToString(provider), Thread.CurrentThread.CurrentCulture.TextInfo.ListSeparator);
         }
 
         #endregion

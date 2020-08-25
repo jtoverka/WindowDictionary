@@ -13,12 +13,12 @@ namespace WindowDictionary.Property
         /// <summary>
         /// Holds the maximum value for range comparison.
         /// </summary>
-        public object Max { get; set; }
+        public abstract object Max { get; protected set; }
 
         /// <summary>
         /// Holds the minimum value for range comparison.
         /// </summary>
-        public object Min { get; set; }
+        public abstract object Min { get; protected set; }
 
         #endregion
 

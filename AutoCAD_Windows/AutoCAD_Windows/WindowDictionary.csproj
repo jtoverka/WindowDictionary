@@ -61,12 +61,20 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Converters\ListViewPropertyConverter.cs" />
+    <Compile Include="Converters\DoubleConverter.cs" />
+    <Compile Include="Converters\IntegerConverter.cs" />
     <Compile Include="Property\BooleanRange.cs" />
     <Compile Include="Converters\LayerTransparencyConverter.cs" />
     <Compile Include="Property\DoubleRange.cs" />
     <Compile Include="Extensions\DxfLayerExtended.cs" />
     <Compile Include="Property\ListItemBoolean.xaml.cs">
       <DependentUpon>ListItemBoolean.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Property\ListItemDouble.xaml.cs">
+      <DependentUpon>ListItemDouble.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Property\ListItemInteger.xaml.cs">
+      <DependentUpon>ListItemInteger.xaml</DependentUpon>
     </Compile>
     <Compile Include="Property\LogicalGate.cs" />
     <Compile Include="Property\IntegerRange.cs" />
@@ -119,6 +127,14 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Property\ListItemBoolean.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Property\ListItemDouble.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Property\ListItemInteger.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

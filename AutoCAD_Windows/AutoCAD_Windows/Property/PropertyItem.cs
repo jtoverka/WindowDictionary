@@ -79,14 +79,31 @@ namespace WindowDictionary.Property
                 switch (this.ValueType)
                 {
                     case PropertyType.Boolean:
+                        try
+                        {
+                            value = System.Convert.ToBoolean(value);
+                        }
+                        catch (Exception) { }
                         if (value.GetType() != typeof(bool))
                             throw new ArgumentException("The value must be of type bool");
                         break;
                     case PropertyType.Double:
+                        try
+                        {
+                            value = System.Convert.ToDouble(value);
+                        }
+                        catch (Exception) { }
+
                         if (value.GetType() != typeof(double))
                             throw new ArgumentException("The value must be of type double");
                         break;
                     case PropertyType.Integer:
+                        try
+                        {
+                            value = System.Convert.ToInt32(value);
+                        }
+                        catch (Exception) { }
+
                         if (value.GetType() != typeof(int))
                             throw new ArgumentException("The value must be of type int");
                         break;

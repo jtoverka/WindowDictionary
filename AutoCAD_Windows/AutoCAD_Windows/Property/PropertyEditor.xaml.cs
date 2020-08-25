@@ -75,7 +75,8 @@ namespace WindowDictionary.Property
 
             var childPropertyGroup = new PropertyGroup() { Title = "Child 4" };
             var subChild = new PropertyGroup() { Title = "Sub Child 1" };
-            subChild.PropertyItems.Add(new PropertyItem(new IntegerRange(0, 5), PropertyType.Integer, 1));
+            subChild.PropertyItems.Add(new PropertyItem(new DoubleRange(0, 5), PropertyType.Double, 2.2) { PropertyName = "Hello World1" });
+            subChild.PropertyItems.Add(new PropertyItem(new IntegerRange(0, 5), PropertyType.Integer, 1) { PropertyName = "Hello World2" });
             childPropertyGroup.PropertyGroups.Add(subChild);
             propertyGroup.PropertyGroups.Add(childPropertyGroup);
 

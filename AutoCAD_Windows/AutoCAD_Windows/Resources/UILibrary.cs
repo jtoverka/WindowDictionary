@@ -49,26 +49,7 @@ namespace WindowDictionary.Resources
         */
         public static void TextBox_Double_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
-            var box = sender as TextBox;
-
-            char[] boxText = box.Text.ToArray();
-            char[] addText = e.Text.ToArray();
-
-            int caret = box.CaretIndex;
-
-            char[] newText = new char[boxText.Length + addText.Length];
-
-            for (int i = 0; i < newText.Length; i++)
-            {
-                if (i < caret)
-                    newText[i] = boxText[i];
-                else if (i >= (addText.Length + caret))
-                    newText[i] = boxText[i - addText.Length];
-                else
-                    newText[i] = addText[i - caret];
-            }
-
-            string text = new string(newText);
+            string text = TextBox_PreviewTextInput(sender, e);
 
             if (text == "")
                 return;
@@ -106,26 +87,7 @@ namespace WindowDictionary.Resources
         {
             if (sender?.GetType() == typeof(TextBox))
             {
-                var box = sender as TextBox;
-                
-                char[] boxText = box.Text.ToArray();
-                char[] addText = e.Text.ToArray();
-
-                int caret = box.CaretIndex;
-
-                char[] newText = new char[boxText.Length + addText.Length];
-
-                for (int i = 0; i < newText.Length; i++)
-                {
-                    if (i < caret)
-                        newText[i] = boxText[i];
-                    else if (i >= (addText.Length + caret))
-                        newText[i] = boxText[i - addText.Length];
-                    else
-                        newText[i] = addText[i - caret];
-                }
-
-                string text = new string(newText);
+                string text = TextBox_PreviewTextInput(sender, e);
 
                 if (text == "")
                     return;
@@ -193,6 +155,33 @@ namespace WindowDictionary.Resources
                         e.Handled = true;
                 }
             }
+        }
+        public static string TextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            if (sender?.GetType() == typeof(TextBox))
+            {
+                var box = sender as TextBox;
+
+                char[] boxText = box.Text.ToArray();
+                char[] addText = e.Text.ToArray();
+
+                int caret = box.CaretIndex;
+
+                char[] newText = new char[boxText.Length + addText.Length];
+
+                for (int i = 0; i < newText.Length; i++)
+                {
+                    if (i < caret)
+                        newText[i] = boxText[i];
+                    else if (i >= (addText.Length + caret))
+                        newText[i] = boxText[i - addText.Length];
+                    else
+                        newText[i] = addText[i - caret];
+                }
+
+                return new string(newText);
+            }
+            return "";
         }
         public static void ListBox_String_Remove(object sender, RoutedEventArgs e, ref string StringCollection)
         {
