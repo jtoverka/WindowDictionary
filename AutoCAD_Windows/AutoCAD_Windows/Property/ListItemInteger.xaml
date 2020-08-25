@@ -6,11 +6,13 @@
               xmlns:local="clr-namespace:WindowDictionary.Property"
               xmlns:converter="clr-namespace:WindowDictionary.Converters"
               mc:Ignorable="d"
+              Background="Transparent"
+              BorderThickness="1"
+              BorderBrush="Transparent"
               MinHeight="20"
               MinWidth="200"
               HorizontalContentAlignment="Stretch"
               VerticalContentAlignment="Stretch"
-              BorderThickness="1"
               Margin="0"
               Padding="0">
     <ListViewItem.Resources>
@@ -20,7 +22,7 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </ListViewItem.Resources>
-    <Grid>
+    <Grid Background="Transparent">
         <Grid.Resources>
             <converter:IntegerConverter x:Key="IntegerConverter" />
         </Grid.Resources>
@@ -36,7 +38,8 @@
                 <Binding Path="Item.PropertyName"/>
             </TextBlock.Text>
         </TextBlock>
-        <TextBox Grid.Column="2"
+        <TextBox x:Name="box"
+                 Grid.Column="2"
                  Grid.ColumnSpan="3"
                  PreviewTextInput="TextBox_Integer_PreviewTextInput"
                  PreviewKeyDown="TextBox_Integer_PreviewKeyDown">
@@ -44,5 +47,34 @@
                 <Binding Path="Item.Value" />
             </TextBox.Text>
         </TextBox>
+        <Popup x:Name="popup"
+               AllowsTransparency="True"
+               IsOpen="False"
+               Placement="Top"
+               PopupAnimation="Slide"
+               StaysOpen="True"
+               Visibility="Visible"
+               VerticalOffset="-1">
+            <Popup.PlacementTarget>
+                <Binding ElementName="box" />
+            </Popup.PlacementTarget>
+            <Border Background="Yellow"
+                    BorderBrush="Yellow"
+                    BorderThickness="1"
+                    CornerRadius="3"
+                    Margin="1,1,1,1">
+                <TextBlock x:Name="popupText"
+                           Foreground="Red"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                           Margin="0"
+                           TextWrapping="Wrap">
+                    <TextBlock.MaxWidth>
+                        <Binding ElementName="box"
+                                 Path="Width" />
+                    </TextBlock.MaxWidth>
+                </TextBlock>
+            </Border>
+        </Popup>
     </Grid>
 </ListViewItem>

@@ -45,5 +45,33 @@
                 <Binding Path="Item.Value" />
             </TextBox.Text>
         </TextBox>
+        <Popup x:Name="popup"
+               AllowsTransparency="True"
+               IsOpen="False"
+               Placement="Top"
+               PopupAnimation="Slide"
+               StaysOpen="True"
+               Visibility="Visible"
+               VerticalOffset="-1">
+            <Popup.PlacementTarget>
+                <Binding ElementName="box" />
+            </Popup.PlacementTarget>
+            <Border Background="Yellow"
+                    BorderBrush="Yellow"
+                    BorderThickness="1"
+                    CornerRadius="3"
+                    Margin="1,1,1,1">
+                <TextBlock x:Name="popupText"
+                           Foreground="Red"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                           Margin="0"
+                           TextWrapping="Wrap">
+                    <TextBlock.MaxWidth>
+                        <Binding ElementName="box"
+                                 Path="Width" />
+                    </TextBlock.MaxWidth></TextBlock>
+            </Border>
+        </Popup>
     </Grid>
 </ListViewItem>

@@ -19,7 +19,7 @@ namespace WindowDictionary.Property
     /// <summary>
     /// Interaction logic for ListItemBoolean.xaml
     /// </summary>
-    public partial class ListItemBoolean : UserControl, INotifyPropertyChanged
+    public partial class ListItemBoolean : ListViewItem, INotifyPropertyChanged
     {
 
         private bool _IsChecked;

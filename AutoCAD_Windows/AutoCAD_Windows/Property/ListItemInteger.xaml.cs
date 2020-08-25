@@ -2,6 +2,9 @@
 using System.ComponentModel;
 using WindowDictionary.Resources;
 using System.Windows.Input;
+using System;
+using System.Windows;
+using System.Windows.Threading;
 
 namespace WindowDictionary.Property
 {
@@ -10,6 +13,8 @@ namespace WindowDictionary.Property
     /// </summary>
     public partial class ListItemInteger : ListViewItem, INotifyPropertyChanged
     {
+        private DispatcherTimer timer = new DispatcherTimer();
+
         private PropertyItem _Item;
         public PropertyItem Item
         {
@@ -28,6 +33,9 @@ namespace WindowDictionary.Property
         {
             DataContext = this;
 
+            timer.Interval = TimeSpan.FromSeconds(5);
+            timer.Tick += Popup_Timer_Tick;
+
             InitializeComponent();
         }
 
@@ -45,6 +53,30 @@ namespace WindowDictionary.Property
         private void TextBox_Integer_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
             UILibrary.TextBox_Integer_PreviewTextInput(sender, e);
+
+            if (e.Handled == true)
+                return;
+
+            string text = UILibrary.TextBox_PreviewTextInput(sender, e);
+
+            if (!Item.ValueRange.IsValid(text))
+            {
+                e.Handled = true;
+
+                popupText.Text = "Value must be between " + Item.ValueRange.Min.ToString() + " and " + Item.ValueRange.Max.ToString() + "!";
+
+                popup.IsOpen = false;
+                popup.IsOpen = true;
+
+                timer.Stop();
+                timer.Start();
+            }
+        }
+
+        private void Popup_Timer_Tick(object sender, EventArgs e)
+        {
+            popup.IsOpen = false;
+            timer.Stop();
         }
     }
 }

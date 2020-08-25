@@ -83,6 +83,12 @@ namespace WindowDictionary.Property
         /// <returns></returns>
         public override bool IsValid(object value)
         {
+            try
+            {
+                value = System.Convert.ToInt32(value);
+            }
+            catch { }
+
             if (value.GetType() != typeof(int))
                 throw new ArgumentException("The value needs to be integer");
 

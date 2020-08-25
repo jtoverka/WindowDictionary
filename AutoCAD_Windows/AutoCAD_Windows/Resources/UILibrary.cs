@@ -162,14 +162,37 @@ namespace WindowDictionary.Resources
             {
                 var box = sender as TextBox;
 
-                char[] boxText = box.Text.ToArray();
-                char[] addText = e.Text.ToArray();
+                char[] oldText = box.Text.ToArray();
+                
+                int selectionIndex = box.SelectionStart;
+                int selectionLength = box.SelectionLength;
+
+                char[] boxText = new char[oldText.Length - selectionLength];
+
+                int i = 0;
+                int j = 0;
+                foreach (char item in oldText)
+                {
+                    if ((i < selectionIndex) || (i >= (selectionIndex + selectionLength)))
+                    {
+                        boxText[j] = oldText[i];
+                        j++;
+                    }
+                    i++;
+                }
 
                 int caret = box.CaretIndex;
 
+                if (caret > (selectionIndex + selectionLength))
+                    caret -= (selectionIndex + selectionLength);
+                else if ((caret > selectionIndex) && (caret <= (selectionIndex + selectionLength)))
+                    caret = selectionIndex;
+
+                char[] addText = e.Text.ToArray();
+
                 char[] newText = new char[boxText.Length + addText.Length];
 
-                for (int i = 0; i < newText.Length; i++)
+                for (i = 0; i < newText.Length; i++)
                 {
                     if (i < caret)
                         newText[i] = boxText[i];
