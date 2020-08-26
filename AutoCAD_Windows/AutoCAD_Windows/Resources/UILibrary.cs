@@ -9,8 +9,17 @@ using System.Collections;
 
 namespace WindowDictionary.Resources
 {
+    /// <summary>
+    /// Library of functions and event handlers to do routine tasks
+    /// </summary>
     public static class UILibrary
     {
+        /// <summary>
+        /// Regular Expression match test if text is allowed
+        /// </summary>
+        /// <param name="text"></param>
+        /// <param name="type"></param>
+        /// <returns></returns>
         public static bool IsTextAllowed(string text, System.TypeCode type)
         {
             return type switch
@@ -37,27 +46,45 @@ namespace WindowDictionary.Resources
             };
         }
 
+        /// <summary>
+        /// Counts the number of matched characters in the string
+        /// </summary>
+        /// <param name="text"></param>
+        /// <param name="match"></param>
+        /// <returns></returns>
         public static int CountInString(string text, char match)
         {
             return text.Split(match).Length-1;
         }
-        /*
-        private void TextBox_Double_PreviewKeyDown(object sender, KeyEventArgs e)
-        {
-            UILibrary.TextBox_Double_PreviewKeyDown(sender, e);
-        }
-        */
+
+        /// <summary>
+        /// Make sure there are no spaces in the double number
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        /// <example>
+        ///private void TextBox_Double_PreviewKeyDown(object sender, KeyEventArgs e)
+        ///{
+        ///    UILibrary.TextBox_Double_PreviewKeyDown(sender, e);
+        ///}
+        ///</example>
         public static void TextBox_Double_PreviewKeyDown(object sender, KeyEventArgs e)
         {
             if (e?.Key == Key.Space)
                 e.Handled = true;
         }
-        /*
-        private void TextBox_Double_PreviewTextInput(object sender, TextCompositionEventArgs e)
-        {
-            UILibrary.TextBox_Double_PreviewTextInput(sender, e);
-        }
-        */
+
+        /// <summary>
+        /// Make sure all input to the textbox follows the double number format
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        /// <example>
+        ///private void TextBox_Double_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        ///{
+        ///    UILibrary.TextBox_Double_PreviewTextInput(sender, e);
+        ///}
+        ///</example>
         public static void TextBox_Double_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
             string text = TextBox_PreviewTextInput(sender, e);
@@ -77,23 +104,35 @@ namespace WindowDictionary.Resources
             else
                 e.Handled = true;
         }
-        /*
-        private void TextBox_Integer_PreviewKeyDown(object sender, KeyEventArgs e)
-        {
-            UILibrary.TextBox_Integer_PreviewKeyDown(sender, e);
-        }
-        */
+
+        /// <summary>
+        /// Make sure there are no spaces within the integer
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        /// <example>
+        ///private void TextBox_Integer_PreviewKeyDown(object sender, KeyEventArgs e)
+        ///{
+        ///    UILibrary.TextBox_Integer_PreviewKeyDown(sender, e);
+        ///}
+        ///</example>
         public static void TextBox_Integer_PreviewKeyDown(object sender, KeyEventArgs e)
         {
             if (e?.Key == Key.Space)
                 e.Handled = true;
         }
-        /*
-        private void TextBox_Integer_PreviewTextInput(object sender, TextCompositionEventArgs e)
-        {
-            UILibrary.TextBox_Integer_PreviewTextInput(sender, e);
-        }
-        */
+
+        /// <summary>
+        /// Makes sure all input to the textbox are integers only
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        /// <example>
+        ///private void TextBox_Integer_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        ///{
+        ///    UILibrary.TextBox_Integer_PreviewTextInput(sender, e);
+        ///}
+        ///</example>
         public static void TextBox_Integer_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
             if (sender?.GetType() == typeof(TextBox))
@@ -116,12 +155,18 @@ namespace WindowDictionary.Resources
                     e.Handled = true;
             }
         }
-        /*
-        private void TextBox_PreviewCanExecute(object sender, CanExecuteRoutedEventArgs e)
-        {
-            UILibrary.TextBox_PreviewCanExecute(sender, e);
-        }
-        */
+
+        /// <summary>
+        /// Disables Cut, Copy, Paste, Delete, Undo, Redo operations within the textbox
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        /// <example>
+        ///private void TextBox_PreviewCanExecute(object sender, CanExecuteRoutedEventArgs e)
+        ///{
+        ///    UILibrary.TextBox_PreviewCanExecute(sender, e);
+        ///}
+        ///</example>
         public static void TextBox_PreviewCanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
             if ((e.Command == ApplicationCommands.Cut)
@@ -135,12 +180,18 @@ namespace WindowDictionary.Resources
                 e.CanExecute = false;
             }
         }
-        /*
-         private void TextBox_String_PreviewTextInput(object sender, TextCompositionEventArgs e)
-         {
-            UILibrary.TextBox_String_PreviewTextInput(sender, e);
-         }
-         */
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        /// <example>
+        /// private void TextBox_String_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        /// {
+        ///     UILibrary.TextBox_String_PreviewTextInput(sender, e);
+        /// }
+        /// </example>
         public static void TextBox_String_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
             if (sender?.GetType() == typeof(TextBox))
@@ -156,6 +207,13 @@ namespace WindowDictionary.Resources
                 }
             }
         }
+
+        /// <summary>
+        /// Returns the string that will overwrite the textbox
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        /// <returns></returns>
         public static string TextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
             if (sender?.GetType() == typeof(TextBox))
@@ -206,6 +264,14 @@ namespace WindowDictionary.Resources
             }
             return "";
         }
+
+        /// <summary>
+        /// Removes a string from a list box
+        /// Must have the ListBox referenced in the Tag of sender Button
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        /// <param name="StringCollection"></param>
         public static void ListBox_String_Remove(object sender, RoutedEventArgs e, ref string StringCollection)
         {
             // suppress unused parameter message
@@ -220,18 +286,18 @@ namespace WindowDictionary.Resources
                 string[] layers = StringCollection.Split(',');
                 var count = layers.Count();
 
-                string fanInOutLayers = "";
+                string elements = "";
                 int c = 0;
 
                 if (index != 0)
                 {
                     if (count > 0)
-                        fanInOutLayers = layers[0];
+                        elements = layers[0];
                 }
                 else if (count > 1)
                 {
                     c++;
-                    fanInOutLayers = layers[1];
+                    elements = layers[1];
                 }
 
                 for (int i = 1 + c; i < count; i++)
@@ -239,15 +305,23 @@ namespace WindowDictionary.Resources
                     string item = layers[i];
 
                     if (index != i)
-                        fanInOutLayers += "," + item;
+                        elements += "," + item;
                 }
 
-                if (fanInOutLayers == "")
-                    fanInOutLayers = null;
+                if (elements == "")
+                    elements = null;
 
-                StringCollection = fanInOutLayers;
+                StringCollection = elements;
             }
         }
+
+        /// <summary>
+        /// Move selected elements up the collection
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        /// <param name="selection"></param>
+        /// <param name="collection"></param>
         public static void Up_Button_Click(object sender, RoutedEventArgs e, IList selection, ObservableCollection<object> collection)
         {
             _ = e;
@@ -275,6 +349,14 @@ namespace WindowDictionary.Resources
                     collection.Move(oldIndices[i], newIndices[i]);
             }
         }
+
+        /// <summary>
+        /// Move selected elements down the collection
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        /// <param name="selection"></param>
+        /// <param name="collection"></param>
         public static void Down_Button_Click(object sender, RoutedEventArgs e, IList selection, ObservableCollection<object> collection)
         {
             _ = e;
@@ -305,6 +387,14 @@ namespace WindowDictionary.Resources
                     collection.Move(oldIndices[i], newIndices[i]);
             }
         }
+
+        /// <summary>
+        /// Move the selected elements to the top of the collection
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        /// <param name="selection"></param>
+        /// <param name="collection"></param>
         public static void Top_Button_Click(object sender, RoutedEventArgs e, IList selection, ObservableCollection<object> collection)
         {
             _ = e;
@@ -326,6 +416,14 @@ namespace WindowDictionary.Resources
                     collection.Move(oldIndices[i], newIndices[i]);
             }
         }
+
+        /// <summary>
+        /// Move the selected elements to the bottom of the collection
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        /// <param name="selection"></param>
+        /// <param name="collection"></param>
         public static void Bottom_Button_Click(object sender, RoutedEventArgs e, IList selection, ObservableCollection<object> collection)
         {
             _ = e;
@@ -351,6 +449,14 @@ namespace WindowDictionary.Resources
                     collection.Move(oldIndices[i], newIndices[i]);
             }
         }
+
+        /// <summary>
+        /// Remove the selected elements from the collection
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        /// <param name="selection"></param>
+        /// <param name="collection"></param>
         public static void Remove_Button_Click(object sender, RoutedEventArgs e, IList selection, ObservableCollection<object> collection)
         {
             _ = e;

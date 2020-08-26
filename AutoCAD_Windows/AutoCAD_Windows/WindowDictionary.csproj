@@ -70,11 +70,17 @@
     <Compile Include="Property\ListItemBoolean.xaml.cs">
       <DependentUpon>ListItemBoolean.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Property\ListItemButton.xaml.cs">
+      <DependentUpon>ListItemButton.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Property\ListItemDouble.xaml.cs">
       <DependentUpon>ListItemDouble.xaml</DependentUpon>
     </Compile>
     <Compile Include="Property\ListItemInteger.xaml.cs">
       <DependentUpon>ListItemInteger.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Property\ListItemSelection.xaml.cs">
+      <DependentUpon>ListItemSelection.xaml</DependentUpon>
     </Compile>
     <Compile Include="Property\ListItemString.xaml.cs">
       <DependentUpon>ListItemString.xaml</DependentUpon>
@@ -85,6 +91,9 @@
       <DependentUpon>LayerTransparency.xaml</DependentUpon>
     </Compile>
     <Compile Include="Property\LogicalOperator.cs" />
+    <Compile Include="Property\PropertyCreator.xaml.cs">
+      <DependentUpon>PropertyCreator.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Property\PropertyEditor.xaml.cs">
       <DependentUpon>PropertyEditor.xaml</DependentUpon>
     </Compile>
@@ -93,7 +102,7 @@
     <Compile Include="Property\PropertyItem.cs" />
     <Compile Include="Property\Range.cs" />
     <Compile Include="Resources\UILibrary.cs" />
-    <Compile Include="Property\StringRange.cs" />
+    <Compile Include="Property\CharRange.cs" />
     <Compile Include="Textstyle.xaml.cs">
       <DependentUpon>Textstyle.xaml</DependentUpon>
     </Compile>
@@ -133,6 +142,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Property\ListItemButton.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Property\ListItemDouble.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -141,7 +154,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Property\ListItemSelection.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Property\ListItemString.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Property\PropertyCreator.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

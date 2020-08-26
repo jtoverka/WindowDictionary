@@ -12,10 +12,14 @@ namespace WindowDictionary.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            var propertyGroup = value as ObservableCollection<PropertyItem>;
+            if (value == null)
+                return new ListView();
+
+            var propertyGroup = value as PropertyGroup;
+            var propertyItems = propertyGroup.PropertyItems;
             var list = new ListView();
 
-            foreach(PropertyItem item in propertyGroup)
+            foreach(PropertyItem item in propertyItems)
             {
                 switch (item.ValueType)
                 {
@@ -25,6 +29,18 @@ namespace WindowDictionary.Converters
                             IsChecked = System.Convert.ToBoolean(item.Value),
                             Text = item.PropertyName,
                         });
+                        break;
+                    case PropertyType.Button:
+                        var button = new ListItemButton()
+                        {
+                            Label = item.PropertyName,
+                            ButtonText = item.Value.ToString(),
+                            ParentGroup = propertyGroup,
+                        };
+
+                        button.Click += item.EventHandler;
+
+                        list.Items.Add(button);
                         break;
                     case PropertyType.Double:
                         list.Items.Add(new ListItemDouble()
@@ -39,28 +55,33 @@ namespace WindowDictionary.Converters
                         });
                         break;
                     case PropertyType.SelectionString:
+                        ObservableCollection<string> collection = new ObservableCollection<string>(item.Value as ObservableCollection<string>);
+                        string selectedItem = collection[0];
+                        collection.RemoveAt(0);
+
+                        var listItem = new ListItemSelection()
+                        {
+                            Item = item,
+                            SelectedItem = selectedItem,
+                        };
+                        foreach (string select in collection)
+                        {
+                            listItem.Selection.Add(select);
+                        }
+
+                        list.Items.Add(listItem);
                         break;
                     case PropertyType.SelectionEditDouble:
                         break;
                     case PropertyType.SelectionEditInteger:
                         break;
-                    case PropertyType.SelectionEditStringAll:
+                    case PropertyType.SelectionEditString:
                         break;
-                    case PropertyType.SelectionEditStringNoSpecial:
-                        break;
-                    case PropertyType.StringAll:
+                    case PropertyType.String:
                         list.Items.Add(new ListItemString()
                         {
                             Item = item,
                         });
-                        break;
-                    case PropertyType.StringNoSpecial:
-                        list.Items.Add(new ListItemString()
-                        {
-                            Item = item,
-                        });
-                        break;
-                    default:
                         break;
                 }
             }

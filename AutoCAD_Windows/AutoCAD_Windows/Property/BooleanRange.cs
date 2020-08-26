@@ -1,11 +1,15 @@
 ﻿using System;
 using System.Threading;
+using System.Xml;
+using System.Xml.Serialization;
 
 namespace WindowDictionary.Property
 {
     /// <summary>
     /// Represents an booleger range of two boolegers.
     /// </summary>
+    [XmlInclude(typeof(LogicalGate))]
+    [Serializable]
     public class BooleanRange : Range, IEquatable<BooleanRange>
     {
         #region Properties
@@ -14,10 +18,11 @@ namespace WindowDictionary.Property
         /// <summary>
         /// Gets or Sets the Min Component.
         /// </summary>
+        [XmlElement("Min")]
         public override object Min
         {
             get { return this._Min; }
-            protected set
+            set
             {
                 this._Min = Convert.ToBoolean(value);
             }
@@ -27,10 +32,11 @@ namespace WindowDictionary.Property
         /// <summary>
         /// Gets or Sets the Max Component.
         /// </summary>
+        [XmlElement("Max")]
         public override object Max
         {
             get { return this._Max; }
-            protected set
+            set
             {
                 this._Max = Convert.ToBoolean(value);
             }
@@ -62,6 +68,17 @@ namespace WindowDictionary.Property
         }
 
         /// <summary>
+        /// Check if an booleger is valid with the given range.
+        /// </summary>
+        /// <param name="a"></param>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static bool IsValid(BooleanRange a, bool value)
+        {
+            return a.IsValid(value);
+        }
+
+        /// <summary>
         /// Check if an booleger is valid with this range.
         /// </summary>
         /// <param name="value"></param>
@@ -73,7 +90,7 @@ namespace WindowDictionary.Property
                 value = System.Convert.ToBoolean(value);
             }
             catch { }
-            
+
             if (value.GetType() != typeof(bool))
                 throw new ArgumentException("The value needs to be boolean");
 
@@ -81,21 +98,6 @@ namespace WindowDictionary.Property
 
             return convert;
         }
-
-        /// <summary>
-        /// Check if an booleger is valid with the given range.
-        /// </summary>
-        /// <param name="a"></param>
-        /// <param name="value"></param>
-        /// <returns></returns>
-        public static bool IsValid(BooleanRange a, bool value)
-        {
-            return a.IsValid(value);
-        }
-
-        #endregion
-
-        #region overrides
 
         /// <summary>
         /// Obtains a string that represents the BooleanRange.

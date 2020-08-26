@@ -1,5 +1,4 @@
-﻿
-namespace WindowDictionary.Property
+﻿namespace WindowDictionary.Property
 {
     /// <summary>
     /// Property Item Type
@@ -10,6 +9,11 @@ namespace WindowDictionary.Property
         /// Displays Property Item as a CheckBox
         /// </summary>
         Boolean,
+
+        /// <summary>
+        /// Displays property item as a button
+        /// </summary>
+        Button,
 
         /// <summary>
         /// Displays Property Item as a TextBox that prevents Cut, Copy, Paste, and improper key input. Only Allows number Double input.
@@ -39,21 +43,11 @@ namespace WindowDictionary.Property
         /// <summary>
         /// Displays Property Item as a ComboBox. This does allow ComboBox Editing for a String input.
         /// </summary>
-        SelectionEditStringAll,
-
-        /// <summary>
-        /// Displays Property Item as a ComboBox. This does allow ComboBox Editing for a String input, this does not allow special characters.
-        /// </summary>
-        SelectionEditStringNoSpecial,
+        SelectionEditString,
 
         /// <summary>
         /// Displays Property Item as a TextBox for a String input.
         /// </summary>
-        StringAll,
-
-        /// <summary>
-        /// Displays Property Item as a TextBox for a String input that does not allow special characters.
-        /// </summary>
-        StringNoSpecial,
+        String,
     }
 }

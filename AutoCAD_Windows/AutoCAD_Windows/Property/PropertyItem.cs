@@ -1,22 +1,44 @@
 ﻿using System;
-using System.IO;
 using System.ComponentModel;
 using System.Collections.ObjectModel;
+using System.Xml;
+using System.Xml.Serialization;
+using System.Windows;
+using System.Collections.Generic;
 
 namespace WindowDictionary.Property
 {
     /// <summary>
-    /// Represents 
+    /// Represents a single property in a group
     /// </summary>
+    [Serializable]
     public class PropertyItem : INotifyPropertyChanged
     {
         #region Properties
 
+        private RoutedEventHandler _EventHandler;
+        /// <summary>
+        /// Allow an external method to be invoked by an external event
+        /// </summary>
+        [XmlIgnore]
+        public RoutedEventHandler EventHandler
+        {
+            get { return this._EventHandler; }
+            set
+            {
+                if (this._EventHandler == value)
+                    return;
+
+                this._EventHandler = value;
+                OnPropertyChanged("EventHandler");
+            }
+        }
 
         private string _PropertyName;
         /// <summary>
-        /// 
+        /// Property Name to be displayed
         /// </summary>
+        [XmlAttribute("PropertyName")]
         public string PropertyName
         {
             get { return this._PropertyName; }
@@ -32,12 +54,13 @@ namespace WindowDictionary.Property
 
         private PropertyType _ValueType;
         /// <summary>
-        /// 
+        /// Property type input
         /// </summary>
+        [XmlAttribute("ValueType")]
         public PropertyType ValueType
         {
             get { return this._ValueType; }
-            protected set
+            set
             {
                 if (this._ValueType == value)
                     return;
@@ -49,12 +72,13 @@ namespace WindowDictionary.Property
 
         private Range _ValueRange;
         /// <summary>
-        /// 
+        /// Restrictions for the value
         /// </summary>
+        [XmlElement("ValueRange")]
         public Range ValueRange
         {
             get { return this._ValueRange; }
-            protected set
+            set
             {
                 if (this._ValueRange == value)
                     return;
@@ -66,8 +90,9 @@ namespace WindowDictionary.Property
 
         private object _Value;
         /// <summary>
-        /// 
+        /// The value of the property
         /// </summary>
+        [XmlElement("Value")]
         public object Value
         {
             get { return this._Value; }
@@ -108,30 +133,52 @@ namespace WindowDictionary.Property
                             throw new ArgumentException("The value must be of type int");
                         break;
                     case PropertyType.SelectionString:
-                        if (value.GetType() != typeof(string))
+                        try
+                        {
+                            value = value as ObservableCollection<string>;
+                        }
+                        catch (Exception) { }
+
+                        if (value.GetType() != typeof(ObservableCollection<string>))
                             throw new ArgumentException("The value must be of type string");
                         break;
                     case PropertyType.SelectionEditDouble:
+                        try
+                        {
+                            value = value as ObservableCollection<double>;
+                        }
+                        catch (Exception) { }
+
                         if (value.GetType() != typeof(ObservableCollection<double>))
                             throw new ArgumentException("The value must be of type ObservableCollection<double>");
                         break;
                     case PropertyType.SelectionEditInteger:
+                        try
+                        {
+                            value = value as ObservableCollection<int>;
+                        }
+                        catch (Exception) { }
+
                         if (value.GetType() != typeof(ObservableCollection<int>))
                             throw new ArgumentException("The value must be of type ObservableCollection<int>");
                         break;
-                    case PropertyType.SelectionEditStringAll:
+                    case PropertyType.SelectionEditString:
+                        try
+                        {
+                            value = value as ObservableCollection<string>;
+                        }
+                        catch (Exception) { }
+
                         if (value.GetType() != typeof(ObservableCollection<string>))
                             throw new ArgumentException("The value must be of type ObservableCollection<string>");
                         break;
-                    case PropertyType.SelectionEditStringNoSpecial:
-                        if (value.GetType() != typeof(ObservableCollection<string>))
-                            throw new ArgumentException("The value must be of type ObservableCollection<string>");
-                        break;
-                    case PropertyType.StringAll:
-                        if (value.GetType() != typeof(string))
-                            throw new ArgumentException("The value must be of type string");
-                        break;
-                    case PropertyType.StringNoSpecial:
+                    case PropertyType.String:
+                        try
+                        {
+                            value = System.Convert.ToString(value);
+                        }
+                        catch (Exception) { }
+
                         if (value.GetType() != typeof(string))
                             throw new ArgumentException("The value must be of type string");
                         break;
@@ -147,7 +194,17 @@ namespace WindowDictionary.Property
         #region Constructors
         
         /// <summary>
-        /// 
+        /// Initializes a new instance of this class
+        /// </summary>
+        public PropertyItem()
+        {
+            ValueRange = null;
+            ValueType = PropertyType.String;
+            Value = "";
+        }
+
+        /// <summary>
+        /// Initializes a new instance of this class
         /// </summary>
         /// <param name="range"></param>
         /// <param name="type"></param>
@@ -172,7 +229,7 @@ namespace WindowDictionary.Property
         /// Invokes PropertyChanged Event
         /// </summary>
         /// <param name="property"></param>
-        public void OnPropertyChanged(string property)
+        private void OnPropertyChanged(string property)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
         }

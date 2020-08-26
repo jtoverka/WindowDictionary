@@ -53,7 +53,19 @@ namespace WindowDictionary.Property
 
             string text = UILibrary.TextBox_PreviewTextInput(sender, e);
 
-            if (!Item.ValueRange.IsValid(text))
+            var valid = true;
+            
+            if (Item.ValueRange != null)
+            {
+                for (int i = 0; (i < text.Length) && valid; i++)
+                {
+                    char character = text[i];
+                    if (!Item.ValueRange.IsValid(character))
+                        valid = false;
+                }
+            }
+
+            if (!valid)
             {
                 e.Handled = true;
 

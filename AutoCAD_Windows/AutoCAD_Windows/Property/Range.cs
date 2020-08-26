@@ -1,11 +1,16 @@
 ﻿using System;
-using System.Runtime.InteropServices;
+using System.Xml.Serialization;
 
 namespace WindowDictionary.Property
 {
     /// <summary>
     /// Represents the base class for all Range objects.
     /// </summary>
+    [XmlInclude(typeof(BooleanRange))]
+    [XmlInclude(typeof(CharRange))]
+    [XmlInclude(typeof(DoubleRange))]
+    [XmlInclude(typeof(IntegerRange))]
+    [Serializable]
     public abstract class Range
     {
         #region Properties
@@ -13,12 +18,14 @@ namespace WindowDictionary.Property
         /// <summary>
         /// Holds the maximum value for range comparison.
         /// </summary>
-        public abstract object Max { get; protected set; }
+        [XmlElement("Max")]
+        public abstract object Max { get; set; }
 
         /// <summary>
         /// Holds the minimum value for range comparison.
         /// </summary>
-        public abstract object Min { get; protected set; }
+        [XmlElement("Min")]
+        public abstract object Min { get; set; }
 
         #endregion
 

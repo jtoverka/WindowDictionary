@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Threading;
+using System.Xml;
+using System.Xml.Serialization;
 
 namespace WindowDictionary.Property
 {
     /// <summary>
     /// Represents a string range with two characters
     /// </summary>
-    public class StringRange : Range, IEquatable<StringRange>
+    [Serializable]
+    public class CharRange : Range, IEquatable<CharRange>
     {
         #region Properties
 
@@ -14,10 +17,11 @@ namespace WindowDictionary.Property
         /// <summary>
         /// Gets or Sets the Min Component.
         /// </summary>
+        [XmlElement("Min")]
         public override object Min
         {
             get { return this._Min; }
-            protected set
+            set
             {
                 this._Min = Convert.ToChar(value);
             }
@@ -27,10 +31,11 @@ namespace WindowDictionary.Property
         /// <summary>
         /// Gets or Sets the Max Component.
         /// </summary>
+        [XmlElement("Max")]
         public override object Max
         {
             get { return this._Max; }
-            protected set
+            set
             {
                 this._Max = Convert.ToChar(value);
             }
@@ -45,10 +50,19 @@ namespace WindowDictionary.Property
         /// </summary>
         /// <param name="min"></param>
         /// <param name="max"></param>
-        public StringRange(char min, char max)
+        public CharRange(char min, char max)
         {
             this.Min = min;
             this.Max = max;
+        }
+
+        /// <summary>
+        /// Initializes a new instance of StringRange.
+        /// </summary>
+        public CharRange()
+        {
+            this.Min = Char.MinValue;
+            this.Max = Char.MaxValue;
         }
 
         #endregion
@@ -60,7 +74,7 @@ namespace WindowDictionary.Property
         /// </summary>
         /// <param name="other"></param>
         /// <returns></returns>
-        public bool Equals(StringRange other)
+        public bool Equals(CharRange other)
         {
             return Equals(this, other);
         }
@@ -71,35 +85,9 @@ namespace WindowDictionary.Property
         /// <param name="a"></param>
         /// <param name="b"></param>
         /// <returns></returns>
-        public static bool Equals (StringRange a, StringRange b)
+        public static bool Equals (CharRange a, CharRange b)
         {
             return (a.Min == b.Min) && (a.Max == b.Max);
-        }
-
-        /// <summary>
-        /// Check if a string is valid with this range.
-        /// </summary>
-        /// <param name="value"></param>
-        /// <returns></returns>
-        public override bool IsValid (object value)
-        {
-            if (value.GetType() != typeof(string))
-                throw new ArgumentException("The value needs to be string");
-
-            var convert = Convert.ToString(value);
-
-            char[] characters = convert.ToCharArray();
-
-            foreach (char character in characters)
-            {
-                if (character < this._Min)
-                    return false;
-
-                if (character > this._Max)
-                    return false;
-            }
-
-            return true;
         }
 
         /// <summary>
@@ -108,14 +96,37 @@ namespace WindowDictionary.Property
         /// <param name="a"></param>
         /// <param name="value"></param>
         /// <returns></returns>
-        public static bool IsValid (StringRange a, string value)
+        public static bool IsValid (CharRange a, string value)
         {
             return a.IsValid(value);
         }
 
-        #endregion
+        /// <summary>
+        /// Check if a character is valid with this range.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public override bool IsValid(object value)
+        {
+            try
+            {
+                value = System.Convert.ToChar(value);
+            }
+            catch { }
 
-        #region overrides
+            if (value.GetType() != typeof(char))
+                throw new ArgumentException("The value needs to be string");
+
+            char character = System.Convert.ToChar(value);
+
+            if (character < this._Min)
+                return false;
+
+            if (character > this._Max)
+                return false;
+
+            return true;
+        }
 
         /// <summary>
         /// Obtains a string that represents the StringRange.

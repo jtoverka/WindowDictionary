@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Threading;
+using System.Xml;
+using System.Xml.Serialization;
 
 namespace WindowDictionary.Property
 {
     /// <summary>
     /// Represents a double range of two doubles.
     /// </summary>
+    [Serializable]
     public class DoubleRange : Range, IEquatable<DoubleRange>
     {
         #region Properties
@@ -14,10 +17,11 @@ namespace WindowDictionary.Property
         /// <summary>
         /// Gets or Sets the Min Component.
         /// </summary>
+        [XmlElement("Min")]
         public override object Min 
         {
             get { return this._Min; }
-            protected set 
+            set 
             {
                 this._Min = Convert.ToDouble(value);
             }
@@ -27,10 +31,11 @@ namespace WindowDictionary.Property
         /// <summary>
         /// Gets or Sets the Max Component.
         /// </summary>
+        [XmlElement("Max")]
         public override object Max
         {
             get { return this._Max; }
-            protected set
+            set
             {
                 this._Max = Convert.ToDouble(value);
             }
@@ -49,6 +54,15 @@ namespace WindowDictionary.Property
         {
             this.Min = min;
             this.Max = max;
+        }
+
+        /// <summary>
+        /// Initializes a new instance of DoubleRange.
+        /// </summary>
+        public DoubleRange()
+        {
+            this.Min = Double.MinValue;
+            this.Max = Double.MaxValue;
         }
 
         #endregion
@@ -77,6 +91,17 @@ namespace WindowDictionary.Property
         }
 
         /// <summary>
+        /// Check if a double value is valid with the given range.
+        /// </summary>
+        /// <param name="a"></param>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static bool IsValid(DoubleRange a, double value)
+        {
+            return a.IsValid(value);
+        }
+
+        /// <summary>
         /// Check if a double value is valid with this range.
         /// </summary>
         /// <param name="value"></param>
@@ -88,7 +113,7 @@ namespace WindowDictionary.Property
                 value = System.Convert.ToDouble(value);
             }
             catch { }
-            
+
             if (value.GetType() != typeof(double))
                 throw new ArgumentException("The value needs to be double");
 
@@ -99,24 +124,9 @@ namespace WindowDictionary.Property
 
             if (convert > this._Max)
                 return false;
-        
+
             return true;
         }
-
-        /// <summary>
-        /// Check if a double value is valid with the given range.
-        /// </summary>
-        /// <param name="a"></param>
-        /// <param name="value"></param>
-        /// <returns></returns>
-        public static bool IsValid(DoubleRange a, double value)
-        {
-            return a.IsValid(value);
-        }
-
-        #endregion
-
-        #region overrides
 
         /// <summary>
         /// Obtains a string that represents the DoubleRange.

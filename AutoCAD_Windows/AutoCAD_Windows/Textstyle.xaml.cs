@@ -24,20 +24,18 @@ namespace WindowDictionary
     /// </summary>
     public partial class Textstyle : Window, INotifyPropertyChanged
     {
-        #region Constructors
-        
-        public Textstyle()
-        {
-            DataContext = this;
+        #region fields
 
-            InitializeComponent();
-        }
+        private bool mRestoreForDragMove;
 
         #endregion
 
         #region Properties
 
         private System.Windows.Forms.DialogResult _Result;
+        /// <summary>
+        /// Dialog box result
+        /// </summary>
         public System.Windows.Forms.DialogResult Result
         {
             get { return this._Result; }
@@ -51,9 +49,15 @@ namespace WindowDictionary
             }
         }
 
+        /// <summary>
+        /// Collection of FontFamilies
+        /// </summary>
         public OC_FF FontCollection { get; } = new OC_FF(FF.Families.ToList<FF>());
 
         private FF _SelectedFont;
+        /// <summary>
+        /// Selected Font
+        /// </summary>
         public FF SelectedFont
         {
             get { return this._SelectedFont; }
@@ -69,6 +73,9 @@ namespace WindowDictionary
 
 
         private string _FontBox1;
+        /// <summary>
+        /// Font box?
+        /// </summary>
         public string FontBox1
         {
             get { return this._FontBox1; }
@@ -84,6 +91,9 @@ namespace WindowDictionary
 
 
         private string _SizeName;
+        /// <summary>
+        /// Size?
+        /// </summary>
         public string SizeName
         {
             get { return this._SizeName; }
@@ -99,14 +109,25 @@ namespace WindowDictionary
 
         #endregion
 
-        #region fields
+        #region Constructors
 
-        private bool mRestoreForDragMove;
-        
+        /// <summary>
+        /// Initializes a new instance of this class
+        /// </summary>
+        public Textstyle()
+        {
+            DataContext = this;
+
+            InitializeComponent();
+        }
+
         #endregion
 
         #region Delegates, Events, Handlers
 
+        /// <summary>
+        /// Event triggered on property changed
+        /// </summary>
         public event PropertyChangedEventHandler PropertyChanged;
 
         private void OnPropertyChanged(string property)

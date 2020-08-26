@@ -1,28 +1,29 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Xml;
+using System.Xml.Serialization;
+
 
 namespace WindowDictionary.Property
 {
     /// <summary>
     /// Performs a logical operation 
     /// </summary>
+    [Serializable]
     public class LogicalGate : BooleanRange, INotifyPropertyChanged
     {
         #region Properties
 
         private LogicalOperator _Operator;
         /// <summary>
-        /// 
+        /// The logical operation to perform on the outputs by the Ranges in <see cref="RangeCollection">Range Collection</see>.
         /// </summary>
+        [XmlAttribute("Operator")]
         public LogicalOperator Operator
         {
             get { return this._Operator; }
-            protected set
+            set
             {
                 if (this._Operator == value)
                     return;
@@ -33,8 +34,9 @@ namespace WindowDictionary.Property
         }
 
         /// <summary>
-        /// 
+        /// Collection of Ranges to apply to a <see cref="Operator">Logical Operation</see>.
         /// </summary>
+        [XmlElement("RangeCollection")]
         public ObservableCollection<Range> RangeCollection { get; } = new ObservableCollection<Range>();
 
         #endregion
@@ -48,6 +50,14 @@ namespace WindowDictionary.Property
         public LogicalGate(LogicalOperator logicalOperator)
         {
             this.Operator = logicalOperator;
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <c>LogicalGate</c> class.
+        /// </summary>
+        public LogicalGate()
+        {
+            this.Operator = LogicalOperator.OR;
         }
 
         #endregion
@@ -132,7 +142,7 @@ namespace WindowDictionary.Property
         /// Invokes PropertyChanged Event
         /// </summary>
         /// <param name="property"></param>
-        public void OnPropertyChanged(string property)
+        private void OnPropertyChanged(string property)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
         }
