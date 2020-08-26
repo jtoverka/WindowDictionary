@@ -3,15 +3,14 @@ using System.ComponentModel;
 using WindowDictionary.Resources;
 using System.Windows.Input;
 using System;
-using System.Windows;
 using System.Windows.Threading;
 
 namespace WindowDictionary.Property
 {
     /// <summary>
-    /// Interaction logic for ListItemInteger.xaml
+    /// Interaction logic for ListItemString.xaml
     /// </summary>
-    public partial class ListItemDouble : ListViewItem, INotifyPropertyChanged
+    public partial class ListItemString : ListViewItem, INotifyPropertyChanged
     {
         private DispatcherTimer timer = new DispatcherTimer();
 
@@ -29,7 +28,7 @@ namespace WindowDictionary.Property
             }
         }
 
-        public ListItemDouble()
+        public ListItemString()
         {
             DataContext = this;
 
@@ -45,13 +44,9 @@ namespace WindowDictionary.Property
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
         }
 
-        private void TextBox_Double_PreviewKeyDown(object sender, KeyEventArgs e)
+        private void TextBox_String_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
-            UILibrary.TextBox_Double_PreviewKeyDown(sender, e);
-        }
-        private void TextBox_Double_PreviewTextInput(object sender, TextCompositionEventArgs e)
-        {
-            UILibrary.TextBox_Double_PreviewTextInput(sender, e);
+            WindowDictionary.Resources.UILibrary.TextBox_String_PreviewTextInput(sender, e);
 
             if (e.Handled == true)
                 return;
@@ -62,7 +57,7 @@ namespace WindowDictionary.Property
             {
                 e.Handled = true;
 
-                popupText.Text = "Value must be between " + Item.ValueRange.Min.ToString() + " and " + Item.ValueRange.Max.ToString() + "!";
+                popupText.Text = "Characters allowed are between " + Item.ValueRange.Min.ToString() + " and " + Item.ValueRange.Max.ToString() + "!";
 
                 popupText.MaxWidth = box.ActualWidth;
                 popup.Width = box.ActualWidth;
@@ -74,6 +69,7 @@ namespace WindowDictionary.Property
                 timer.Start();
             }
         }
+
         private void Popup_Timer_Tick(object sender, EventArgs e)
         {
             popup.IsOpen = false;

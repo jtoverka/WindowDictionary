@@ -35,11 +35,6 @@ namespace WindowDictionary.Property
         /// <summary>
         /// 
         /// </summary>
-        public object Input { get; } = new object();
-
-        /// <summary>
-        /// 
-        /// </summary>
         public ObservableCollection<Range> RangeCollection { get; } = new ObservableCollection<Range>();
 
         #endregion
@@ -63,7 +58,7 @@ namespace WindowDictionary.Property
         /// Performs the Logical Operation specified by <see cref="Operator">Operator</see> on <see cref="RangeCollection">RangeCollection</see>.
         /// </summary>
         /// <returns></returns>
-        public bool IsValid()
+        public override bool IsValid(object value)
         {
             bool output = false;
             int count = 0;
@@ -74,14 +69,14 @@ namespace WindowDictionary.Property
                     output = true;
                     foreach (Range range in RangeCollection)
                     {
-                        output &= range.IsValid(this.Input);
+                        output &= range.IsValid(value);
                     }
                     break;
                 case LogicalOperator.NAND:
                     output = true;
                     foreach (Range range in RangeCollection)
                     {
-                        output &= range.IsValid(this.Input);
+                        output &= range.IsValid(value);
                     }
                     output = !output;
                     break;
@@ -89,24 +84,24 @@ namespace WindowDictionary.Property
                     output = false;
                     foreach (Range range in RangeCollection)
                     {
-                        output |= range.IsValid(this.Input);
+                        output |= range.IsValid(value);
                     }
                     output = !output;
                     break;
                 case LogicalOperator.NOT:
-                    output = !RangeCollection[0].IsValid(this.Input);
+                    output = !RangeCollection[0].IsValid(value);
                     break;
                 case LogicalOperator.OR:
                     output = false;
                     foreach (Range range in RangeCollection)
                     {
-                        output |= range.IsValid(this.Input);
+                        output |= range.IsValid(value);
                     }
                     break;
                 case LogicalOperator.XOR:
                     foreach (Range range in RangeCollection)
                     {
-                        if (range.IsValid(this.Input))
+                        if (range.IsValid(value))
                             count++;
                     }
                     output = (count % 2) == 1;
@@ -114,7 +109,7 @@ namespace WindowDictionary.Property
                 case LogicalOperator.XNOR:
                     foreach (Range range in RangeCollection)
                     {
-                        if (range.IsValid(this.Input))
+                        if (range.IsValid(value))
                             count++;
                     }
                     output = ((count % 2) == 0);

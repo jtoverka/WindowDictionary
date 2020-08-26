@@ -44,15 +44,14 @@ namespace WindowDictionary.Property
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
         }
-
-
         private void TextBox_Integer_PreviewKeyDown(object sender, KeyEventArgs e)
         {
             UILibrary.TextBox_Integer_PreviewKeyDown(sender, e);
         }
+
         private void TextBox_Integer_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
-            UILibrary.TextBox_Integer_PreviewTextInput(sender, e);
+            UILibrary.TextBox_String_PreviewTextInput(sender, e);
 
             if (e.Handled == true)
                 return;
@@ -64,6 +63,9 @@ namespace WindowDictionary.Property
                 e.Handled = true;
 
                 popupText.Text = "Value must be between " + Item.ValueRange.Min.ToString() + " and " + Item.ValueRange.Max.ToString() + "!";
+
+                popupText.MaxWidth = box.ActualWidth;
+                popup.Width = box.ActualWidth;
 
                 popup.IsOpen = false;
                 popup.IsOpen = true;

@@ -89,6 +89,7 @@ namespace WindowDictionary.Property
             var convert = Convert.ToString(value);
 
             char[] characters = convert.ToCharArray();
+
             foreach (char character in characters)
             {
                 if (character < this._Min)

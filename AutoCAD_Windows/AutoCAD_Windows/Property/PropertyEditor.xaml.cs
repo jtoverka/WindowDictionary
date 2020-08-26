@@ -77,11 +77,23 @@ namespace WindowDictionary.Property
             var subChild = new PropertyGroup() { Title = "Sub Child 1" };
             subChild.PropertyItems.Add(new PropertyItem(new DoubleRange(0, 5), PropertyType.Double, 2.2) { PropertyName = "Hello World1" });
             subChild.PropertyItems.Add(new PropertyItem(new IntegerRange(0, 1000), PropertyType.Integer, 10) { PropertyName = "Hello World2" });
+
             childPropertyGroup.PropertyGroups.Add(subChild);
             propertyGroup.PropertyGroups.Add(childPropertyGroup);
+            PropertyGroups.Add(propertyGroup);
+
+            var stringRange = new LogicalGate(LogicalOperator.OR);
+            stringRange.RangeCollection.Add(new StringRange('0', '9'));
+            stringRange.RangeCollection.Add(new StringRange('A', 'Z'));
+            stringRange.RangeCollection.Add(new StringRange('a', 'z'));
+
+            subChild = new PropertyGroup() { Title = "Sub Child 2a" };
+            
+            propertyGroup = new PropertyGroup() { Title = "Parent 2" };
+            propertyGroup.PropertyItems.Add(new PropertyItem(stringRange, PropertyType.StringNoSpecial, "Hannibal the cannibal") { PropertyName = "Hello World3" });
+            propertyGroup.PropertyGroups.Add(subChild);
 
             PropertyGroups.Add(propertyGroup);
-            PropertyGroups.Add(new PropertyGroup() { Title = "Parent 2" });
             PropertyGroups.Add(new PropertyGroup() { Title = "Parent 3" });
 
             InitializeComponent();

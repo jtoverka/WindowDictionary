@@ -68,6 +68,12 @@ namespace WindowDictionary.Property
         /// <returns></returns>
         public override bool IsValid(object value)
         {
+            try
+            {
+                value = System.Convert.ToBoolean(value);
+            }
+            catch { }
+            
             if (value.GetType() != typeof(bool))
                 throw new ArgumentException("The value needs to be boolean");
 

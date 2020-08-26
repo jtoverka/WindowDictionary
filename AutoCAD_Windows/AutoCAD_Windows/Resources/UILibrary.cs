@@ -42,6 +42,17 @@ namespace WindowDictionary.Resources
             return text.Split(match).Length-1;
         }
         /*
+        private void TextBox_Double_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            UILibrary.TextBox_Double_PreviewKeyDown(sender, e);
+        }
+        */
+        public static void TextBox_Double_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e?.Key == Key.Space)
+                e.Handled = true;
+        }
+        /*
         private void TextBox_Double_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
             UILibrary.TextBox_Double_PreviewTextInput(sender, e);
@@ -72,7 +83,7 @@ namespace WindowDictionary.Resources
             UILibrary.TextBox_Integer_PreviewKeyDown(sender, e);
         }
         */
-        public static void TextBox_Double_PreviewKeyDown(object sender, KeyEventArgs e)
+        public static void TextBox_Integer_PreviewKeyDown(object sender, KeyEventArgs e)
         {
             if (e?.Key == Key.Space)
                 e.Handled = true;
@@ -104,17 +115,6 @@ namespace WindowDictionary.Resources
                 else
                     e.Handled = true;
             }
-        }
-        /*
-        private void TextBox_Double_PreviewKeyDown(object sender, KeyEventArgs e)
-        {
-            UILibrary.TextBox_Double_PreviewKeyDown(sender, e);
-        }
-        */
-        public static void TextBox_Integer_PreviewKeyDown(object sender, KeyEventArgs e)
-        {
-            if (e?.Key == Key.Space)
-                e.Handled = true;
         }
         /*
         private void TextBox_PreviewCanExecute(object sender, CanExecuteRoutedEventArgs e)

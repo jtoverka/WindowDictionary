@@ -49,8 +49,16 @@ namespace WindowDictionary.Converters
                     case PropertyType.SelectionEditStringNoSpecial:
                         break;
                     case PropertyType.StringAll:
+                        list.Items.Add(new ListItemString()
+                        {
+                            Item = item,
+                        });
                         break;
                     case PropertyType.StringNoSpecial:
+                        list.Items.Add(new ListItemString()
+                        {
+                            Item = item,
+                        });
                         break;
                     default:
                         break;

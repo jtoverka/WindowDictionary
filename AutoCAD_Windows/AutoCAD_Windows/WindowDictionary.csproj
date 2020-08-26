@@ -76,6 +76,9 @@
     <Compile Include="Property\ListItemInteger.xaml.cs">
       <DependentUpon>ListItemInteger.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Property\ListItemString.xaml.cs">
+      <DependentUpon>ListItemString.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Property\LogicalGate.cs" />
     <Compile Include="Property\IntegerRange.cs" />
     <Compile Include="LayerTransparency.xaml.cs">
@@ -135,6 +138,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Property\ListItemInteger.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Property\ListItemString.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
