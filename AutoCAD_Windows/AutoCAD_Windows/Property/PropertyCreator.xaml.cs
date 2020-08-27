@@ -359,14 +359,17 @@ namespace WindowDictionary.Property
             };
 
             var selection = new ObservableCollection<string>(Enum.GetNames(typeof(PropertyType)));
-            selection.Insert(0, selection[0]);
 
             var propertyType = new PropertyItem()
             {
                 PropertyName = "Property Type",
                 ValueType = PropertyType.SelectionString,
-                Value = selection,
+                Value = selection[0],
             };
+            foreach (string select in selection)
+            {
+                propertyType.ValueSelection.Add(select);
+            }
 
             item.PropertyItems.Add(propertyName);
             item.PropertyItems.Add(propertyType);
@@ -384,6 +387,12 @@ namespace WindowDictionary.Property
                 this.filename = null;
 
                 this.PropertyGroups.Clear();
+
+                PropertyGroup parent = InitializeGroup("Master List");
+
+                this.PropertyGroups.Add(parent);
+
+                changedState = true;
             }
             catch (Exception)
             {
@@ -431,6 +440,7 @@ namespace WindowDictionary.Property
                     this.PropertyGroups.Clear();
                     foreach (PropertyGroup item in collection)
                     {
+                        FillHandlers(item);
                         this.PropertyGroups.Add(item);
                     }
 
@@ -443,6 +453,25 @@ namespace WindowDictionary.Property
                     MessageBox.Show("Invalid File");
                 }
             }
+        }
+
+        private void FillHandlers(PropertyGroup propertyGroup)
+        {
+            foreach (PropertyGroup group in propertyGroup.PropertyGroups)
+            {
+                FillHandlers(group);
+            }
+            foreach (PropertyItem propertyItem in propertyGroup.PropertyItems)
+            {
+                FillHandlers(propertyItem);
+            }
+        }
+        private void FillHandlers(PropertyItem propertyItem)
+        {
+            if (propertyItem.PropertyName == "Add Property")
+                propertyItem.EventHandler = new RoutedEventHandler(AddProperty_Button_Click);
+            else if (propertyItem.PropertyName == "Add Group")
+                propertyItem.EventHandler = new RoutedEventHandler(AddGroup_Button_Click);
         }
 
         /// <summary>
@@ -458,12 +487,6 @@ namespace WindowDictionary.Property
 
                 try
                 {
-                    string directory = System.IO.Path.GetDirectoryName(this.filename);
-                    directory += "\\" + System.IO.Path.GetFileNameWithoutExtension(this.filename) + "\\";
-
-                    if (!Directory.Exists(directory))
-                        Directory.CreateDirectory(directory);
-
                     var serializer = new XmlSerializer(typeof(ObservableCollection<PropertyGroup>));
                     serializer.Serialize(file, this.PropertyGroups);
                     file.Close();
@@ -515,11 +538,6 @@ namespace WindowDictionary.Property
                     changedState = true;
                 }
             }
-        }
-
-        private void Add_Group_Click(object sender, RoutedEventArgs e)
-        {
-
         }
 
         /// <summary>

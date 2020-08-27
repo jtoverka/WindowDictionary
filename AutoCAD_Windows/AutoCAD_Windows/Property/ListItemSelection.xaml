@@ -41,10 +41,10 @@
                   Grid.Column="2"
                   Grid.ColumnSpan="3">
             <ComboBox.ItemsSource>
-                <Binding Path="Selection" />
+                <Binding Path="Item.ValueSelection" />
             </ComboBox.ItemsSource>
             <ComboBox.SelectedItem>
-                <Binding Path="SelectedItem" />
+                <Binding Path="Item.Value"/>
             </ComboBox.SelectedItem>
         </ComboBox>
         <Popup x:Name="popup"

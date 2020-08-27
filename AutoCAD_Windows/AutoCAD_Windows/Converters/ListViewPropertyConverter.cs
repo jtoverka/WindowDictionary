@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Globalization;
 using System.Windows.Data;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows.Controls;
 using WindowDictionary.Property;
@@ -55,19 +56,16 @@ namespace WindowDictionary.Converters
                         });
                         break;
                     case PropertyType.SelectionString:
-                        ObservableCollection<string> collection = new ObservableCollection<string>(item.Value as ObservableCollection<string>);
-                        string selectedItem = collection[0];
-                        collection.RemoveAt(0);
+                        ObservableCollection<string> collection = new ObservableCollection<string>();
+                        foreach(object element in item.ValueSelection as ObservableCollection<object>)
+                        {
+                            collection.Add(element.ToString());
+                        }
 
                         var listItem = new ListItemSelection()
                         {
                             Item = item,
-                            SelectedItem = selectedItem,
                         };
-                        foreach (string select in collection)
-                        {
-                            listItem.Selection.Add(select);
-                        }
 
                         list.Items.Add(listItem);
                         break;

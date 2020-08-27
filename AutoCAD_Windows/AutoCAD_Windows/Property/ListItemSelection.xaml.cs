@@ -14,32 +14,7 @@ namespace WindowDictionary.Property
     /// </summary>
     public partial class ListItemSelection : ListViewItem, INotifyPropertyChanged
     {
-
-        private string _SelectedItem;
-        /// <summary>
-        /// 
-        /// </summary>
-        public string SelectedItem
-        {
-            get { return this._SelectedItem; }
-            set
-            {
-                if (this._SelectedItem == value)
-                    return;
-
-                var collection = Item.Value as ObservableCollection<string>;
-                collection[0] = value;
-
-                this._SelectedItem = value;
-                OnPropertyChanged("SelectedItem");
-            }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public ObservableCollection<string> Selection { get; } = new ObservableCollection<string>();
-
+        
         private PropertyItem _Item;
         public PropertyItem Item
         {
@@ -48,7 +23,7 @@ namespace WindowDictionary.Property
             {
                 if (_Item == value)
                     return;
-
+                                
                 _Item = value;
                 OnPropertyChanged("Item");
             }

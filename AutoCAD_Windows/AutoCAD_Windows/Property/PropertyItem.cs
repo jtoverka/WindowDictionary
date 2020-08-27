@@ -38,7 +38,7 @@ namespace WindowDictionary.Property
         /// <summary>
         /// Property Name to be displayed
         /// </summary>
-        [XmlAttribute("PropertyName")]
+        [XmlElement("PropertyName")]
         public string PropertyName
         {
             get { return this._PropertyName; }
@@ -56,7 +56,7 @@ namespace WindowDictionary.Property
         /// <summary>
         /// Property type input
         /// </summary>
-        [XmlAttribute("ValueType")]
+        [XmlElement("ValueType")]
         public PropertyType ValueType
         {
             get { return this._ValueType; }
@@ -96,6 +96,7 @@ namespace WindowDictionary.Property
         public object Value
         {
             get { return this._Value; }
+            
             set
             {
                 if (this._Value == value)
@@ -135,42 +136,46 @@ namespace WindowDictionary.Property
                     case PropertyType.SelectionString:
                         try
                         {
-                            value = value as ObservableCollection<string>;
+                            value = System.Convert.ToString(value);
                         }
                         catch (Exception) { }
 
-                        if (value.GetType() != typeof(ObservableCollection<string>))
+                        if (value.GetType() != typeof(string))
                             throw new ArgumentException("The value must be of type string");
+
                         break;
                     case PropertyType.SelectionEditDouble:
                         try
                         {
-                            value = value as ObservableCollection<double>;
+                            value = System.Convert.ToDouble(value);
                         }
                         catch (Exception) { }
 
-                        if (value.GetType() != typeof(ObservableCollection<double>))
-                            throw new ArgumentException("The value must be of type ObservableCollection<double>");
+                        if (value.GetType() != typeof(double))
+                            throw new ArgumentException("The value must be of type double");
+
                         break;
                     case PropertyType.SelectionEditInteger:
                         try
                         {
-                            value = value as ObservableCollection<int>;
+                            value = System.Convert.ToInt32(value);
                         }
                         catch (Exception) { }
 
-                        if (value.GetType() != typeof(ObservableCollection<int>))
-                            throw new ArgumentException("The value must be of type ObservableCollection<int>");
+                        if (value.GetType() != typeof(int))
+                            throw new ArgumentException("The value must be of type int");
+
                         break;
                     case PropertyType.SelectionEditString:
                         try
                         {
-                            value = value as ObservableCollection<string>;
+                            value = System.Convert.ToString(value);
                         }
                         catch (Exception) { }
 
-                        if (value.GetType() != typeof(ObservableCollection<string>))
-                            throw new ArgumentException("The value must be of type ObservableCollection<string>");
+                        if (value.GetType() != typeof(string))
+                            throw new ArgumentException("The value must be of type string");
+
                         break;
                     case PropertyType.String:
                         try
@@ -189,10 +194,16 @@ namespace WindowDictionary.Property
             }
         }
 
+        /// <summary>
+        /// Selection of values to choose from.
+        /// </summary>
+        [XmlElement("ValueSelection")]
+        public ObservableCollection<object> ValueSelection { get; } = new ObservableCollection<object>();
+
         #endregion
 
         #region Constructors
-        
+
         /// <summary>
         /// Initializes a new instance of this class
         /// </summary>

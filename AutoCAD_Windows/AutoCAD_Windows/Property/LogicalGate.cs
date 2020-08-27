@@ -19,7 +19,7 @@ namespace WindowDictionary.Property
         /// <summary>
         /// The logical operation to perform on the outputs by the Ranges in <see cref="RangeCollection">Range Collection</see>.
         /// </summary>
-        [XmlAttribute("Operator")]
+        [XmlElement("Operator")]
         public LogicalOperator Operator
         {
             get { return this._Operator; }
