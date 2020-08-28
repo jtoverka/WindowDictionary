@@ -22,6 +22,9 @@ namespace WindowDictionary
         #region Properties
 
         private netDxf.Lineweight _InitialLineweight = netDxf.Lineweight.Default;
+        /// <summary>
+        /// 
+        /// </summary>
         public netDxf.Lineweight InitialLineweight
         {
             get { return this._InitialLineweight; }
@@ -36,7 +39,9 @@ namespace WindowDictionary
         }
 
         private netDxf.Lineweight _SelectedLineweight = netDxf.Lineweight.Default;
-
+        /// <summary>
+        /// 
+        /// </summary>
         public netDxf.Lineweight SelectedLineweight
         {
             get { return this._SelectedLineweight; }
@@ -50,6 +55,9 @@ namespace WindowDictionary
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public System.Windows.Forms.DialogResult Result
         {
             get;
@@ -59,14 +67,30 @@ namespace WindowDictionary
         #endregion
 
         #region Constructors
+        
+        /// <summary>
+        /// 
+        /// </summary>
         public LineweightMode Mode { get; protected set; }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public enum LineweightMode
         {
+            /// <summary>
+            /// 
+            /// </summary>
             All,
+            /// <summary>
+            /// 
+            /// </summary>
             Layer,
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public Lineweight()
         {
             DataContext = this;
@@ -92,6 +116,10 @@ namespace WindowDictionary
             OnPropertyChanged("SelectedLineweight");
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="lineweight"></param>
         public Lineweight(netDxf.Lineweight lineweight)
         {
             DataContext = this;
@@ -116,6 +144,12 @@ namespace WindowDictionary
             
             OnPropertyChanged("SelectedLineweight");
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="lineweight"></param>
+        /// <param name="mode"></param>
         public Lineweight(netDxf.Lineweight lineweight, LineweightMode mode)
         {
             DataContext = this;
@@ -191,8 +225,15 @@ namespace WindowDictionary
 
         #region Delegates, Events, Handlers
 
+        /// <summary>
+        /// 
+        /// </summary>
         public event PropertyChangedEventHandler PropertyChanged;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="property"></param>
         public void OnPropertyChanged(string property)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));

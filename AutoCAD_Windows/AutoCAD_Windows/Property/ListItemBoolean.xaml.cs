@@ -63,12 +63,24 @@ namespace WindowDictionary.Property
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public ListItemBoolean()
         {
             InitializeComponent();
         }
+        /// <summary>
+        /// 
+        /// </summary>
         public event RoutedEventHandler Checked;
+        /// <summary>
+        /// 
+        /// </summary>
         public event RoutedEventHandler UnChecked;
+        /// <summary>
+        /// 
+        /// </summary>
         public event PropertyChangedEventHandler PropertyChanged;
         private void OnPropertyChanged(string property)
         {

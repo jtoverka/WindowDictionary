@@ -14,7 +14,25 @@ namespace WindowDictionary.Property
     public class PropertyGroup : INotifyPropertyChanged
     {
         #region Properties
-        
+
+        private object _Parent;
+        /// <summary>
+        /// Holds reference to the parent object
+        /// </summary>
+        [XmlIgnore]
+        public object Parent
+        {
+            get { return _Parent; }
+            set
+            {
+                if (_Parent == value)
+                    return;
+
+                _Parent = value;
+                OnPropertyChanged("Parent");
+            }
+        }
+
         private string _Title = "Root";
         /// <summary>
         /// Displays the title of the group
@@ -47,12 +65,46 @@ namespace WindowDictionary.Property
 
         #endregion
 
-        #region Delegates, Events, Handlers
+        #region Constructors
 
         /// <summary>
-        /// Invoked when a ListItemButton click occurs.
+        /// Initializes a new instance of this class
         /// </summary>
-        public event RoutedEventHandler ButtonClick;
+        public PropertyGroup()
+        {
+            PropertyGroups.CollectionChanged += PropertyGroups_CollectionChanged;
+            PropertyItems.CollectionChanged += PropertyItems_CollectionChanged;
+        }
+
+        private void PropertyItems_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            var collection = sender as ObservableCollection<PropertyItem>;
+            if ((e.NewItems.Count > 0) && (collection != null))
+            {
+                foreach (PropertyItem item in collection)
+                {
+                    item.Parent = this;
+                    OnPropertyChanged("PropertyItems");
+                }
+            }
+        }
+
+        private void PropertyGroups_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            var collection = sender as ObservableCollection<PropertyGroup>;
+            if ((e.NewItems.Count > 0) && (collection != null))
+            {
+                foreach (PropertyGroup item in collection)
+                {
+                    item.Parent = this;
+                    OnPropertyChanged("PropertyGroups");
+                }
+            }
+        }
+
+        #endregion
+
+        #region Delegates, Events, Handlers
 
         /// <summary>
         /// Invoked on Property Changed
@@ -62,24 +114,6 @@ namespace WindowDictionary.Property
         private void OnPropertyChanged(string property)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
-        }
-
-        /// <summary>
-        /// Invokes ButtonClick event
-        /// </summary>
-        public void OnButtonClick()
-        {
-            ButtonClick?.Invoke(this, new RoutedEventArgs());
-        }
-
-        /// <summary>
-        /// Invokes ButtonClick event
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="args"></param>
-        public void OnButtonClick(object sender, RoutedEventArgs args)
-        {
-            ButtonClick?.Invoke(sender, args);
         }
 
         #endregion

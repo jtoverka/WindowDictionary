@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using System.Xml.Serialization;
@@ -108,7 +109,8 @@ namespace WindowDictionary.Property
             }
 
             PropertyGroup parent = InitializeGroup("Master List");
-
+            parent.Parent = this;
+            
             this.PropertyGroups.Add(parent);
 
             changedState = true;
@@ -297,81 +299,122 @@ namespace WindowDictionary.Property
 
         #endregion
 
+        /// <summary>
+        /// Creates a property group with a child property group.
+        /// This child property group can add sub-children to itself
+        /// </summary>
+        /// <param name="title"></param>
+        /// <returns></returns>
         private PropertyGroup InitializeGroup(string title)
         {
+            // Create root Group
             var item = new PropertyGroup()
             {
                 Title = title,
             };
 
+            // Groups Collection --------------------------------------------------
+            // Create Group Collection (Group)
             var groups = new PropertyGroup()
             {
                 Title = "Groups",
             };
+
+            // Create Property to allow Group to add groups
             var addGroup = new PropertyItem()
             {
                 PropertyName = "Add Group",
                 ValueType = PropertyType.Button,
-                Value = "Add",
-                EventHandler = new RoutedEventHandler(AddGroup_Button_Click),
+                ValueIndex = 0,
             };
+            addGroup.Values.Add("Add");
 
+            // Add property to Groups collection
+            groups.PropertyItems.Add(addGroup);
+
+            // Add Groups collection to root group
+            item.PropertyGroups.Add(groups);
+
+            // Groups Collection --------------------------------------------------
+
+            // Properties Collection ----------------------------------------------
+            // Create Property Collection (Group)
             var properties = new PropertyGroup()
             {
                 Title = "Properties",
             };
+
+            // Create Property to allow Group to add properties
             var addProperty = new PropertyItem()
             {
                 PropertyName = "Add Property",
                 ValueType = PropertyType.Button,
-                Value = "Add",
-                EventHandler = new RoutedEventHandler(AddProperty_Button_Click),
+                ValueIndex = 1,
             };
-
-            groups.PropertyItems.Add(addGroup);
+            addProperty.Values.Add("Add");
+            
+            // Add property to properties collection
             properties.PropertyItems.Add(addProperty);
 
-            item.PropertyGroups.Add(groups);
+            // Add Properites collection to root group
             item.PropertyGroups.Add(properties);
+            // Properties Collection ----------------------------------------------
 
             return item;
         }
 
+        /// <summary>
+        /// Create a group that can add children
+        /// these children are groups that have only properties.
+        /// These properties initialize the types of properties allowed 
+        /// </summary>
+        /// <param name="title"></param>
+        /// <returns></returns>
         private PropertyGroup InitializeProperty(string title)
         {
+            // Create group 
             var item = new PropertyGroup()
             {
                 Title = title,
             };
 
+            // Allow only alphabetical characters with underscores
             LogicalGate gate = new LogicalGate(LogicalOperator.OR);
 
             gate.RangeCollection.Add(new CharRange('a', 'z'));
             gate.RangeCollection.Add(new CharRange('A', 'Z'));
             gate.RangeCollection.Add(new CharRange('_', '_'));
 
+            // Name of property
             var propertyName = new PropertyItem()
             {
                 PropertyName = "Property Name",
                 ValueType = PropertyType.String,
                 ValueRange = gate,
-                Value = "Property"
             };
+            propertyName.Values.Add("Property");
 
-            var selection = new ObservableCollection<string>(Enum.GetNames(typeof(PropertyType)));
+            // Add Name property to group
+            item.PropertyItems.Add(propertyName);
 
+            // Type of property
             var propertyType = new PropertyItem()
             {
                 PropertyName = "Property Type",
                 ValueType = PropertyType.SelectionString,
-                Value = selection[0],
+                ValueIndex = 0
             };
+
+            // Create a selection of property types to choose from
+            var selection = new ObservableCollection<string>(Enum.GetNames(typeof(PropertyType)));
+
+            // Add Selection
             foreach (string select in selection)
             {
-                propertyType.ValueSelection.Add(select);
+                propertyType.Values.Add(select);
             }
 
-            item.PropertyItems.Add(propertyName);
+            // Add Type of Property to group
             item.PropertyItems.Add(propertyType);
 
             return item;
@@ -389,6 +432,7 @@ namespace WindowDictionary.Property
                 this.PropertyGroups.Clear();
 
                 PropertyGroup parent = InitializeGroup("Master List");
+                parent.Parent = this;
 
                 this.PropertyGroups.Add(parent);
 
@@ -440,7 +484,7 @@ namespace WindowDictionary.Property
                     this.PropertyGroups.Clear();
                     foreach (PropertyGroup item in collection)
                     {
-                        FillHandlers(item);
+                        item.Parent = this;
                         this.PropertyGroups.Add(item);
                     }
 
@@ -455,24 +499,6 @@ namespace WindowDictionary.Property
             }
         }
 
-        private void FillHandlers(PropertyGroup propertyGroup)
-        {
-            foreach (PropertyGroup group in propertyGroup.PropertyGroups)
-            {
-                FillHandlers(group);
-            }
-            foreach (PropertyItem propertyItem in propertyGroup.PropertyItems)
-            {
-                FillHandlers(propertyItem);
-            }
-        }
-        private void FillHandlers(PropertyItem propertyItem)
-        {
-            if (propertyItem.PropertyName == "Add Property")
-                propertyItem.EventHandler = new RoutedEventHandler(AddProperty_Button_Click);
-            else if (propertyItem.PropertyName == "Add Group")
-                propertyItem.EventHandler = new RoutedEventHandler(AddGroup_Button_Click);
-        }
 
         /// <summary>
         /// Save the current standard
@@ -572,6 +598,26 @@ namespace WindowDictionary.Property
             PropertyGroup group = button.ParentGroup;
 
             group.PropertyGroups.Add(InitializeProperty("Property"));
+        }
+
+        /// <summary>
+        /// Rename a group text input
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        public void Rename_Text_Input (object sender, TextChangedEventArgs e)
+        {
+            var group = sender as ListItemString;
+            
+            if ((group == null) && (group.Item != null))
+                return;
+
+            var parent = group.Item.Parent as PropertyGroup;
+
+            if (parent == null)
+                return;
+
+            parent.Title = group.Item.Values[0].ToString();
         }
     }
 }

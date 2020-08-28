@@ -3,8 +3,6 @@ using System.ComponentModel;
 using System.Collections.ObjectModel;
 using System.Xml;
 using System.Xml.Serialization;
-using System.Windows;
-using System.Collections.Generic;
 
 namespace WindowDictionary.Property
 {
@@ -16,25 +14,25 @@ namespace WindowDictionary.Property
     {
         #region Properties
 
-        private RoutedEventHandler _EventHandler;
+        private object _Parent = null;
         /// <summary>
-        /// Allow an external method to be invoked by an external event
+        /// Holds reference to the parent object
         /// </summary>
         [XmlIgnore]
-        public RoutedEventHandler EventHandler
+        public object Parent
         {
-            get { return this._EventHandler; }
+            get { return _Parent; }
             set
             {
-                if (this._EventHandler == value)
+                if (_Parent == value)
                     return;
 
-                this._EventHandler = value;
-                OnPropertyChanged("EventHandler");
+                _Parent = value;
+                OnPropertyChanged("Parent");
             }
         }
 
-        private string _PropertyName;
+        private string _PropertyName = "";
         /// <summary>
         /// Property Name to be displayed
         /// </summary>
@@ -52,7 +50,7 @@ namespace WindowDictionary.Property
             }
         }
 
-        private PropertyType _ValueType;
+        private PropertyType _ValueType = PropertyType.String;
         /// <summary>
         /// Property type input
         /// </summary>
@@ -70,7 +68,7 @@ namespace WindowDictionary.Property
             }
         }
 
-        private Range _ValueRange;
+        private Range _ValueRange = null;
         /// <summary>
         /// Restrictions for the value
         /// </summary>
@@ -88,19 +86,71 @@ namespace WindowDictionary.Property
             }
         }
 
-        private object _Value;
+
+        private int _ValueIndex = 0;
         /// <summary>
-        /// The value of the property
+        /// Index of the Values collection
         /// </summary>
-        [XmlElement("Value")]
-        public object Value
+        [XmlElement("ValueIndex")]
+        public int ValueIndex
         {
-            get { return this._Value; }
-            
+            get { return _ValueIndex; }
             set
             {
-                if (this._Value == value)
+                if (_ValueIndex == value)
                     return;
+
+                _ValueIndex = value;
+                OnPropertyChanged("ValueIndex");
+            }
+        }
+
+        /// <summary>
+        /// Selection of values to choose from.
+        /// </summary>
+        [XmlElement("Values")]
+        public ObservableCollection<object> Values { get; } = new ObservableCollection<object>();
+
+        #endregion
+
+        #region Constructors
+
+        /// <summary>
+        /// Initializes a new instance of this class
+        /// </summary>
+        public PropertyItem()
+        {
+            Values.CollectionChanged += Values_CollectionChanged;
+        }
+
+        #endregion
+
+        #region Delegates, Events, Handlers
+
+        /// <summary>
+        /// Invoked when a Component Property changes.
+        /// </summary>
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        /// <summary>
+        /// Invokes PropertyChanged Event
+        /// </summary>
+        /// <param name="property"></param>
+        private void OnPropertyChanged(string property)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
+        }
+
+        /// <summary>
+        /// Checks to see if the value stored in the collection is valid
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Values_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            for (int i = 0; i < e.NewItems.Count; i++)
+            {
+                object value = e.NewItems[i];
 
                 switch (this.ValueType)
                 {
@@ -188,61 +238,8 @@ namespace WindowDictionary.Property
                             throw new ArgumentException("The value must be of type string");
                         break;
                 }
-
-                this._Value = value;
-                OnPropertyChanged("Value");
+                OnPropertyChanged("Values");
             }
-        }
-
-        /// <summary>
-        /// Selection of values to choose from.
-        /// </summary>
-        [XmlElement("ValueSelection")]
-        public ObservableCollection<object> ValueSelection { get; } = new ObservableCollection<object>();
-
-        #endregion
-
-        #region Constructors
-
-        /// <summary>
-        /// Initializes a new instance of this class
-        /// </summary>
-        public PropertyItem()
-        {
-            ValueRange = null;
-            ValueType = PropertyType.String;
-            Value = "";
-        }
-
-        /// <summary>
-        /// Initializes a new instance of this class
-        /// </summary>
-        /// <param name="range"></param>
-        /// <param name="type"></param>
-        /// <param name="value"></param>
-        public PropertyItem(Range range, PropertyType type, object value)
-        {
-            ValueRange = range;
-            ValueType = type;
-            Value = value;
-        }
-
-        #endregion
-
-        #region Delegates, Events, Handlers
-
-        /// <summary>
-        /// Invoked when a Component Property changes.
-        /// </summary>
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        /// <summary>
-        /// Invokes PropertyChanged Event
-        /// </summary>
-        /// <param name="property"></param>
-        private void OnPropertyChanged(string property)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
         }
 
         #endregion

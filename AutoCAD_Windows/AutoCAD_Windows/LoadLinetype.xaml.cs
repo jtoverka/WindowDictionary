@@ -28,6 +28,9 @@ namespace WindowDictionary
 
         #region Properties
 
+        /// <summary>
+        /// 
+        /// </summary>
         public System.Windows.Forms.DialogResult Result
         {
             get;
@@ -35,12 +38,18 @@ namespace WindowDictionary
         } = System.Windows.Forms.DialogResult.None;
 
         private netDxf.DxfDocument _document;
+        /// <summary>
+        /// 
+        /// </summary>
         public netDxf.Collections.Linetypes LinetypeCollection
         {
             get { return this._document.Linetypes; }
         }
 
         private readonly netDxf.DxfDocument _tempDocument = new netDxf.DxfDocument();
+        /// <summary>
+        /// 
+        /// </summary>
         public netDxf.Collections.Linetypes SelectedItems
         {
             get 
@@ -59,6 +68,9 @@ namespace WindowDictionary
 
         #region Constructors
 
+        /// <summary>
+        /// 
+        /// </summary>
         public LoadLinetype()
         {
             DataContext = this;
@@ -67,6 +79,10 @@ namespace WindowDictionary
             InitializeComponent();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="document"></param>
         public LoadLinetype(netDxf.DxfDocument document)
         {
             DataContext = this;
@@ -87,8 +103,15 @@ namespace WindowDictionary
 
         #region Delegates, Events, Handlers
 
+        /// <summary>
+        /// 
+        /// </summary>
         public event PropertyChangedEventHandler PropertyChanged;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="property"></param>
         public void OnPropertyChanged(string property)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
@@ -141,10 +164,7 @@ namespace WindowDictionary
                     {
                         _document.Linetypes.AddFromFile(filename, linetype, true);
                     }
-                    catch (Exception E)
-                    {
-
-                    }
+                    catch { }
                 }
                 OnPropertyChanged("LinetypeCollection");
             }

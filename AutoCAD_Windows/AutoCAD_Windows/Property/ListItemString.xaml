@@ -37,9 +37,10 @@
         <TextBox x:Name="box"
                  Grid.Column="2"
                  Grid.ColumnSpan="3"
-                 PreviewTextInput="TextBox_String_PreviewTextInput">
+                 PreviewTextInput="TextBox_String_PreviewTextInput"
+                 TextChanged="OnTextChanged">
             <TextBox.Text>
-                <Binding Path="Item.Value" />
+                <Binding Path="Item.Values[0]" />
             </TextBox.Text>
         </TextBox>
         <Popup x:Name="popup"

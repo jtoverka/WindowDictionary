@@ -9,8 +9,19 @@ using System.Windows;
 
 namespace WindowDictionary.Converters
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class ListViewPropertyConverter : IValueConverter
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="targetType"></param>
+        /// <param name="parameter"></param>
+        /// <param name="culture"></param>
+        /// <returns></returns>
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             if (value == null)
@@ -19,15 +30,16 @@ namespace WindowDictionary.Converters
             var propertyGroup = value as PropertyGroup;
             var propertyItems = propertyGroup.PropertyItems;
             var list = new ListView();
+            object root;
 
-            foreach(PropertyItem item in propertyItems)
+            foreach (PropertyItem item in propertyItems)
             {
                 switch (item.ValueType)
                 {
                     case PropertyType.Boolean:
                         list.Items.Add(new ListItemBoolean()
                         {
-                            IsChecked = System.Convert.ToBoolean(item.Value),
+                            IsChecked = System.Convert.ToBoolean(item.Values[0]),
                             Text = item.PropertyName,
                         });
                         break;
@@ -35,12 +47,18 @@ namespace WindowDictionary.Converters
                         var button = new ListItemButton()
                         {
                             Label = item.PropertyName,
-                            ButtonText = item.Value.ToString(),
+                            ButtonText = item.Values[0].ToString(),
                             ParentGroup = propertyGroup,
                         };
-
-                        button.Click += item.EventHandler;
-
+                        
+                        root = Root(propertyGroup);
+                        if ((root != null) && (root.GetType() == typeof(PropertyCreator)))
+                        {
+                            if (item.ValueIndex == 0)
+                                button.Click += (root as PropertyCreator).AddGroup_Button_Click;
+                            else if (item.ValueIndex == 1)
+                                button.Click += (root as PropertyCreator).AddProperty_Button_Click;
+                        }
                         list.Items.Add(button);
                         break;
                     case PropertyType.Double:
@@ -57,7 +75,7 @@ namespace WindowDictionary.Converters
                         break;
                     case PropertyType.SelectionString:
                         ObservableCollection<string> collection = new ObservableCollection<string>();
-                        foreach(object element in item.ValueSelection as ObservableCollection<object>)
+                        foreach(object element in item.Values)
                         {
                             collection.Add(element.ToString());
                         }
@@ -76,20 +94,45 @@ namespace WindowDictionary.Converters
                     case PropertyType.SelectionEditString:
                         break;
                     case PropertyType.String:
-                        list.Items.Add(new ListItemString()
+                        var listItemString = new ListItemString()
                         {
                             Item = item,
-                        });
+                        };
+
+                        root = Root(propertyGroup);
+
+                        if ((root != null) && (root.GetType() == typeof(PropertyCreator)))
+                        {
+                            listItemString.TextModified += (root as PropertyCreator).Rename_Text_Input;
+                        }
+
+                        list.Items.Add(listItemString);
                         break;
                 }
             }
 
             return list.Items;
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="targetType"></param>
+        /// <param name="parameter"></param>
+        /// <param name="culture"></param>
+        /// <returns></returns>
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             throw new NotImplementedException();
+        }
+
+        private object Root(PropertyGroup group)
+        {
+            if ((group.Parent != null) 
+                && (group.Parent.GetType() == typeof(PropertyGroup)))
+                return Root(group.Parent as PropertyGroup);
+            else
+                return group.Parent;
         }
     }
 }

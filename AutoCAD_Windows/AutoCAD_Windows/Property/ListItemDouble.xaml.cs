@@ -16,6 +16,9 @@ namespace WindowDictionary.Property
         private DispatcherTimer timer = new DispatcherTimer();
 
         private PropertyItem _Item;
+        /// <summary>
+        /// 
+        /// </summary>
         public PropertyItem Item
         {
             get { return _Item; }
@@ -29,6 +32,9 @@ namespace WindowDictionary.Property
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public ListItemDouble()
         {
             DataContext = this;
@@ -39,7 +45,15 @@ namespace WindowDictionary.Property
             InitializeComponent();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public event PropertyChangedEventHandler PropertyChanged;
+        
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="property"></param>
         public void OnPropertyChanged(string property)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));

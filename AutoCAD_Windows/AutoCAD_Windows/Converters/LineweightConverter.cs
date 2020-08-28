@@ -8,8 +8,19 @@ using System.Windows.Media;
 
 namespace WindowDictionary.Converters
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class LineweightConverter : IValueConverter
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="targetType"></param>
+        /// <param name="parameter"></param>
+        /// <param name="culture"></param>
+        /// <returns></returns>
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             if (parameter.ToString() == "1")
@@ -193,7 +204,14 @@ namespace WindowDictionary.Converters
 
             return new NotImplementedException();
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="targetType"></param>
+        /// <param name="parameter"></param>
+        /// <param name="culture"></param>
+        /// <returns></returns>
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             if (parameter.ToString() == "1")

@@ -14,7 +14,11 @@ namespace WindowDictionary.Property
     {
         private DispatcherTimer timer = new DispatcherTimer();
 
+
         private PropertyItem _Item;
+        /// <summary>
+        /// 
+        /// </summary>
         public PropertyItem Item
         {
             get { return _Item; }
@@ -28,6 +32,9 @@ namespace WindowDictionary.Property
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public ListItemString()
         {
             DataContext = this;
@@ -38,8 +45,17 @@ namespace WindowDictionary.Property
             InitializeComponent();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        public event TextChangedEventHandler TextModified;
+
+        /// <summary>
+        /// 
+        /// </summary>
         public event PropertyChangedEventHandler PropertyChanged;
-        public void OnPropertyChanged(string property)
+
+        private void OnPropertyChanged(string property)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
         }
@@ -86,6 +102,12 @@ namespace WindowDictionary.Property
         {
             popup.IsOpen = false;
             timer.Stop();
+        }
+
+        private void OnTextChanged(object sender, TextChangedEventArgs e)
+        {
+            Item.Values[0] = box.Text;
+            TextModified?.Invoke(this, e);
         }
     }
 }

@@ -28,6 +28,9 @@ namespace WindowDictionary
 
         #region Properties
 
+        /// <summary>
+        /// 
+        /// </summary>
         public System.Windows.Forms.DialogResult Result
         {
             get;
@@ -36,6 +39,9 @@ namespace WindowDictionary
 
 
         private netDxf.DxfDocument _document;
+        /// <summary>
+        /// 
+        /// </summary>
         public netDxf.Collections.Linetypes LinetypeCollection
         {
             get { return this._document.Linetypes; }
@@ -45,6 +51,9 @@ namespace WindowDictionary
 
         #region Constructors
 
+        /// <summary>
+        /// 
+        /// </summary>
         public Linetype()
         {
             DataContext = this;
@@ -52,6 +61,10 @@ namespace WindowDictionary
             _document.Linetypes.Clear();
             InitializeComponent();
         }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="document"></param>
         public Linetype(netDxf.DxfDocument document)
         {
             DataContext = this;
@@ -72,8 +85,15 @@ namespace WindowDictionary
 
         #region Delegates, Events, Handlers
 
+        /// <summary>
+        /// 
+        /// </summary>
         public event PropertyChangedEventHandler PropertyChanged;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="property"></param>
         public void OnPropertyChanged(string property)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
