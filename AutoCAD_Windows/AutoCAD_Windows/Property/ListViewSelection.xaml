@@ -1,0 +1,102 @@
+﻿<ListViewItem x:Class="WindowDictionary.Property.ListViewSelection"
+              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+              xmlns:local="clr-namespace:WindowDictionary.Property"
+              xmlns:converter="clr-namespace:WindowDictionary.Converters"
+              mc:Ignorable="d"
+              Background="Transparent"
+              BorderThickness="1"
+              BorderBrush="Transparent"
+              Height="300"
+              MinWidth="250"
+              HorizontalContentAlignment="Stretch"
+              VerticalContentAlignment="Stretch"
+              Margin="0"
+              Padding="0">
+    <ListViewItem.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../StyleDictionary.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </ListViewItem.Resources>
+    <Grid Background="Transparent">
+        <Grid.Resources>
+            <converter:IntegerConverter x:Key="IntegerConverter" />
+        </Grid.Resources>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="25" />
+            <RowDefinition />
+            <RowDefinition Height="35" />
+            <RowDefinition Height="90" />
+        </Grid.RowDefinitions>
+        <TextBlock Grid.ColumnSpan="5"
+                   Margin="5,5,5,5"
+                   VerticalAlignment="Top">
+            <TextBlock.Text>
+                <Binding Path="Label" />
+            </TextBlock.Text></TextBlock>
+        <ListView x:Name="list"
+                 Grid.Row="1"
+                 Grid.ColumnSpan="5"
+                 Margin="5,5,5,5">
+            <ListView.ItemsSource>
+                <Binding Path="Item.Values" />
+            </ListView.ItemsSource>
+        </ListView>
+        <TextBox x:Name="text"
+                 Grid.Row="2"
+                 Margin="5,5"
+                 PreviewKeyDown="text_PreviewKeyDown"
+                 PreviewTextInput="text_PreviewTextInput"/>
+        <UniformGrid Grid.Row="3"
+                     Rows="3"
+                     Columns="2"
+                     HorizontalAlignment="Center">
+            <Button x:Name="Add_Button"
+                    Click="Add_Button_Click"
+                    Content="Add" />
+            <Button x:Name="Remove_Button"
+                    Click="Remove_Button_Click"
+                    Content="Remove" />
+            <Button x:Name="Up_Button"
+                    Click="Up_Button_Click"
+                    Content="Up" />
+            <Button x:Name="Top_Button"
+                    Click="Top_Button_Click"
+                    Content="Top" />
+            <Button x:Name="Down_Button"
+                    Click="Down_Button_Click"
+                    Content="Down" />
+            <Button x:Name="Bottom_Button"
+                    Click="Bottom_Button_Click"
+                    Content="Bottom" />
+        </UniformGrid>
+        <Popup x:Name="popup"
+               AllowsTransparency="True"
+               IsOpen="False"
+               Placement="Top"
+               PopupAnimation="Slide"
+               StaysOpen="True"
+               Visibility="Visible"
+               VerticalOffset="-1">
+            <Popup.PlacementTarget>
+                <Binding ElementName="text" />
+            </Popup.PlacementTarget>
+            <Border Background="White"
+                    BorderBrush="Red"
+                    BorderThickness="1"
+                    CornerRadius="3"
+                    Margin="1,1,1,1">
+                <TextBlock x:Name="popupText"
+                           Foreground="Red"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                           Margin="0"
+                           TextWrapping="Wrap"></TextBlock>
+            </Border>
+        </Popup>
+    </Grid>
+</ListViewItem>

@@ -29,6 +29,23 @@ namespace WindowDictionary.Property
             }
         }
 
+        private PropertyGroup _Item;
+        /// <summary>
+        /// 
+        /// </summary>
+        public PropertyGroup Item
+        {
+            get { return _Item; }
+            set
+            {
+                if (_Item == value)
+                    return;
+
+                _Item = value;
+                OnPropertyChanged("Item");
+            }
+        }
+
         private string _Label;
         /// <summary>
         /// Text displayed 

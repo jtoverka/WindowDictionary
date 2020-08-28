@@ -11,11 +11,6 @@
         Boolean,
 
         /// <summary>
-        /// Displays property item as a button
-        /// </summary>
-        Button,
-
-        /// <summary>
         /// Displays Property Item as a TextBox that prevents Cut, Copy, Paste, and improper key input. Only Allows number Double input.
         /// </summary>
         Double,

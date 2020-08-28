@@ -32,7 +32,7 @@
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
         <Grid.Resources>
-            <converter:ListViewPropertyConverter x:Key="ListViewPropertyConverter" />
+            <converter:PropertyCreatorConverter x:Key="ListViewPropertyConverter" />
             <HierarchicalDataTemplate DataType="{x:Type local:PropertyGroup}"
                                       ItemsSource="{Binding Path=PropertyGroups}">
                 <TextBlock>

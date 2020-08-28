@@ -37,6 +37,7 @@
         <TextBox x:Name="box"
                  Grid.Column="2"
                  Grid.ColumnSpan="3"
+                 PreviewKeyDown="TextBox_PreviewKeyDown"
                  PreviewTextInput="TextBox_String_PreviewTextInput"
                  TextChanged="OnTextChanged">
             <TextBox.Text>

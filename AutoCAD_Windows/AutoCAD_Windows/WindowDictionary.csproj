@@ -60,7 +60,7 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Converters\ListViewPropertyConverter.cs" />
+    <Compile Include="Converters\PropertyCreatorConverter.cs" />
     <Compile Include="Converters\DoubleConverter.cs" />
     <Compile Include="Converters\IntegerConverter.cs" />
     <Compile Include="Property\BooleanRange.cs" />
@@ -84,6 +84,9 @@
     </Compile>
     <Compile Include="Property\ListItemString.xaml.cs">
       <DependentUpon>ListItemString.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Property\ListViewSelection.xaml.cs">
+      <DependentUpon>ListViewSelection.xaml</DependentUpon>
     </Compile>
     <Compile Include="Property\LogicalGate.cs" />
     <Compile Include="Property\IntegerRange.cs" />
@@ -159,6 +162,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Property\ListItemString.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Property\ListViewSelection.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

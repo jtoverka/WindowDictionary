@@ -12,7 +12,7 @@ namespace WindowDictionary.Converters
     /// <summary>
     /// 
     /// </summary>
-    public class ListViewPropertyConverter : IValueConverter
+    public class PropertyCreatorConverter : IValueConverter
     {
         /// <summary>
         /// 
@@ -27,39 +27,87 @@ namespace WindowDictionary.Converters
             if (value == null)
                 return new ListView();
 
-            var propertyGroup = value as PropertyGroup;
-            var propertyItems = propertyGroup.PropertyItems;
+            var itemParent = value as PropertyGroup;
+            var propertyItems = itemParent.PropertyItems;
             var list = new ListView();
+            
             object root;
 
             foreach (PropertyItem item in propertyItems)
             {
+                int itemValueIndex = item.ValueIndex;
+                Range range = item.ValueRange;
+                PropertyType itemValueType = item.ValueType;
+                string itemPropertyName = item.PropertyName;
+
+                root = Root(itemParent);
+
                 switch (item.ValueType)
                 {
                     case PropertyType.Boolean:
-                        list.Items.Add(new ListItemBoolean()
+                        if (itemValueIndex == 4)
                         {
-                            IsChecked = System.Convert.ToBoolean(item.Values[0]),
-                            Text = item.PropertyName,
-                        });
-                        break;
-                    case PropertyType.Button:
-                        var button = new ListItemButton()
-                        {
-                            Label = item.PropertyName,
-                            ButtonText = item.Values[0].ToString(),
-                            ParentGroup = propertyGroup,
-                        };
-                        
-                        root = Root(propertyGroup);
-                        if ((root != null) && (root.GetType() == typeof(PropertyCreator)))
-                        {
-                            if (item.ValueIndex == 0)
-                                button.Click += (root as PropertyCreator).AddGroup_Button_Click;
-                            else if (item.ValueIndex == 1)
-                                button.Click += (root as PropertyCreator).AddProperty_Button_Click;
+                            var button = new ListItemButton()
+                            {
+                                Label = itemPropertyName,
+                                ButtonText = item.Values[0].ToString(),
+                                ParentGroup = itemParent,
+                            };
+
+                            button.Click += (root as PropertyCreator).AddProperty_Button_Click;
+                            list.Items.Add(button);
                         }
-                        list.Items.Add(button);
+                        else
+                        if (itemValueIndex == 3)
+                        {
+                            var button = new ListItemButton()
+                            {
+                                Label = itemPropertyName,
+                                ButtonText = item.Values[0].ToString(),
+                                ParentGroup = itemParent,
+                            };
+
+                            button.Click += (root as PropertyCreator).AddGroup_Button_Click;
+                            list.Items.Add(button);
+                        }
+                        else
+                        if (itemValueIndex == 2)
+                        {
+                            var button = new ListItemButton()
+                            {
+                                Label = itemPropertyName,
+                                ButtonText = item.Values[0].ToString(),
+                                ParentGroup = itemParent,
+                            };
+
+                            button.Click += (root as PropertyCreator).DeleteGroup_Button_Click;
+                            list.Items.Add(button);
+                        }
+                        else 
+                        if (itemValueIndex == 1)
+                        {
+
+                            var listViewSelection = new ListViewSelection()
+                            {
+                                Label = itemPropertyName,
+                                Item = item,
+                            };
+                            listViewSelection.TextBox_PreviewKeyDown += (root as PropertyCreator).text_PreviewKeyDown;
+                            listViewSelection.TextBox_PreviewTextInput += (root as PropertyCreator).text_PreviewTextInput;
+                            listViewSelection.CollectionChanged += (root as PropertyCreator).ListItems_CollectionChanged;
+                            listViewSelection.AddClick += (root as PropertyCreator).Add_Value_Button_Click;
+                            list.Items.Add(listViewSelection);
+                        }
+                        else 
+                        if (itemValueIndex == 0)
+                        {
+                            list.Items.Add(new ListItemBoolean()
+                            {
+                                IsChecked = System.Convert.ToBoolean(item.Values[0]),
+                                Text = itemPropertyName,
+                            });
+                        }
+                        
                         break;
                     case PropertyType.Double:
                         list.Items.Add(new ListItemDouble()
@@ -98,8 +146,6 @@ namespace WindowDictionary.Converters
                         {
                             Item = item,
                         };
-
-                        root = Root(propertyGroup);
 
                         if ((root != null) && (root.GetType() == typeof(PropertyCreator)))
                         {

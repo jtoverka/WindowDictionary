@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
@@ -8,6 +8,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using System.Xml.Serialization;
+using WindowDictionary.Resources;
 
 namespace WindowDictionary.Property
 {
@@ -108,10 +109,7 @@ namespace WindowDictionary.Property
                     }
             }
 
-            PropertyGroup parent = InitializeGroup("Master List");
-            parent.Parent = this;
-            
-            this.PropertyGroups.Add(parent);
+            New_File_Click(null, null);
 
             changedState = true;
         }
@@ -313,7 +311,51 @@ namespace WindowDictionary.Property
                 Title = title,
             };
 
-            // Groups Collection --------------------------------------------------
+            #region Root Group Properties
+
+            #region Root Group Delete Property
+
+            // Create Property to allow Group to delete itself
+            var deleteProperty = new PropertyItem()
+            {
+                PropertyName = "Delete Group",
+                ValueType = PropertyType.Boolean,
+                ValueIndex = 2,
+            };
+            deleteProperty.Values.Add("Delete");
+            item.PropertyItems.Add(deleteProperty);
+
+            #endregion
+
+            #region Root Group Rename Property
+
+            // Allow only alphabetical characters with underscores
+            LogicalGate gate = new LogicalGate(LogicalOperator.OR);
+
+            gate.RangeCollection.Add(new CharRange('a', 'z'));
+            gate.RangeCollection.Add(new CharRange('A', 'Z'));
+            gate.RangeCollection.Add(new CharRange('_', '_'));
+            gate.RangeCollection.Add(new CharRange(' ', ' '));
+            gate.RangeCollection.Add(new CharRange('0', '9'));
+
+            // Name of property
+            var groupName = new PropertyItem()
+            {
+                PropertyName = "Group Name",
+                ValueType = PropertyType.String,
+                ValueRange = gate,
+            };
+            groupName.Values.Add("Group");
+
+            // Add Name property to group
+            item.PropertyItems.Add(groupName);
+
+            #endregion
+
+            #endregion
+
+            #region Group Collection
+
             // Create Group Collection (Group)
             var groups = new PropertyGroup()
             {
@@ -324,8 +366,8 @@ namespace WindowDictionary.Property
             var addGroup = new PropertyItem()
             {
                 PropertyName = "Add Group",
-                ValueType = PropertyType.Button,
-                ValueIndex = 0,
+                ValueType = PropertyType.Boolean,
+                ValueIndex = 3,
             };
             addGroup.Values.Add("Add");
 
@@ -335,9 +377,10 @@ namespace WindowDictionary.Property
             // Add Groups collection to root group
             item.PropertyGroups.Add(groups);
 
-            // Groups Collection --------------------------------------------------
+            #endregion
 
-            // Properties Collection ----------------------------------------------
+            #region Properties Collection (Group)
+
             // Create Property Collection (Group)
             var properties = new PropertyGroup()
             {
@@ -348,17 +391,18 @@ namespace WindowDictionary.Property
             var addProperty = new PropertyItem()
             {
                 PropertyName = "Add Property",
-                ValueType = PropertyType.Button,
-                ValueIndex = 1,
+                ValueType = PropertyType.Boolean,
+                ValueIndex = 4,
             };
             addProperty.Values.Add("Add");
-            
+
             // Add property to properties collection
             properties.PropertyItems.Add(addProperty);
 
             // Add Properites collection to root group
             item.PropertyGroups.Add(properties);
-            // Properties Collection ----------------------------------------------
+
+            #endregion
 
             return item;
         }
@@ -372,11 +416,27 @@ namespace WindowDictionary.Property
         /// <returns></returns>
         private PropertyGroup InitializeProperty(string title)
         {
-            // Create group 
+            // Create Property Group 
             var item = new PropertyGroup()
             {
                 Title = title,
             };
+
+            #region Group Delete Property
+
+            // Create Property to allow Group to delete itself
+            var deleteProperty = new PropertyItem()
+            {
+                PropertyName = "Delete Property",
+                ValueType = PropertyType.Boolean,
+                ValueIndex = 2,
+            };
+            deleteProperty.Values.Add("Delete");
+            item.PropertyItems.Add(deleteProperty);
+
+            #endregion
+
+            #region Group Rename Property
 
             // Allow only alphabetical characters with underscores
             LogicalGate gate = new LogicalGate(LogicalOperator.OR);
@@ -384,6 +444,8 @@ namespace WindowDictionary.Property
             gate.RangeCollection.Add(new CharRange('a', 'z'));
             gate.RangeCollection.Add(new CharRange('A', 'Z'));
             gate.RangeCollection.Add(new CharRange('_', '_'));
+            gate.RangeCollection.Add(new CharRange(' ', ' '));
+            gate.RangeCollection.Add(new CharRange('0', '9'));
 
             // Name of property
             var propertyName = new PropertyItem()
@@ -397,12 +459,16 @@ namespace WindowDictionary.Property
             // Add Name property to group
             item.PropertyItems.Add(propertyName);
 
+            #endregion
+
+            #region Group Type Property
+
             // Type of property
             var propertyType = new PropertyItem()
             {
                 PropertyName = "Property Type",
                 ValueType = PropertyType.SelectionString,
-                ValueIndex = 0
+                ValueIndex = 3,
             };
 
             // Create a selection of property types to choose from
@@ -416,6 +482,38 @@ namespace WindowDictionary.Property
 
             // Add Type of Property to group
             item.PropertyItems.Add(propertyType);
+
+            #endregion
+
+            #region Group Values Property
+
+            // Create Property to add values
+            var Value = new PropertyItem()
+            {
+                PropertyName = "Property Values",
+                ValueType = PropertyType.Boolean,
+                ValueIndex = 1,
+            };
+
+            // Add property to Groups collection
+            item.PropertyItems.Add(Value);
+
+            #endregion
+
+            #region Group Range Property
+            
+            // Limit the acceptable values
+            var range = new PropertyItem()
+            {
+                PropertyName = "Range",
+                ValueType = PropertyType.Boolean,
+                ValueIndex = 5,
+            };
+
+            // Add Groups collection to root group
+            item.PropertyItems.Add(range);
+
+            #endregion
 
             return item;
         }
@@ -431,10 +529,12 @@ namespace WindowDictionary.Property
 
                 this.PropertyGroups.Clear();
 
-                PropertyGroup parent = InitializeGroup("Master List");
-                parent.Parent = this;
+                PropertyGroup parent = InitializeGroup("");
+                PropertyGroup group = parent.PropertyGroups[0];
+                group.Title = "Master List";
+                group.Parent = this;
 
-                this.PropertyGroups.Add(parent);
+                this.PropertyGroups.Add(group);
 
                 changedState = true;
             }
@@ -574,13 +674,29 @@ namespace WindowDictionary.Property
         public void AddGroup_Button_Click(object sender, RoutedEventArgs e)
         {
             var button = sender as ListItemButton;
-            
+
             if (button == null)
                 return;
 
             PropertyGroup group = button.ParentGroup;
 
             group.PropertyGroups.Add(InitializeGroup("Group"));
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        public void DeleteGroup_Button_Click(object sender, RoutedEventArgs e)
+        {
+            var button = sender as ListItemButton;
+
+            if (button == null)
+                return;
+
+            PropertyGroup group = button.ParentGroup;
+            (group.Parent as PropertyGroup).PropertyGroups.Remove(group);
         }
 
         /// <summary>
@@ -618,6 +734,260 @@ namespace WindowDictionary.Property
                 return;
 
             parent.Title = group.Item.Values[0].ToString();
+        }
+
+        /// <summary>
+        /// Add Button is clicked to add value to values collection
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        public void Add_Value_Button_Click(object sender, RoutedEventArgs e)
+        {
+            var element = sender as ListViewSelection;
+
+            if (element.Item.Values.Contains(element.text.Text))
+            {
+                element.TriggerPopup("No Duplicates are allowed!");
+            }
+            else
+            if (element.text.Text == "")
+            {
+                element.TriggerPopup("Null values not allowed!");
+            }
+            else
+            {
+                element.Item.Values.Add(element.text.Text);
+                element.text.Text = "";
+            }
+        }
+
+        /// <summary>
+        /// Modify UI depending on the ListItems Collection
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        public void ListItems_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            NotifyCollectionChangedAction action = e.Action;
+
+            var element = sender as ListViewSelection;
+            PropertyItem item = element.Item;
+            var parent = item.Parent as PropertyGroup;
+            int index = parent.PropertyItems[2].ValueIndex;
+
+
+            ObservableCollection<object> listitems = item.Values;
+
+            int count = listitems.Count;
+
+            switch ((PropertyType)index)
+            {
+                case PropertyType.Boolean:
+                    return;
+                case PropertyType.Double:
+                    if (count > 0)
+                    {
+                        element.text.IsEnabled = false;
+                        element.Add_Button.IsEnabled = false;
+                        element.Remove_Button.IsEnabled = true;
+                    }
+                    else
+                    {
+                        element.text.IsEnabled = true;
+                        element.Add_Button.IsEnabled = true;
+                        element.Remove_Button.IsEnabled = false;
+                    }
+                    break;
+                case PropertyType.Integer:
+                    if (count > 0)
+                    {
+                        element.text.IsEnabled = false;
+                        element.Add_Button.IsEnabled = false;
+                        element.Remove_Button.IsEnabled = true;
+                    }
+                    else
+                    {
+                        element.text.IsEnabled = true;
+                        element.Add_Button.IsEnabled = true;
+                        element.Remove_Button.IsEnabled = false;
+                    }
+                    break;
+                case PropertyType.SelectionString:
+                    if (count > 0)
+                    {
+                        element.text.IsEnabled = true;
+                        element.Up_Button.IsEnabled = true;
+                        element.Down_Button.IsEnabled = true;
+                        element.Top_Button.IsEnabled = true;
+                        element.Bottom_Button.IsEnabled = true;
+                        element.Remove_Button.IsEnabled = true;
+                    }
+                    else
+                    {
+                        element.text.IsEnabled = true;
+                        element.Up_Button.IsEnabled = false;
+                        element.Down_Button.IsEnabled = false;
+                        element.Top_Button.IsEnabled = false;
+                        element.Bottom_Button.IsEnabled = false;
+                        element.Remove_Button.IsEnabled = false;
+                    }
+                    break;
+                case PropertyType.SelectionEditDouble:
+                    if (count > 0)
+                    {
+                        element.text.IsEnabled = true;
+                        element.Up_Button.IsEnabled = true;
+                        element.Down_Button.IsEnabled = true;
+                        element.Top_Button.IsEnabled = true;
+                        element.Bottom_Button.IsEnabled = true;
+                        element.Remove_Button.IsEnabled = true;
+                    }
+                    else
+                    {
+                        element.text.IsEnabled = true;
+                        element.Up_Button.IsEnabled = false;
+                        element.Down_Button.IsEnabled = false;
+                        element.Top_Button.IsEnabled = false;
+                        element.Bottom_Button.IsEnabled = false;
+                        element.Remove_Button.IsEnabled = false;
+                    }
+                    break;
+                case PropertyType.SelectionEditInteger:
+                    if (count > 0)
+                    {
+                        element.text.IsEnabled = true;
+                        element.Up_Button.IsEnabled = true;
+                        element.Down_Button.IsEnabled = true;
+                        element.Top_Button.IsEnabled = true;
+                        element.Bottom_Button.IsEnabled = true;
+                        element.Remove_Button.IsEnabled = true;
+                    }
+                    else
+                    {
+                        element.text.IsEnabled = true;
+                        element.Up_Button.IsEnabled = false;
+                        element.Down_Button.IsEnabled = false;
+                        element.Top_Button.IsEnabled = false;
+                        element.Bottom_Button.IsEnabled = false;
+                        element.Remove_Button.IsEnabled = false;
+                    }
+                    break;
+                case PropertyType.SelectionEditString:
+                    if (count > 0)
+                    {
+                        element.text.IsEnabled = true;
+                        element.Up_Button.IsEnabled = true;
+                        element.Down_Button.IsEnabled = true;
+                        element.Top_Button.IsEnabled = true;
+                        element.Bottom_Button.IsEnabled = true;
+                        element.Remove_Button.IsEnabled = true;
+                    }
+                    else
+                    {
+                        element.text.IsEnabled = true;
+                        element.Up_Button.IsEnabled = false;
+                        element.Down_Button.IsEnabled = false;
+                        element.Top_Button.IsEnabled = false;
+                        element.Bottom_Button.IsEnabled = false;
+                        element.Remove_Button.IsEnabled = false;
+                    }
+                    break;
+                case PropertyType.String:
+                    if (count > 0)
+                    {
+                        element.Add_Button.IsEnabled = false;
+                        element.Remove_Button.IsEnabled = true;
+                        element.text.IsEnabled = false;
+                    }
+                    else
+                    {
+                        element.Add_Button.IsEnabled = true;
+                        element.Remove_Button.IsEnabled = false;
+                        element.text.IsEnabled = true;
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+
+
+        /// <summary>
+        /// Trigger TextBox_PreviewKeyDown event
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        public void text_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            var element = sender as ListViewSelection;
+
+            if (e.Key == Key.Enter)
+            {
+                e.Handled = true;
+
+                Add_Value_Button_Click(sender, null);
+
+                element.text.Focus();
+            }
+        }
+
+        /// <summary>
+        /// Trigger TextBox_PreviewTextInput event
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        public void text_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            var element = sender as ListViewSelection;
+
+            PropertyItem item = element.Item;
+            var parent = item.Parent as PropertyGroup;
+            int index = parent.PropertyItems[2].ValueIndex;
+            
+            bool allowed = false;
+            string errorMessage = "";
+
+            switch ((PropertyType)index)
+            {
+                case PropertyType.Boolean:
+                    allowed = false;
+                    errorMessage = "No values allowed for boolean!";
+                    break;
+                case PropertyType.Double:
+                    allowed = UILibrary.IsTextAllowed(element.text.Text, TypeCode.Double);
+                    errorMessage = "The Value needs to be a double!";
+                    break;
+                case PropertyType.Integer:
+                    allowed = UILibrary.IsTextAllowed(element.text.Text, TypeCode.Int32);
+                    errorMessage = "The Value needs to be an Integer (32 bit)!";
+                    break;
+                case PropertyType.SelectionString:
+                    allowed = true;
+                    break;
+                case PropertyType.SelectionEditDouble:
+                    allowed = UILibrary.IsTextAllowed(element.text.Text, TypeCode.Double);
+                    errorMessage = "The Value needs to be a double!";
+                    break;
+                case PropertyType.SelectionEditInteger:
+                    allowed = UILibrary.IsTextAllowed(element.text.Text, TypeCode.Int32);
+                    errorMessage = "The Value needs to be an Integer (32 bit)!";
+                    break;
+                case PropertyType.SelectionEditString:
+                    allowed = true;
+                    break;
+                case PropertyType.String:
+                    allowed = true;
+                    break;
+                default:
+                    break;
+            }
+
+            if (!allowed)
+            {
+                e.Handled = true;
+
+                element.TriggerPopup(errorMessage);
+            }
         }
     }
 }

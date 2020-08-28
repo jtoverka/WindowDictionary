@@ -14,7 +14,6 @@ namespace WindowDictionary.Property
     {
         private DispatcherTimer timer = new DispatcherTimer();
 
-
         private PropertyItem _Item;
         /// <summary>
         /// 
@@ -108,6 +107,12 @@ namespace WindowDictionary.Property
         {
             Item.Values[0] = box.Text;
             TextModified?.Invoke(this, e);
+        }
+
+        private void TextBox_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+                e.Handled = true;
         }
     }
 }

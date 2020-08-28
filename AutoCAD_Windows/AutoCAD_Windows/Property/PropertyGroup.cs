@@ -76,6 +76,19 @@ namespace WindowDictionary.Property
             PropertyItems.CollectionChanged += PropertyItems_CollectionChanged;
         }
 
+        #endregion
+
+        #region Delegates, Events, Handlers
+
+        /// <summary>
+        /// Invoked on Property Changed
+        /// </summary>
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private void OnPropertyChanged(string property)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
+        }
         private void PropertyItems_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             var collection = sender as ObservableCollection<PropertyItem>;
@@ -92,7 +105,7 @@ namespace WindowDictionary.Property
         private void PropertyGroups_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             var collection = sender as ObservableCollection<PropertyGroup>;
-            if ((e.NewItems.Count > 0) && (collection != null))
+            if ((e.NewItems?.Count > 0) && (collection != null))
             {
                 foreach (PropertyGroup item in collection)
                 {
@@ -100,20 +113,6 @@ namespace WindowDictionary.Property
                     OnPropertyChanged("PropertyGroups");
                 }
             }
-        }
-
-        #endregion
-
-        #region Delegates, Events, Handlers
-
-        /// <summary>
-        /// Invoked on Property Changed
-        /// </summary>
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        private void OnPropertyChanged(string property)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
         }
 
         #endregion
