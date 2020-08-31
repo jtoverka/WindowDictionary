@@ -322,6 +322,12 @@ namespace WindowDictionary.Resources
         /// <param name="e"></param>
         /// <param name="selection"></param>
         /// <param name="collection"></param>
+        /// <example><![CDATA[
+        ///private void Up_Button_Click(object sender, RoutedEventArgs e, IList selection, ObservableCollection<object> collection)
+        ///{
+        ///    UILibrary.Up_Button_Click(sender, e, selection, collection);
+        ///}
+        ///]]></example>
         public static void Up_Button_Click(object sender, RoutedEventArgs e, IList selection, ObservableCollection<object> collection)
         {
             _ = e;
@@ -357,6 +363,12 @@ namespace WindowDictionary.Resources
         /// <param name="e"></param>
         /// <param name="selection"></param>
         /// <param name="collection"></param>
+        /// <example><![CDATA[
+        ///private void Down_Button_Click(object sender, RoutedEventArgs e, IList selection, ObservableCollection<object> collection)
+        ///{
+        ///    UILibrary.Down_Button_Click(sender, e, selection, collection);
+        ///}
+        ///]]></example>
         public static void Down_Button_Click(object sender, RoutedEventArgs e, IList selection, ObservableCollection<object> collection)
         {
             _ = e;
@@ -395,6 +407,12 @@ namespace WindowDictionary.Resources
         /// <param name="e"></param>
         /// <param name="selection"></param>
         /// <param name="collection"></param>
+        /// <example><![CDATA[
+        ///private void Top_Button_Click(object sender, RoutedEventArgs e, IList selection, ObservableCollection<object> collection)
+        ///{
+        ///    UILibrary.Top_Button_Click(sender, e, selection, collection);
+        ///}
+        ///]]></example>
         public static void Top_Button_Click(object sender, RoutedEventArgs e, IList selection, ObservableCollection<object> collection)
         {
             _ = e;
@@ -424,6 +442,12 @@ namespace WindowDictionary.Resources
         /// <param name="e"></param>
         /// <param name="selection"></param>
         /// <param name="collection"></param>
+        /// <example><![CDATA[
+        ///private void Bottom_Button_Click(object sender, RoutedEventArgs e, IList selection, ObservableCollection<object> collection)
+        ///{
+        ///    UILibrary.Bottom_Button_Click(sender, e, selection, collection);
+        ///}
+        ///]]></example>
         public static void Bottom_Button_Click(object sender, RoutedEventArgs e, IList selection, ObservableCollection<object> collection)
         {
             _ = e;
@@ -457,6 +481,12 @@ namespace WindowDictionary.Resources
         /// <param name="e"></param>
         /// <param name="selection"></param>
         /// <param name="collection"></param>
+        /// <example><![CDATA[
+        ///private void Remove_Button_Click(object sender, RoutedEventArgs e, IList selection, ObservableCollection<object> collection)
+        ///{
+        ///    UILibrary.Remove_Button_Click(sender, e, selection, collection);
+        ///}
+        ///]]></example>
         public static void Remove_Button_Click(object sender, RoutedEventArgs e, IList selection, ObservableCollection<object> collection)
         {
             _ = e;

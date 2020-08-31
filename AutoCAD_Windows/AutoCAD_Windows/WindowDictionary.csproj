@@ -60,40 +60,37 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Converters\PropertyCreatorConverter.cs" />
+    <Compile Include="Converters\CollectionItemConverter.cs" />
     <Compile Include="Converters\DoubleConverter.cs" />
     <Compile Include="Converters\IntegerConverter.cs" />
-    <Compile Include="Property\BooleanRange.cs" />
+    <Compile Include="Property\ListViewItems\LVI_Range.xaml.cs">
+      <DependentUpon>LVI_Range.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Property\Logic\BooleanRange.cs" />
     <Compile Include="Converters\LayerTransparencyConverter.cs" />
-    <Compile Include="Property\DoubleRange.cs" />
+    <Compile Include="Property\Logic\DoubleRange.cs" />
     <Compile Include="Extensions\DxfLayerExtended.cs" />
-    <Compile Include="Property\ListItemBoolean.xaml.cs">
-      <DependentUpon>ListItemBoolean.xaml</DependentUpon>
+    <Compile Include="Property\ListViewItems\LVI_CheckBox.xaml.cs">
+      <DependentUpon>LVI_CheckBox.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Property\ListItemButton.xaml.cs">
-      <DependentUpon>ListItemButton.xaml</DependentUpon>
+    <Compile Include="Property\ListViewItems\LVI_Button.xaml.cs">
+      <DependentUpon>LVI_Button.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Property\ListItemDouble.xaml.cs">
-      <DependentUpon>ListItemDouble.xaml</DependentUpon>
+    <Compile Include="Property\ListViewItems\LVI_TextBox.xaml.cs">
+      <DependentUpon>LVI_TextBox.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Property\ListItemInteger.xaml.cs">
-      <DependentUpon>ListItemInteger.xaml</DependentUpon>
+    <Compile Include="Property\ListViewItems\LVI_ComboBox.xaml.cs">
+      <DependentUpon>LVI_ComboBox.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Property\ListItemSelection.xaml.cs">
-      <DependentUpon>ListItemSelection.xaml</DependentUpon>
+    <Compile Include="Property\ListViewItems\LVI_ValueList.xaml.cs">
+      <DependentUpon>LVI_ValueList.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Property\ListItemString.xaml.cs">
-      <DependentUpon>ListItemString.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Property\ListViewSelection.xaml.cs">
-      <DependentUpon>ListViewSelection.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Property\LogicalGate.cs" />
-    <Compile Include="Property\IntegerRange.cs" />
+    <Compile Include="Property\Logic\LogicalGate.cs" />
+    <Compile Include="Property\Logic\IntegerRange.cs" />
     <Compile Include="LayerTransparency.xaml.cs">
       <DependentUpon>LayerTransparency.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Property\LogicalOperator.cs" />
+    <Compile Include="Property\Logic\LogicalOperator.cs" />
     <Compile Include="Property\PropertyCreator.xaml.cs">
       <DependentUpon>PropertyCreator.xaml</DependentUpon>
     </Compile>
@@ -103,9 +100,9 @@
     <Compile Include="Property\PropertyGroup.cs" />
     <Compile Include="Property\PropertyType.cs" />
     <Compile Include="Property\PropertyItem.cs" />
-    <Compile Include="Property\Range.cs" />
+    <Compile Include="Property\Logic\Range.cs" />
     <Compile Include="Resources\UILibrary.cs" />
-    <Compile Include="Property\CharRange.cs" />
+    <Compile Include="Property\Logic\CharRange.cs" />
     <Compile Include="Textstyle.xaml.cs">
       <DependentUpon>Textstyle.xaml</DependentUpon>
     </Compile>
@@ -141,31 +138,27 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Property\ListItemBoolean.xaml">
+    <Page Include="Property\ListViewItems\LVI_CheckBox.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Property\ListItemButton.xaml">
+    <Page Include="Property\ListViewItems\LVI_Button.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Property\ListItemDouble.xaml">
+    <Page Include="Property\ListViewItems\LVI_TextBox.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Property\ListItemInteger.xaml">
+    <Page Include="Property\ListViewItems\LVI_ComboBox.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Property\ListItemSelection.xaml">
+    <Page Include="Property\ListViewItems\LVI_ValueList.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Property\ListItemString.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Property\ListViewSelection.xaml">
+    <Page Include="Property\ListViewItems\LVI_Range.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

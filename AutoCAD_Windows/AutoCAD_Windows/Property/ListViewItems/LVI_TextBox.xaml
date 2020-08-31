@@ -1,50 +1,40 @@
-﻿<ListViewItem x:Class="WindowDictionary.Property.ListItemString"
+﻿<ListViewItem x:Class="WindowDictionary.Property.ListViewItems.LVI_TextBox"
               xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
               xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
               xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
               xmlns:local="clr-namespace:WindowDictionary.Property"
               xmlns:converter="clr-namespace:WindowDictionary.Converters"
               mc:Ignorable="d"
-              Background="Transparent"
-              BorderThickness="1"
-              BorderBrush="Transparent"
               MinHeight="20"
               MinWidth="200"
               HorizontalContentAlignment="Stretch"
               VerticalContentAlignment="Stretch"
+              BorderThickness="1"
               Margin="0"
               Padding="0">
     <ListViewItem.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="../StyleDictionary.xaml" />
+                <ResourceDictionary Source="../../StyleDictionary.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </ListViewItem.Resources>
-    <Grid Background="Transparent">
+    <Grid>
+        <Grid.Resources>
+            <converter:IntegerConverter x:Key="IntegerConverter" />
+        </Grid.Resources>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition />
-            <ColumnDefinition />
-            <ColumnDefinition />
-            <ColumnDefinition />
-            <ColumnDefinition />
+            <ColumnDefinition Width="2*"/>
+            <ColumnDefinition Width="3*"/>
         </Grid.ColumnDefinitions>
-        <TextBlock Grid.ColumnSpan="2">
-            <TextBlock.Text>
-                <Binding Path="Item.PropertyName" />
-            </TextBlock.Text></TextBlock>
-        <TextBox x:Name="box"
-                 Grid.Column="2"
-                 Grid.ColumnSpan="3"
-                 PreviewKeyDown="TextBox_PreviewKeyDown"
-                 PreviewTextInput="TextBox_String_PreviewTextInput"
-                 TextChanged="OnTextChanged">
-            <TextBox.Text>
-                <Binding Path="Item.Values[0]" />
-            </TextBox.Text>
-        </TextBox>
+        <TextBlock x:Name="textblock"
+                   x:FieldModifier="private"/>
+        <TextBox x:Name="textbox"
+                 x:FieldModifier="private"
+                 Grid.Column="1" />
         <Popup x:Name="popup"
+               x:FieldModifier="private"
                AllowsTransparency="True"
                IsOpen="False"
                Placement="Top"
@@ -53,19 +43,20 @@
                Visibility="Visible"
                VerticalOffset="-1">
             <Popup.PlacementTarget>
-                <Binding ElementName="box" />
+                <Binding ElementName="textbox" />
             </Popup.PlacementTarget>
             <Border Background="White"
                     BorderBrush="Red"
                     BorderThickness="1"
                     CornerRadius="3"
                     Margin="1,1,1,1">
-                <TextBlock x:Name="popupText"
+                <TextBlock x:Name="popuptext"
+                           x:FieldModifier="private"
                            Foreground="Red"
                            HorizontalAlignment="Center"
                            VerticalAlignment="Center"
                            Margin="0"
-                           TextWrapping="Wrap"></TextBlock>
+                           TextWrapping="Wrap" />
             </Border>
         </Popup>
     </Grid>

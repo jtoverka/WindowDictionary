@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Xml.Serialization;
 
-namespace WindowDictionary.Property
+namespace WindowDictionary.Property.Logic
 {
     /// <summary>
     /// Represents the base class for all Range objects.

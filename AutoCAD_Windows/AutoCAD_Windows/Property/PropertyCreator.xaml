@@ -29,14 +29,13 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="25" />
             <RowDefinition Height="*" />
-            <RowDefinition Height="40" />
+            <RowDefinition Height="25" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition />
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
         <Grid.Resources>
-            <converter:PropertyCreatorConverter x:Key="ListViewPropertyConverter" />
             <HierarchicalDataTemplate DataType="{x:Type local:PropertyGroup}"
                                       ItemsSource="{Binding Path=PropertyGroups}">
                 <TextBlock>
@@ -193,20 +192,9 @@
                     </Style>
                 </ListView.ItemContainerStyle>
                 <ListView.ItemsSource>
-                    <Binding Path="SelectedPropertyGroup"
-                             Converter="{StaticResource ListViewPropertyConverter}" />
+                    <Binding Path="PropertyItems.Items" />
                 </ListView.ItemsSource>
             </ListView>
         </Grid>
-        <UniformGrid Columns="2"
-                     Grid.Column="2"
-                     Grid.Row="3"
-                     HorizontalAlignment="Right"
-                     Width="250">
-            <Button Click="OK_Click"
-                    Content="OK" />
-            <Button Click="Cancel_Click"
-                    Content="Cancel" />
-        </UniformGrid>
     </Grid>
 </Window>

@@ -1,5 +1,5 @@
 ﻿
-namespace WindowDictionary.Property
+namespace WindowDictionary.Property.Logic
 {
     /// <summary>
     /// Provides the Logical Operators Available

@@ -3,31 +3,31 @@ using System.Threading;
 using System.Xml;
 using System.Xml.Serialization;
 
-namespace WindowDictionary.Property
+namespace WindowDictionary.Property.Logic
 {
     /// <summary>
-    /// Represents a double range of two doubles.
+    /// Represents a string range with two characters
     /// </summary>
     [Serializable]
-    public class DoubleRange : Range, IEquatable<DoubleRange>
+    public class CharRange : Range, IEquatable<CharRange>
     {
         #region Properties
 
-        private double _Min;
+        private char _Min;
         /// <summary>
         /// Gets or Sets the Min Component.
         /// </summary>
         [XmlElement("Min")]
-        public override object Min 
+        public override object Min
         {
             get { return this._Min; }
-            set 
+            set
             {
-                this._Min = Convert.ToDouble(value);
+                this._Min = Convert.ToChar(value);
             }
         }
 
-        private double _Max;
+        private char _Max;
         /// <summary>
         /// Gets or Sets the Max Component.
         /// </summary>
@@ -37,7 +37,7 @@ namespace WindowDictionary.Property
             get { return this._Max; }
             set
             {
-                this._Max = Convert.ToDouble(value);
+                this._Max = Convert.ToChar(value);
             }
         }
 
@@ -46,23 +46,23 @@ namespace WindowDictionary.Property
         #region Constructors
 
         /// <summary>
-        /// Initializes a new instance of DoubleRange.
+        /// Initializes a new instance of StringRange.
         /// </summary>
         /// <param name="min"></param>
         /// <param name="max"></param>
-        public DoubleRange(double min, double max)
+        public CharRange(char min, char max)
         {
             this.Min = min;
             this.Max = max;
         }
 
         /// <summary>
-        /// Initializes a new instance of DoubleRange.
+        /// Initializes a new instance of StringRange.
         /// </summary>
-        public DoubleRange()
+        public CharRange()
         {
-            this.Min = Double.MinValue;
-            this.Max = Double.MaxValue;
+            this.Min = Char.MinValue;
+            this.Max = Char.MaxValue;
         }
 
         #endregion
@@ -70,39 +70,39 @@ namespace WindowDictionary.Property
         #region Functions
 
         /// <summary>
-        /// Check if the components of two DoubleRanges are equal.
+        /// Check if the components of two StringRanges are equal.
         /// </summary>
         /// <param name="other"></param>
         /// <returns></returns>
-        public bool Equals(DoubleRange other)
+        public bool Equals(CharRange other)
         {
             return Equals(this, other);
         }
 
         /// <summary>
-        /// Check if the comopnents of two DoubleRanges are equal.
+        /// Check if the comopnents of two StringRanges are equal.
         /// </summary>
         /// <param name="a"></param>
         /// <param name="b"></param>
         /// <returns></returns>
-        public static bool Equals(DoubleRange a, DoubleRange b)
+        public static bool Equals (CharRange a, CharRange b)
         {
             return (a.Min == b.Min) && (a.Max == b.Max);
         }
 
         /// <summary>
-        /// Check if a double value is valid with the given range.
+        /// Check if a string is valid with the given range.
         /// </summary>
         /// <param name="a"></param>
         /// <param name="value"></param>
         /// <returns></returns>
-        public static bool IsValid(DoubleRange a, double value)
+        public static bool IsValid (CharRange a, string value)
         {
             return a.IsValid(value);
         }
 
         /// <summary>
-        /// Check if a double value is valid with this range.
+        /// Check if a character is valid with this range.
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
@@ -110,37 +110,37 @@ namespace WindowDictionary.Property
         {
             try
             {
-                value = System.Convert.ToDouble(value);
+                value = System.Convert.ToChar(value);
             }
             catch { }
 
-            if (value.GetType() != typeof(double))
-                throw new ArgumentException("The value needs to be double");
+            if (value.GetType() != typeof(char))
+                throw new ArgumentException("The value needs to be string");
 
-            var convert = Convert.ToDouble(value);
+            char character = System.Convert.ToChar(value);
 
-            if (convert < this._Min)
+            if (character < this._Min)
                 return false;
 
-            if (convert > this._Max)
+            if (character > this._Max)
                 return false;
 
             return true;
         }
 
         /// <summary>
-        /// Obtains a string that represents the DoubleRange.
+        /// Obtains a string that represents the StringRange.
         /// </summary>
         /// <returns></returns>
         public override string ToString()
         {
-            return string.Format("{0}{2}{1}", this._Min, this._Max, Thread.CurrentThread.CurrentCulture.TextInfo.ListSeparator);
+            return string.Format("{0}{2}{1}",this.Min, this.Max, Thread.CurrentThread.CurrentCulture.TextInfo.ListSeparator);
         }
 
         /// <summary>
-        /// Obtains a string that represents the DoubleRange.
+        /// Obtains a string that represents the StringRange.
         /// </summary>
-        /// <param name="provider">An IFormatProvider doubleerface implementation that supplies culture-specific formatting information. </param>
+        /// <param name="provider">An IFormatProvider interface implementation that supplies culture-specific formatting information. </param>
         /// <returns>A string text.</returns>
         public string ToString(IFormatProvider provider)
         {

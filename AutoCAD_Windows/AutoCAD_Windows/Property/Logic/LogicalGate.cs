@@ -5,7 +5,7 @@ using System.Xml;
 using System.Xml.Serialization;
 
 
-namespace WindowDictionary.Property
+namespace WindowDictionary.Property.Logic
 {
     /// <summary>
     /// Performs a logical operation 
@@ -80,6 +80,8 @@ namespace WindowDictionary.Property
                     foreach (Range range in RangeCollection)
                     {
                         output &= range.IsValid(value);
+                        if (!output)
+                            break;
                     }
                     break;
                 case LogicalOperator.NAND:
@@ -87,6 +89,8 @@ namespace WindowDictionary.Property
                     foreach (Range range in RangeCollection)
                     {
                         output &= range.IsValid(value);
+                        if (!output)
+                            break;
                     }
                     output = !output;
                     break;
@@ -95,6 +99,8 @@ namespace WindowDictionary.Property
                     foreach (Range range in RangeCollection)
                     {
                         output |= range.IsValid(value);
+                        if (output)
+                            break;
                     }
                     output = !output;
                     break;
@@ -106,6 +112,8 @@ namespace WindowDictionary.Property
                     foreach (Range range in RangeCollection)
                     {
                         output |= range.IsValid(value);
+                        if (output)
+                            break;
                     }
                     break;
                 case LogicalOperator.XOR:

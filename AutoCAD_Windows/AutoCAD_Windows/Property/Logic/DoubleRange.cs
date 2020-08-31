@@ -3,30 +3,31 @@ using System.Threading;
 using System.Xml;
 using System.Xml.Serialization;
 
-namespace WindowDictionary.Property
+namespace WindowDictionary.Property.Logic
 {
     /// <summary>
-    /// Represents an integer range of two integers.
+    /// Represents a double range of two doubles.
     /// </summary>
-    public class IntegerRange : Range, IEquatable<IntegerRange>
+    [Serializable]
+    public class DoubleRange : Range, IEquatable<DoubleRange>
     {
         #region Properties
 
-        private int _Min;
+        private double _Min;
         /// <summary>
         /// Gets or Sets the Min Component.
         /// </summary>
         [XmlElement("Min")]
-        public override object Min
+        public override object Min 
         {
             get { return this._Min; }
-            set
+            set 
             {
-                this._Min = Convert.ToInt32(value);
+                this._Min = Convert.ToDouble(value);
             }
         }
 
-        private int _Max;
+        private double _Max;
         /// <summary>
         /// Gets or Sets the Max Component.
         /// </summary>
@@ -36,7 +37,7 @@ namespace WindowDictionary.Property
             get { return this._Max; }
             set
             {
-                this._Max = Convert.ToInt32(value);
+                this._Max = Convert.ToDouble(value);
             }
         }
 
@@ -45,23 +46,23 @@ namespace WindowDictionary.Property
         #region Constructors
 
         /// <summary>
-        /// Initializes a new instance of IntegerRange.
+        /// Initializes a new instance of DoubleRange.
         /// </summary>
         /// <param name="min"></param>
         /// <param name="max"></param>
-        public IntegerRange(int min, int max)
+        public DoubleRange(double min, double max)
         {
             this.Min = min;
             this.Max = max;
         }
 
         /// <summary>
-        /// Initializes a new instance of IntegerRange.
+        /// Initializes a new instance of DoubleRange.
         /// </summary>
-        public IntegerRange()
+        public DoubleRange()
         {
-            this.Min = int.MinValue;
-            this.Max = int.MaxValue;
+            this.Min = Double.MinValue;
+            this.Max = Double.MaxValue;
         }
 
         #endregion
@@ -69,39 +70,39 @@ namespace WindowDictionary.Property
         #region Functions
 
         /// <summary>
-        /// Check if the components of two IntegerRanges are equal.
+        /// Check if the components of two DoubleRanges are equal.
         /// </summary>
         /// <param name="other"></param>
         /// <returns></returns>
-        public bool Equals(IntegerRange other)
+        public bool Equals(DoubleRange other)
         {
             return Equals(this, other);
         }
 
         /// <summary>
-        /// Check if the comopnents of two IntegerRanges are equal.
+        /// Check if the comopnents of two DoubleRanges are equal.
         /// </summary>
         /// <param name="a"></param>
         /// <param name="b"></param>
         /// <returns></returns>
-        public static bool Equals(IntegerRange a, IntegerRange b)
+        public static bool Equals(DoubleRange a, DoubleRange b)
         {
             return (a.Min == b.Min) && (a.Max == b.Max);
         }
 
         /// <summary>
-        /// Check if an integer is valid with the given range.
+        /// Check if a double value is valid with the given range.
         /// </summary>
         /// <param name="a"></param>
         /// <param name="value"></param>
         /// <returns></returns>
-        public static bool IsValid(IntegerRange a, int value)
+        public static bool IsValid(DoubleRange a, double value)
         {
             return a.IsValid(value);
         }
 
         /// <summary>
-        /// Check if an integer is valid with this range.
+        /// Check if a double value is valid with this range.
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
@@ -109,14 +110,14 @@ namespace WindowDictionary.Property
         {
             try
             {
-                value = System.Convert.ToInt32(value);
+                value = System.Convert.ToDouble(value);
             }
             catch { }
 
-            if (value.GetType() != typeof(int))
-                throw new ArgumentException("The value needs to be integer");
+            if (value.GetType() != typeof(double))
+                throw new ArgumentException("The value needs to be double");
 
-            var convert = Convert.ToInt32(value);
+            var convert = Convert.ToDouble(value);
 
             if (convert < this._Min)
                 return false;
@@ -128,7 +129,7 @@ namespace WindowDictionary.Property
         }
 
         /// <summary>
-        /// Obtains a string that represents the IntegerRange.
+        /// Obtains a string that represents the DoubleRange.
         /// </summary>
         /// <returns></returns>
         public override string ToString()
@@ -137,9 +138,9 @@ namespace WindowDictionary.Property
         }
 
         /// <summary>
-        /// Obtains a string that represents the IntegerRange.
+        /// Obtains a string that represents the DoubleRange.
         /// </summary>
-        /// <param name="provider">An IFormatProvider interface implementation that supplies culture-specific formatting information. </param>
+        /// <param name="provider">An IFormatProvider doubleerface implementation that supplies culture-specific formatting information. </param>
         /// <returns>A string text.</returns>
         public string ToString(IFormatProvider provider)
         {

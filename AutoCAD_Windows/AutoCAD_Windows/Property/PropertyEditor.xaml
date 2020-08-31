@@ -32,7 +32,6 @@
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
         <Grid.Resources>
-            <converter:PropertyCreatorConverter x:Key="ListViewPropertyConverter" />
             <HierarchicalDataTemplate DataType="{x:Type local:PropertyGroup}"
                                       ItemsSource="{Binding Path=PropertyGroups}">
                 <TextBlock>
@@ -139,8 +138,7 @@
                       HorizontalContentAlignment="Stretch"
                       Margin="5,10,10,10">
                 <ListView.ItemsSource>
-                    <Binding Path="SelectedPropertyGroup"
-                             Converter="{StaticResource ListViewPropertyConverter}" />
+                    <Binding Path="PropertyItems" />
                 </ListView.ItemsSource>
             </ListView>
         </Grid>

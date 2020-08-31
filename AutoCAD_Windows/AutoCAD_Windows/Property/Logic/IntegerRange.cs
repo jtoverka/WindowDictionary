@@ -3,18 +3,16 @@ using System.Threading;
 using System.Xml;
 using System.Xml.Serialization;
 
-namespace WindowDictionary.Property
+namespace WindowDictionary.Property.Logic
 {
     /// <summary>
-    /// Represents an booleger range of two boolegers.
+    /// Represents an integer range of two integers.
     /// </summary>
-    [XmlInclude(typeof(LogicalGate))]
-    [Serializable]
-    public class BooleanRange : Range, IEquatable<BooleanRange>
+    public class IntegerRange : Range, IEquatable<IntegerRange>
     {
         #region Properties
 
-        private bool _Min = false;
+        private int _Min;
         /// <summary>
         /// Gets or Sets the Min Component.
         /// </summary>
@@ -24,11 +22,11 @@ namespace WindowDictionary.Property
             get { return this._Min; }
             set
             {
-                this._Min = Convert.ToBoolean(value);
+                this._Min = Convert.ToInt32(value);
             }
         }
 
-        private bool _Max = true;
+        private int _Max;
         /// <summary>
         /// Gets or Sets the Max Component.
         /// </summary>
@@ -38,8 +36,32 @@ namespace WindowDictionary.Property
             get { return this._Max; }
             set
             {
-                this._Max = Convert.ToBoolean(value);
+                this._Max = Convert.ToInt32(value);
             }
+        }
+
+        #endregion
+
+        #region Constructors
+
+        /// <summary>
+        /// Initializes a new instance of IntegerRange.
+        /// </summary>
+        /// <param name="min"></param>
+        /// <param name="max"></param>
+        public IntegerRange(int min, int max)
+        {
+            this.Min = min;
+            this.Max = max;
+        }
+
+        /// <summary>
+        /// Initializes a new instance of IntegerRange.
+        /// </summary>
+        public IntegerRange()
+        {
+            this.Min = int.MinValue;
+            this.Max = int.MaxValue;
         }
 
         #endregion
@@ -47,39 +69,39 @@ namespace WindowDictionary.Property
         #region Functions
 
         /// <summary>
-        /// Check if the components of two BooleanRanges are equal.
+        /// Check if the components of two IntegerRanges are equal.
         /// </summary>
         /// <param name="other"></param>
         /// <returns></returns>
-        public bool Equals(BooleanRange other)
+        public bool Equals(IntegerRange other)
         {
             return Equals(this, other);
         }
 
         /// <summary>
-        /// Check if the comopnents of two BooleanRanges are equal.
+        /// Check if the comopnents of two IntegerRanges are equal.
         /// </summary>
         /// <param name="a"></param>
         /// <param name="b"></param>
         /// <returns></returns>
-        public static bool Equals(BooleanRange a, BooleanRange b)
+        public static bool Equals(IntegerRange a, IntegerRange b)
         {
             return (a.Min == b.Min) && (a.Max == b.Max);
         }
 
         /// <summary>
-        /// Check if an booleger is valid with the given range.
+        /// Check if an integer is valid with the given range.
         /// </summary>
         /// <param name="a"></param>
         /// <param name="value"></param>
         /// <returns></returns>
-        public static bool IsValid(BooleanRange a, bool value)
+        public static bool IsValid(IntegerRange a, int value)
         {
             return a.IsValid(value);
         }
 
         /// <summary>
-        /// Check if an booleger is valid with this range.
+        /// Check if an integer is valid with this range.
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
@@ -87,20 +109,26 @@ namespace WindowDictionary.Property
         {
             try
             {
-                value = System.Convert.ToBoolean(value);
+                value = System.Convert.ToInt32(value);
             }
             catch { }
 
-            if (value.GetType() != typeof(bool))
-                throw new ArgumentException("The value needs to be boolean");
+            if (value.GetType() != typeof(int))
+                throw new ArgumentException("The value needs to be integer");
 
-            var convert = Convert.ToBoolean(value);
+            var convert = Convert.ToInt32(value);
 
-            return convert;
+            if (convert < this._Min)
+                return false;
+
+            if (convert > this._Max)
+                return false;
+
+            return true;
         }
 
         /// <summary>
-        /// Obtains a string that represents the BooleanRange.
+        /// Obtains a string that represents the IntegerRange.
         /// </summary>
         /// <returns></returns>
         public override string ToString()
@@ -109,9 +137,9 @@ namespace WindowDictionary.Property
         }
 
         /// <summary>
-        /// Obtains a string that represents the BooleanRange.
+        /// Obtains a string that represents the IntegerRange.
         /// </summary>
-        /// <param name="provider">An IFormatProvider boolerface implementation that supplies culture-specific formatting information. </param>
+        /// <param name="provider">An IFormatProvider interface implementation that supplies culture-specific formatting information. </param>
         /// <returns>A string text.</returns>
         public string ToString(IFormatProvider provider)
         {

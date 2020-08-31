@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
-using System.Windows;
 using System.Xml;
 using System.Xml.Serialization;
 
@@ -13,11 +13,17 @@ namespace WindowDictionary.Property
     [Serializable]
     public class PropertyGroup : INotifyPropertyChanged
     {
-        #region Properties
+        #region Fields
 
         private object _Parent;
+        private string _Title = "Root";
+
+        #endregion
+
+        #region Properties
+
         /// <summary>
-        /// Holds reference to the parent object
+        /// Gets or Sets the reference to the parent object
         /// </summary>
         [XmlIgnore]
         public object Parent
@@ -33,9 +39,8 @@ namespace WindowDictionary.Property
             }
         }
 
-        private string _Title = "Root";
         /// <summary>
-        /// Displays the title of the group
+        /// Gets or Sets the title of the group
         /// </summary>
         [XmlElement("Title")]
         public string Title
@@ -52,13 +57,13 @@ namespace WindowDictionary.Property
         }
 
         /// <summary>
-        /// Collection of other <see cref="PropertyGroup">Property Groups</see> in a hierarchy
+        /// Gets the Collection of other <see cref="PropertyGroup">Property Groups</see> in a hierarchy
         /// </summary>
         [XmlElement("PropertyGroups")]
         public ObservableCollection<PropertyGroup> PropertyGroups { get; } = new ObservableCollection<PropertyGroup>();
 
         /// <summary>
-        /// Collection of <see cref="PropertyItem">Property Items</see> within this group
+        /// Gets the Collection of <see cref="PropertyItem">Property Items</see> within this group
         /// </summary>
         [XmlElement("PropertyItems")]
         public ObservableCollection<PropertyItem> PropertyItems { get; } = new ObservableCollection<PropertyItem>();
@@ -68,7 +73,7 @@ namespace WindowDictionary.Property
         #region Constructors
 
         /// <summary>
-        /// Initializes a new instance of this class
+        /// Initializes a new instance of this class.
         /// </summary>
         public PropertyGroup()
         {
@@ -85,33 +90,46 @@ namespace WindowDictionary.Property
         /// </summary>
         public event PropertyChangedEventHandler PropertyChanged;
 
+        /// <summary>
+        /// Invokes the <see cref="PropertyChanged"/> event.
+        /// </summary>
+        /// <param name="property"></param>
         private void OnPropertyChanged(string property)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
         }
-        private void PropertyItems_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+
+        /// <summary>
+        /// Sets the parent of all items added to the <see cref="PropertyItems"/> collection to this object.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void PropertyItems_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            var collection = sender as ObservableCollection<PropertyItem>;
-            if ((e.NewItems.Count > 0) && (collection != null))
+            if (e.NewItems?.Count > 0)
             {
-                foreach (PropertyItem item in collection)
+                foreach (PropertyItem item in e.NewItems)
                 {
                     item.Parent = this;
-                    OnPropertyChanged("PropertyItems");
                 }
+                OnPropertyChanged("PropertyItems");
             }
         }
 
-        private void PropertyGroups_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        /// <summary>
+        /// Sets the parent of all items added to the <see cref="PropertyItems"/> collection to this object.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void PropertyGroups_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            var collection = sender as ObservableCollection<PropertyGroup>;
-            if ((e.NewItems?.Count > 0) && (collection != null))
+            if (e.NewItems?.Count > 0)
             {
-                foreach (PropertyGroup item in collection)
+                foreach (PropertyGroup item in e.NewItems)
                 {
                     item.Parent = this;
-                    OnPropertyChanged("PropertyGroups");
                 }
+                OnPropertyChanged("PropertyGroups");
             }
         }
 

@@ -9,6 +9,11 @@ using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using System.Xml.Serialization;
 using WindowDictionary.Resources;
+using WindowDictionary.Property.Logic;
+using WindowDictionary.Property.ListViewItems;
+using WindowDictionary.Resources;
+using System.Windows.Data;
+using System.Collections;
 
 namespace WindowDictionary.Property
 {
@@ -19,26 +24,15 @@ namespace WindowDictionary.Property
     {
         #region Fields
 
-        /// <summary>
-        /// Keeps track if the current program needs to be saved
-        /// </summary>
         private bool changedState;
-
-        /// <summary>
-        /// The filename the MainWindow is operating on
-        /// </summary>
         private string filename;
-
-        /// <summary>
-        /// Keeps track of drag and move from maximized to normal window views
-        /// </summary>
-        public bool mRestoreForDragMove;
+        private bool mRestoreForDragMove;
+        private PropertyGroup _SelectedPropertyGroup;
 
         #endregion
 
         #region Properties
 
-        private PropertyGroup _SelectedPropertyGroup;
         /// <summary>
         /// Property Group Selected under groups
         /// </summary>
@@ -51,29 +45,33 @@ namespace WindowDictionary.Property
                     return;
 
                 this._SelectedPropertyGroup = value;
+
+                PropertyItems = Convert(value);
+
                 OnPropertyChanged("SelectedPropertyGroup");
             }
         }
 
         /// <summary>
-        /// Collection of <see cref="PropertyGroup">Property Groups</see>
+        /// Gets the collection of <see cref="PropertyGroup"/> objects.
         /// </summary>
         public ObservableCollection<PropertyGroup> PropertyGroups { get; } = new ObservableCollection<PropertyGroup>();
 
-        private System.Windows.Forms.DialogResult _Result = System.Windows.Forms.DialogResult.None;
+
+        private ListView _PropertyItems;
         /// <summary>
-        /// The result of the dialog box
+        /// 
         /// </summary>
-        public System.Windows.Forms.DialogResult Result
+        public ListView PropertyItems
         {
-            get { return this._Result; }
+            get { return _PropertyItems; }
             set
             {
-                if (this._Result == value)
+                if (_PropertyItems == value)
                     return;
 
-                this._Result = value;
-                OnPropertyChanged("Result");
+                _PropertyItems = value;
+                OnPropertyChanged("PropertyItems");
             }
         }
 
@@ -278,15 +276,8 @@ namespace WindowDictionary.Property
             }
         }
 
-        private void OK_Click(object sender, RoutedEventArgs e)
-        {
-            this.Result = System.Windows.Forms.DialogResult.OK;
-            this.CloseApplication();
-        }
-
         private void Cancel_Click(object sender, RoutedEventArgs e)
         {
-            this.Result = System.Windows.Forms.DialogResult.Cancel;
             this.CloseApplication();
         }
 
@@ -666,21 +657,101 @@ namespace WindowDictionary.Property
             }
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        public void AddGroup_Button_Click(object sender, RoutedEventArgs e)
-        {
-            var button = sender as ListItemButton;
 
-            if (button == null)
+        private void TextBox_Double_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            UILibrary.TextBox_Double_PreviewKeyDown(sender, e);
+        }
+
+        private void TextBox_Double_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            UILibrary.TextBox_Double_PreviewTextInput(sender, e);
+
+            if (e.Handled == true)
                 return;
 
-            PropertyGroup group = button.ParentGroup;
+            TextBox textbox = sender as TextBox;
+            ListViewItem listviewitem = textbox.DataContext as ListViewItem;
+            PropertyItem Item = listviewitem.Tag as PropertyItem;
 
-            group.PropertyGroups.Add(InitializeGroup("Group"));
+            string text = UILibrary.TextBox_PreviewTextInput(sender, e);
+
+            if (!Item.ValueRange.IsValid(text))
+            {
+                e.Handled = true;
+
+            }
+        }
+
+        private void TextBox_Integer_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            UILibrary.TextBox_Integer_PreviewKeyDown(sender, e);
+        }
+
+        private void TextBox_Integer_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            UILibrary.TextBox_String_PreviewTextInput(sender, e);
+
+            if (e.Handled == true)
+                return;
+
+            TextBox textbox = sender as TextBox;
+            ListViewItem listviewitem = textbox.DataContext as ListViewItem;
+            PropertyItem Item = listviewitem.Tag as PropertyItem;
+
+            string text = UILibrary.TextBox_PreviewTextInput(sender, e);
+
+            if (!Item.ValueRange.IsValid(text))
+            {
+                e.Handled = true;
+
+            }
+        }
+
+        private void Up_Button_Click(object sender, RoutedEventArgs e)
+        {
+            var control = sender as Control;
+            var valueList = control.DataContext as LVI_ValueList;
+
+            PropertyItem item = SelectedPropertyGroup.PropertyItems[3];
+            
+            UILibrary.Up_Button_Click(sender, e, valueList.ListView.SelectedItems, item.Values);
+        }
+        private void Down_Button_Click(object sender, RoutedEventArgs e)
+        {
+            var control = sender as Control;
+            var valueList = control.DataContext as LVI_ValueList;
+
+            PropertyItem item = SelectedPropertyGroup.PropertyItems[3];
+
+            UILibrary.Down_Button_Click(sender, e, valueList.ListView.SelectedItems, item.Values);
+        }
+        private void Top_Button_Click(object sender, RoutedEventArgs e)
+        {
+            var control = sender as Control;
+            var valueList = control.DataContext as LVI_ValueList;
+
+            PropertyItem item = SelectedPropertyGroup.PropertyItems[3];
+
+            UILibrary.Top_Button_Click(sender, e, valueList.ListView.SelectedItems, item.Values);
+        }
+        private void Bottom_Button_Click(object sender, RoutedEventArgs e)
+        {
+            var control = sender as Control;
+            var valueList = control.DataContext as LVI_ValueList;
+
+            PropertyItem item = SelectedPropertyGroup.PropertyItems[3];
+
+            UILibrary.Bottom_Button_Click(sender, e, valueList.ListView.SelectedItems, item.Values);
+        }
+        private void Remove_Button_Click(object sender, RoutedEventArgs e)
+        {
+            var control = sender as Control;
+            var valueList = control.DataContext as LVI_ValueList;
+
+            PropertyItem item = SelectedPropertyGroup.PropertyItems[3];
+
+            UILibrary.Remove_Button_Click(sender, e, valueList.ListView.SelectedItems, item.Values);
         }
 
         /// <summary>
@@ -688,15 +759,9 @@ namespace WindowDictionary.Property
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        public void DeleteGroup_Button_Click(object sender, RoutedEventArgs e)
+        private void AddGroup_Button_Click(object sender, RoutedEventArgs e)
         {
-            var button = sender as ListItemButton;
-
-            if (button == null)
-                return;
-
-            PropertyGroup group = button.ParentGroup;
-            (group.Parent as PropertyGroup).PropertyGroups.Remove(group);
+            SelectedPropertyGroup.PropertyGroups.Add(InitializeGroup("Group"));
         }
 
         /// <summary>
@@ -704,16 +769,21 @@ namespace WindowDictionary.Property
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        public void AddProperty_Button_Click (object sender, RoutedEventArgs e)
+        private void DeleteGroup_Button_Click(object sender, RoutedEventArgs e)
         {
-            var button = sender as ListItemButton;
+            PropertyGroup group = SelectedPropertyGroup.Parent as PropertyGroup;
 
-            if (button == null)
-                return;
+            group.PropertyGroups.Remove(SelectedPropertyGroup);
+        }
 
-            PropertyGroup group = button.ParentGroup;
-
-            group.PropertyGroups.Add(InitializeProperty("Property"));
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void AddProperty_Button_Click (object sender, RoutedEventArgs e)
+        {
+            SelectedPropertyGroup.PropertyGroups.Add(InitializeProperty("Property"));
         }
 
         /// <summary>
@@ -723,17 +793,9 @@ namespace WindowDictionary.Property
         /// <param name="e"></param>
         public void Rename_Text_Input (object sender, TextChangedEventArgs e)
         {
-            var group = sender as ListItemString;
-            
-            if ((group == null) && (group.Item != null))
-                return;
+            var textbox = sender as TextBox;
 
-            var parent = group.Item.Parent as PropertyGroup;
-
-            if (parent == null)
-                return;
-
-            parent.Title = group.Item.Values[0].ToString();
+            SelectedPropertyGroup.Title = textbox.Text;
         }
 
         /// <summary>
@@ -743,174 +805,25 @@ namespace WindowDictionary.Property
         /// <param name="e"></param>
         public void Add_Value_Button_Click(object sender, RoutedEventArgs e)
         {
-            var element = sender as ListViewSelection;
+            var button = sender as Control;
+            var element = button.DataContext as LVI_ValueList;
+            var property = element.Tag as PropertyItem;
 
-            if (element.Item.Values.Contains(element.text.Text))
+            if (property.Values.Contains(element.TextBox.Text))
             {
-                element.TriggerPopup("No Duplicates are allowed!");
+                //element.TriggerPopup("No Duplicates are allowed!");
             }
             else
-            if (element.text.Text == "")
+            if (element.TextBox.Text == "")
             {
-                element.TriggerPopup("Null values not allowed!");
+                //element.TriggerPopup("Null values not allowed!");
             }
             else
             {
-                element.Item.Values.Add(element.text.Text);
-                element.text.Text = "";
+                property.Values.Add(element.TextBox.Text);
+                element.TextBox.Text = "";
             }
         }
-
-        /// <summary>
-        /// Modify UI depending on the ListItems Collection
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        public void ListItems_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            NotifyCollectionChangedAction action = e.Action;
-
-            var element = sender as ListViewSelection;
-            PropertyItem item = element.Item;
-            var parent = item.Parent as PropertyGroup;
-            int index = parent.PropertyItems[2].ValueIndex;
-
-
-            ObservableCollection<object> listitems = item.Values;
-
-            int count = listitems.Count;
-
-            switch ((PropertyType)index)
-            {
-                case PropertyType.Boolean:
-                    return;
-                case PropertyType.Double:
-                    if (count > 0)
-                    {
-                        element.text.IsEnabled = false;
-                        element.Add_Button.IsEnabled = false;
-                        element.Remove_Button.IsEnabled = true;
-                    }
-                    else
-                    {
-                        element.text.IsEnabled = true;
-                        element.Add_Button.IsEnabled = true;
-                        element.Remove_Button.IsEnabled = false;
-                    }
-                    break;
-                case PropertyType.Integer:
-                    if (count > 0)
-                    {
-                        element.text.IsEnabled = false;
-                        element.Add_Button.IsEnabled = false;
-                        element.Remove_Button.IsEnabled = true;
-                    }
-                    else
-                    {
-                        element.text.IsEnabled = true;
-                        element.Add_Button.IsEnabled = true;
-                        element.Remove_Button.IsEnabled = false;
-                    }
-                    break;
-                case PropertyType.SelectionString:
-                    if (count > 0)
-                    {
-                        element.text.IsEnabled = true;
-                        element.Up_Button.IsEnabled = true;
-                        element.Down_Button.IsEnabled = true;
-                        element.Top_Button.IsEnabled = true;
-                        element.Bottom_Button.IsEnabled = true;
-                        element.Remove_Button.IsEnabled = true;
-                    }
-                    else
-                    {
-                        element.text.IsEnabled = true;
-                        element.Up_Button.IsEnabled = false;
-                        element.Down_Button.IsEnabled = false;
-                        element.Top_Button.IsEnabled = false;
-                        element.Bottom_Button.IsEnabled = false;
-                        element.Remove_Button.IsEnabled = false;
-                    }
-                    break;
-                case PropertyType.SelectionEditDouble:
-                    if (count > 0)
-                    {
-                        element.text.IsEnabled = true;
-                        element.Up_Button.IsEnabled = true;
-                        element.Down_Button.IsEnabled = true;
-                        element.Top_Button.IsEnabled = true;
-                        element.Bottom_Button.IsEnabled = true;
-                        element.Remove_Button.IsEnabled = true;
-                    }
-                    else
-                    {
-                        element.text.IsEnabled = true;
-                        element.Up_Button.IsEnabled = false;
-                        element.Down_Button.IsEnabled = false;
-                        element.Top_Button.IsEnabled = false;
-                        element.Bottom_Button.IsEnabled = false;
-                        element.Remove_Button.IsEnabled = false;
-                    }
-                    break;
-                case PropertyType.SelectionEditInteger:
-                    if (count > 0)
-                    {
-                        element.text.IsEnabled = true;
-                        element.Up_Button.IsEnabled = true;
-                        element.Down_Button.IsEnabled = true;
-                        element.Top_Button.IsEnabled = true;
-                        element.Bottom_Button.IsEnabled = true;
-                        element.Remove_Button.IsEnabled = true;
-                    }
-                    else
-                    {
-                        element.text.IsEnabled = true;
-                        element.Up_Button.IsEnabled = false;
-                        element.Down_Button.IsEnabled = false;
-                        element.Top_Button.IsEnabled = false;
-                        element.Bottom_Button.IsEnabled = false;
-                        element.Remove_Button.IsEnabled = false;
-                    }
-                    break;
-                case PropertyType.SelectionEditString:
-                    if (count > 0)
-                    {
-                        element.text.IsEnabled = true;
-                        element.Up_Button.IsEnabled = true;
-                        element.Down_Button.IsEnabled = true;
-                        element.Top_Button.IsEnabled = true;
-                        element.Bottom_Button.IsEnabled = true;
-                        element.Remove_Button.IsEnabled = true;
-                    }
-                    else
-                    {
-                        element.text.IsEnabled = true;
-                        element.Up_Button.IsEnabled = false;
-                        element.Down_Button.IsEnabled = false;
-                        element.Top_Button.IsEnabled = false;
-                        element.Bottom_Button.IsEnabled = false;
-                        element.Remove_Button.IsEnabled = false;
-                    }
-                    break;
-                case PropertyType.String:
-                    if (count > 0)
-                    {
-                        element.Add_Button.IsEnabled = false;
-                        element.Remove_Button.IsEnabled = true;
-                        element.text.IsEnabled = false;
-                    }
-                    else
-                    {
-                        element.Add_Button.IsEnabled = true;
-                        element.Remove_Button.IsEnabled = false;
-                        element.text.IsEnabled = true;
-                    }
-                    break;
-                default:
-                    break;
-            }
-        }
-
 
         /// <summary>
         /// Trigger TextBox_PreviewKeyDown event
@@ -919,7 +832,7 @@ namespace WindowDictionary.Property
         /// <param name="e"></param>
         public void text_PreviewKeyDown(object sender, KeyEventArgs e)
         {
-            var element = sender as ListViewSelection;
+            var element = sender as TextBox;
 
             if (e.Key == Key.Enter)
             {
@@ -927,7 +840,7 @@ namespace WindowDictionary.Property
 
                 Add_Value_Button_Click(sender, null);
 
-                element.text.Focus();
+                element.Focus();
             }
         }
 
@@ -938,9 +851,10 @@ namespace WindowDictionary.Property
         /// <param name="e"></param>
         public void text_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
-            var element = sender as ListViewSelection;
+            var textbox = sender as TextBox;
+            var listItem = textbox.DataContext as ListViewItem;
 
-            PropertyItem item = element.Item;
+            PropertyItem item = listItem.Tag as PropertyItem;
             var parent = item.Parent as PropertyGroup;
             int index = parent.PropertyItems[2].ValueIndex;
             
@@ -954,22 +868,22 @@ namespace WindowDictionary.Property
                     errorMessage = "No values allowed for boolean!";
                     break;
                 case PropertyType.Double:
-                    allowed = UILibrary.IsTextAllowed(element.text.Text, TypeCode.Double);
+                    allowed = UILibrary.IsTextAllowed(textbox.Text, TypeCode.Double);
                     errorMessage = "The Value needs to be a double!";
                     break;
                 case PropertyType.Integer:
-                    allowed = UILibrary.IsTextAllowed(element.text.Text, TypeCode.Int32);
+                    allowed = UILibrary.IsTextAllowed(textbox.Text, TypeCode.Int32);
                     errorMessage = "The Value needs to be an Integer (32 bit)!";
                     break;
                 case PropertyType.SelectionString:
                     allowed = true;
                     break;
                 case PropertyType.SelectionEditDouble:
-                    allowed = UILibrary.IsTextAllowed(element.text.Text, TypeCode.Double);
+                    allowed = UILibrary.IsTextAllowed(textbox.Text, TypeCode.Double);
                     errorMessage = "The Value needs to be a double!";
                     break;
                 case PropertyType.SelectionEditInteger:
-                    allowed = UILibrary.IsTextAllowed(element.text.Text, TypeCode.Int32);
+                    allowed = UILibrary.IsTextAllowed(textbox.Text, TypeCode.Int32);
                     errorMessage = "The Value needs to be an Integer (32 bit)!";
                     break;
                 case PropertyType.SelectionEditString:
@@ -986,8 +900,184 @@ namespace WindowDictionary.Property
             {
                 e.Handled = true;
 
-                element.TriggerPopup(errorMessage);
+                //element.TriggerPopup(errorMessage);
             }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        private ListView Convert(object value)
+        {
+            if (value == null)
+                return null;
+
+            var itemParent = value as PropertyGroup;
+            var propertyItems = itemParent.PropertyItems;
+            var list = new ListView();
+
+            foreach (PropertyItem item in propertyItems)
+            {
+                int itemValueIndex = item.ValueIndex;
+                Range range = item.ValueRange;
+                PropertyType itemValueType = item.ValueType;
+                string itemPropertyName = item.PropertyName;
+
+                var PropertyNameBinding = new Binding("PropertyName") { Source = item };
+                var ValueZeroBinding = new Binding("Values[0]") { Source = item };
+                var ValueIndexBinding = new Binding("ValueIndex") { Source = item };
+                var ValuesBinding = new Binding("Values") { Source = item };
+
+                switch (item.ValueType)
+                {
+                    case PropertyType.Boolean:
+                        if (itemValueIndex == 4)
+                        {
+                            var button = new LVI_Button();
+
+                            button.TextBlock.SetBinding(TextBlock.TextProperty, PropertyNameBinding);
+                            button.Button.SetBinding(Button.ContentProperty, ValueZeroBinding);
+                            button.Tag = item;
+
+                            button.Button.Click += AddProperty_Button_Click;
+                            list.Items.Add(button);
+                        }
+                        else
+                        if (itemValueIndex == 3)
+                        {
+                            var button = new LVI_Button();
+
+                            button.TextBlock.SetBinding(TextBlock.TextProperty, PropertyNameBinding);
+                            button.Button.SetBinding(Button.ContentProperty, ValueZeroBinding);
+                            button.Tag = item;
+
+                            button.Button.Click += AddGroup_Button_Click;
+                            list.Items.Add(button);
+                        }
+                        else
+                        if (itemValueIndex == 2)
+                        {
+                            var button = new LVI_Button();
+
+                            button.TextBlock.SetBinding(TextBlock.TextProperty, PropertyNameBinding);
+                            button.Button.SetBinding(Button.ContentProperty, ValueZeroBinding);
+                            button.Tag = item;
+
+                            button.Button.Click += DeleteGroup_Button_Click;
+                            list.Items.Add(button);
+                        }
+                        else
+                        if (itemValueIndex == 1)
+                        {
+                            var listViewSelection = new LVI_ValueList();
+                            listViewSelection.TextBlock.SetBinding(TextBlock.TextProperty, PropertyNameBinding);
+                            listViewSelection.ListView.SetBinding(ItemsControl.ItemsSourceProperty, ValuesBinding);
+                            listViewSelection.TextBox.PreviewKeyDown += text_PreviewKeyDown;
+                            listViewSelection.TextBox.PreviewTextInput += text_PreviewTextInput;
+                            listViewSelection.AddButton.Click += Add_Value_Button_Click;
+                            listViewSelection.RemoveButton.Click += Remove_Button_Click;
+                            listViewSelection.TopButton.Click += Top_Button_Click;
+                            listViewSelection.BottomButton.Click += Bottom_Button_Click;
+                            listViewSelection.UpButton.Click += Up_Button_Click;
+                            listViewSelection.DownButton.Click += Down_Button_Click;
+                            listViewSelection.Tag = item;
+                            list.Items.Add(listViewSelection);
+                        }
+                        else
+                        if (itemValueIndex == 0)
+                        {
+                            var checkbox = new LVI_CheckBox();
+                            
+                            checkbox.CheckBox.SetBinding(CheckBox.IsCheckedProperty, ValueZeroBinding);
+                            checkbox.TextBlock.SetBinding(TextBlock.TextProperty, PropertyNameBinding);
+                            checkbox.Tag = item;
+
+                            list.Items.Add(checkbox);
+                        }
+                        break;
+                    case PropertyType.Double:
+                        var textBoxDouble = new LVI_TextBox();
+                       
+                        textBoxDouble.TextBlock.SetBinding(TextBlock.TextProperty, PropertyNameBinding);
+                        textBoxDouble.TextBox.SetBinding(TextBox.TextProperty, ValueZeroBinding);
+                        textBoxDouble.TextBox.PreviewKeyDown += TextBox_Double_PreviewKeyDown;
+                        textBoxDouble.TextBox.PreviewTextInput += TextBox_Double_PreviewTextInput;
+                        textBoxDouble.Tag = item;
+
+                        list.Items.Add(textBoxDouble);
+                        break;
+                    case PropertyType.Integer:
+                        var textBoxInteger = new LVI_TextBox();
+                        
+                        textBoxInteger.TextBlock.SetBinding(TextBlock.TextProperty, PropertyNameBinding);
+                        textBoxInteger.TextBox.SetBinding(TextBox.TextProperty, ValueZeroBinding);
+                        textBoxInteger.TextBox.PreviewKeyDown += TextBox_Integer_PreviewKeyDown;
+                        textBoxInteger.TextBox.PreviewTextInput += TextBox_Integer_PreviewTextInput;
+                        textBoxInteger.Tag = item;
+
+                        list.Items.Add(textBoxInteger);
+                        break;
+                    case PropertyType.SelectionString:
+                        var ComboString = new LVI_ComboBox();
+
+                        ComboString.TextBlock.SetBinding(TextBlock.TextProperty, PropertyNameBinding);
+                        ComboString.ComboBox.SetBinding(ComboBox.SelectedIndexProperty, ValueIndexBinding);
+                        ComboString.ComboBox.SetBinding(ComboBox.ItemsSourceProperty, ValuesBinding);
+                        ComboString.Tag = item;
+
+                        list.Items.Add(ComboString);
+                        break;
+                    case PropertyType.SelectionEditDouble:
+                        var ComboEditDouble = new LVI_ComboBox();
+
+                        ComboEditDouble.TextBlock.SetBinding(TextBlock.TextProperty, PropertyNameBinding);
+                        ComboEditDouble.ComboBox.SetBinding(ComboBox.SelectedValueProperty, ValueIndexBinding);
+                        ComboEditDouble.ComboBox.SetBinding(ComboBox.ItemsSourceProperty, ValuesBinding);
+                        ComboEditDouble.ComboBox.IsEditable = true;
+                        ComboEditDouble.Tag = item;
+
+                        list.Items.Add(ComboEditDouble);
+                        break;
+                    case PropertyType.SelectionEditInteger:
+                        var ComboEditInteger = new LVI_ComboBox();
+
+                        ComboEditInteger.TextBlock.SetBinding(TextBlock.TextProperty, PropertyNameBinding);
+                        ComboEditInteger.ComboBox.SetBinding(ComboBox.SelectedValueProperty, ValueIndexBinding);
+                        ComboEditInteger.ComboBox.SetBinding(ComboBox.ItemsSourceProperty, ValuesBinding);
+                        ComboEditInteger.ComboBox.IsEditable = true;
+                        ComboEditInteger.Tag = item;
+
+                        list.Items.Add(ComboEditInteger);
+                        break;
+                    case PropertyType.SelectionEditString:
+                        var ComboEditString = new LVI_ComboBox();
+
+                        ComboEditString.TextBlock.SetBinding(TextBlock.TextProperty, PropertyNameBinding);
+                        ComboEditString.ComboBox.SetBinding(ComboBox.SelectedValueProperty, ValueIndexBinding);
+                        ComboEditString.ComboBox.SetBinding(ComboBox.ItemsSourceProperty, ValuesBinding);
+                        ComboEditString.ComboBox.IsEditable = true;
+                        ComboEditString.Tag = item;
+
+                        list.Items.Add(ComboEditString);
+                        break;
+                    case PropertyType.String:
+                        var TextBoxString = new LVI_TextBox();
+
+                        TextBoxString.TextBlock.SetBinding(TextBlock.TextProperty, PropertyNameBinding);
+                        TextBoxString.TextBox.SetBinding(TextBox.TextProperty, ValueZeroBinding);
+                        TextBoxString.Tag = item;
+                        
+                        if (itemValueIndex == 0)
+                            TextBoxString.TextBox.TextChanged += Rename_Text_Input;
+                        
+                        list.Items.Add(TextBoxString);
+                        break;
+                }
+            }
+
+            return list;
         }
     }
 }

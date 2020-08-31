@@ -3,17 +3,18 @@ using System.Threading;
 using System.Xml;
 using System.Xml.Serialization;
 
-namespace WindowDictionary.Property
+namespace WindowDictionary.Property.Logic
 {
     /// <summary>
-    /// Represents a string range with two characters
+    /// Represents an booleger range of two boolegers.
     /// </summary>
+    [XmlInclude(typeof(LogicalGate))]
     [Serializable]
-    public class CharRange : Range, IEquatable<CharRange>
+    public class BooleanRange : Range, IEquatable<BooleanRange>
     {
         #region Properties
 
-        private char _Min;
+        private bool _Min = false;
         /// <summary>
         /// Gets or Sets the Min Component.
         /// </summary>
@@ -23,11 +24,11 @@ namespace WindowDictionary.Property
             get { return this._Min; }
             set
             {
-                this._Min = Convert.ToChar(value);
+                this._Min = Convert.ToBoolean(value);
             }
         }
 
-        private char _Max;
+        private bool _Max = true;
         /// <summary>
         /// Gets or Sets the Max Component.
         /// </summary>
@@ -37,32 +38,8 @@ namespace WindowDictionary.Property
             get { return this._Max; }
             set
             {
-                this._Max = Convert.ToChar(value);
+                this._Max = Convert.ToBoolean(value);
             }
-        }
-
-        #endregion
-
-        #region Constructors
-
-        /// <summary>
-        /// Initializes a new instance of StringRange.
-        /// </summary>
-        /// <param name="min"></param>
-        /// <param name="max"></param>
-        public CharRange(char min, char max)
-        {
-            this.Min = min;
-            this.Max = max;
-        }
-
-        /// <summary>
-        /// Initializes a new instance of StringRange.
-        /// </summary>
-        public CharRange()
-        {
-            this.Min = Char.MinValue;
-            this.Max = Char.MaxValue;
         }
 
         #endregion
@@ -70,39 +47,39 @@ namespace WindowDictionary.Property
         #region Functions
 
         /// <summary>
-        /// Check if the components of two StringRanges are equal.
+        /// Check if the components of two BooleanRanges are equal.
         /// </summary>
         /// <param name="other"></param>
         /// <returns></returns>
-        public bool Equals(CharRange other)
+        public bool Equals(BooleanRange other)
         {
             return Equals(this, other);
         }
 
         /// <summary>
-        /// Check if the comopnents of two StringRanges are equal.
+        /// Check if the comopnents of two BooleanRanges are equal.
         /// </summary>
         /// <param name="a"></param>
         /// <param name="b"></param>
         /// <returns></returns>
-        public static bool Equals (CharRange a, CharRange b)
+        public static bool Equals(BooleanRange a, BooleanRange b)
         {
             return (a.Min == b.Min) && (a.Max == b.Max);
         }
 
         /// <summary>
-        /// Check if a string is valid with the given range.
+        /// Check if an booleger is valid with the given range.
         /// </summary>
         /// <param name="a"></param>
         /// <param name="value"></param>
         /// <returns></returns>
-        public static bool IsValid (CharRange a, string value)
+        public static bool IsValid(BooleanRange a, bool value)
         {
             return a.IsValid(value);
         }
 
         /// <summary>
-        /// Check if a character is valid with this range.
+        /// Check if an booleger is valid with this range.
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
@@ -110,37 +87,31 @@ namespace WindowDictionary.Property
         {
             try
             {
-                value = System.Convert.ToChar(value);
+                value = System.Convert.ToBoolean(value);
             }
             catch { }
 
-            if (value.GetType() != typeof(char))
-                throw new ArgumentException("The value needs to be string");
+            if (value.GetType() != typeof(bool))
+                throw new ArgumentException("The value needs to be boolean");
 
-            char character = System.Convert.ToChar(value);
+            var convert = Convert.ToBoolean(value);
 
-            if (character < this._Min)
-                return false;
-
-            if (character > this._Max)
-                return false;
-
-            return true;
+            return convert;
         }
 
         /// <summary>
-        /// Obtains a string that represents the StringRange.
+        /// Obtains a string that represents the BooleanRange.
         /// </summary>
         /// <returns></returns>
         public override string ToString()
         {
-            return string.Format("{0}{2}{1}",this.Min, this.Max, Thread.CurrentThread.CurrentCulture.TextInfo.ListSeparator);
+            return string.Format("{0}{2}{1}", this._Min, this._Max, Thread.CurrentThread.CurrentCulture.TextInfo.ListSeparator);
         }
 
         /// <summary>
-        /// Obtains a string that represents the StringRange.
+        /// Obtains a string that represents the BooleanRange.
         /// </summary>
-        /// <param name="provider">An IFormatProvider interface implementation that supplies culture-specific formatting information. </param>
+        /// <param name="provider">An IFormatProvider boolerface implementation that supplies culture-specific formatting information. </param>
         /// <returns>A string text.</returns>
         public string ToString(IFormatProvider provider)
         {

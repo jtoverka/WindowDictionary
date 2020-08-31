@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Collections.ObjectModel;
 using System.Xml;
 using System.Xml.Serialization;
+using WindowDictionary.Property.Logic;
 
 namespace WindowDictionary.Property
 {
@@ -12,11 +13,20 @@ namespace WindowDictionary.Property
     [Serializable]
     public class PropertyItem : INotifyPropertyChanged
     {
-        #region Properties
+        #region Fields
 
         private object _Parent = null;
+        private string _PropertyName = "";
+        private Range _ValueRange = null;
+        private PropertyType _ValueType = PropertyType.String;
+        private int _ValueIndex = 0;
+
+        #endregion
+
+        #region Properties
+
         /// <summary>
-        /// Holds reference to the parent object
+        /// Gets or Sets the reference to the parent object.
         /// </summary>
         [XmlIgnore]
         public object Parent
@@ -32,9 +42,8 @@ namespace WindowDictionary.Property
             }
         }
 
-        private string _PropertyName = "";
         /// <summary>
-        /// Property Name to be displayed
+        /// Gets or Sets the property name of this object.
         /// </summary>
         [XmlElement("PropertyName")]
         public string PropertyName
@@ -50,9 +59,8 @@ namespace WindowDictionary.Property
             }
         }
 
-        private PropertyType _ValueType = PropertyType.String;
         /// <summary>
-        /// Property type input
+        /// Gets or Sets the property type input.
         /// </summary>
         [XmlElement("ValueType")]
         public PropertyType ValueType
@@ -68,9 +76,8 @@ namespace WindowDictionary.Property
             }
         }
 
-        private Range _ValueRange = null;
         /// <summary>
-        /// Restrictions for the value
+        /// Gets or Sets the restriction for this object.
         /// </summary>
         [XmlElement("ValueRange")]
         public Range ValueRange
@@ -87,9 +94,8 @@ namespace WindowDictionary.Property
         }
 
 
-        private int _ValueIndex = 0;
         /// <summary>
-        /// Index of the Values collection
+        /// Gets or Sets the index of the values collection.
         /// </summary>
         [XmlElement("ValueIndex")]
         public int ValueIndex
@@ -106,7 +112,7 @@ namespace WindowDictionary.Property
         }
 
         /// <summary>
-        /// Selection of values to choose from.
+        /// Gets the collection of values to choose from.
         /// </summary>
         [XmlElement("Values")]
         public ObservableCollection<object> Values { get; } = new ObservableCollection<object>();
