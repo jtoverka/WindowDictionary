@@ -23,7 +23,14 @@ namespace WindowDictionary.Property.Logic
             get { return this._Min; }
             set 
             {
-                this._Min = Convert.ToDouble(value);
+                try
+                {
+                    this._Min = Convert.ToDouble(value);
+                }
+                catch 
+                {
+                    this._Min = Double.MinValue;
+                }
             }
         }
 
@@ -37,7 +44,14 @@ namespace WindowDictionary.Property.Logic
             get { return this._Max; }
             set
             {
-                this._Max = Convert.ToDouble(value);
+                try
+                {
+                    this._Max = Convert.ToDouble(value);
+                }
+                catch
+                {
+                    this._Max = Double.MinValue;
+                }
             }
         }
 

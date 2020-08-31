@@ -63,6 +63,8 @@
     <Compile Include="Converters\CollectionItemConverter.cs" />
     <Compile Include="Converters\DoubleConverter.cs" />
     <Compile Include="Converters\IntegerConverter.cs" />
+    <Compile Include="Converters\LogicRangeConverter.cs" />
+    <Compile Include="Converters\RangeConverter.cs" />
     <Compile Include="Property\ListViewItems\LVI_Range.xaml.cs">
       <DependentUpon>LVI_Range.xaml</DependentUpon>
     </Compile>
@@ -91,6 +93,7 @@
       <DependentUpon>LayerTransparency.xaml</DependentUpon>
     </Compile>
     <Compile Include="Property\Logic\LogicalOperator.cs" />
+    <Compile Include="Property\Logic\RangeOperator.cs" />
     <Compile Include="Property\PropertyCreator.xaml.cs">
       <DependentUpon>PropertyCreator.xaml</DependentUpon>
     </Compile>

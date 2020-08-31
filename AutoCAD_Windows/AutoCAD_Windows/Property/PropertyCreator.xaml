@@ -9,7 +9,7 @@
         BorderThickness="0"
         Height="450"
         ResizeMode="CanResizeWithGrip"
-        MinHeight="500"
+        MinHeight="600"
         MinWidth="800"
         WindowStartupLocation="CenterScreen"
         WindowStyle="None"

@@ -23,7 +23,8 @@ namespace WindowDictionary.Property.Logic
             get { return this._Min; }
             set
             {
-                this._Min = Convert.ToChar(value);
+
+                this._Min = value.ToString().ToCharArray()[0];
             }
         }
 
@@ -37,7 +38,7 @@ namespace WindowDictionary.Property.Logic
             get { return this._Max; }
             set
             {
-                this._Max = Convert.ToChar(value);
+                this._Max = value.ToString().ToCharArray()[0];
             }
         }
 

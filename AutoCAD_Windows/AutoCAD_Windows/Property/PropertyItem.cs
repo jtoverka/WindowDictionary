@@ -17,7 +17,7 @@ namespace WindowDictionary.Property
 
         private object _Parent = null;
         private string _PropertyName = "";
-        private Range _ValueRange = null;
+        private Range _ValueRange = new LogicalGate(LogicalOperator.OR);
         private PropertyType _ValueType = PropertyType.String;
         private int _ValueIndex = 0;
 

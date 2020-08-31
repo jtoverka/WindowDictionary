@@ -17,19 +17,14 @@ namespace WindowDictionary.Property.Logic
         NAND,
 
         /// <summary>
-        /// NOR Operation
-        /// </summary>
-        NOR,
-
-        /// <summary>
-        /// NOT Operation
-        /// </summary>
-        NOT,
-
-        /// <summary>
         /// OR Operation
         /// </summary>
         OR,
+
+        /// <summary>
+        /// NOR Operation
+        /// </summary>
+        NOR,
 
         /// <summary>
         /// XOR Operation

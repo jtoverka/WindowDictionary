@@ -492,17 +492,17 @@ namespace WindowDictionary.Property
             #endregion
 
             #region Group Range Property
-            
-            // Limit the acceptable values
-            var range = new PropertyItem()
+
+            // Create property to allow range input
+            var rangeProperty = new PropertyItem()
             {
                 PropertyName = "Range",
                 ValueType = PropertyType.Boolean,
                 ValueIndex = 5,
+                ValueRange = new LogicalGate(),
             };
 
-            // Add Groups collection to root group
-            item.PropertyItems.Add(range);
+            item.PropertyItems.Add(rangeProperty);
 
             #endregion
 
@@ -590,7 +590,6 @@ namespace WindowDictionary.Property
             }
         }
 
-
         /// <summary>
         /// Save the current standard
         /// </summary>
@@ -656,7 +655,6 @@ namespace WindowDictionary.Property
                 }
             }
         }
-
 
         private void TextBox_Double_PreviewKeyDown(object sender, KeyEventArgs e)
         {
@@ -933,6 +931,15 @@ namespace WindowDictionary.Property
                 switch (item.ValueType)
                 {
                     case PropertyType.Boolean:
+                        if (itemValueIndex == 5)
+                        {
+                            var lvi_range = new LVI_Range
+                            {
+                                Root = item.ValueRange,
+                            };
+                            list.Items.Add(lvi_range);
+                        }
+                        else
                         if (itemValueIndex == 4)
                         {
                             var button = new LVI_Button();

@@ -104,9 +104,6 @@ namespace WindowDictionary.Property.Logic
                     }
                     output = !output;
                     break;
-                case LogicalOperator.NOT:
-                    output = !RangeCollection[0].IsValid(value);
-                    break;
                 case LogicalOperator.OR:
                     output = false;
                     foreach (Range range in RangeCollection)
