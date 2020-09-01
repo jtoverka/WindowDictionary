@@ -68,6 +68,9 @@
     <Compile Include="Property\ListViewItems\LVI_Range.xaml.cs">
       <DependentUpon>LVI_Range.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Property\ListViewItems\LVI_RangeItem.xaml.cs">
+      <DependentUpon>LVI_RangeItem.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Property\Logic\BooleanRange.cs" />
     <Compile Include="Converters\LayerTransparencyConverter.cs" />
     <Compile Include="Property\Logic\DoubleRange.cs" />
@@ -146,6 +149,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Property\ListViewItems\LVI_Button.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Property\ListViewItems\LVI_RangeItem.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

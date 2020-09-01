@@ -9,7 +9,7 @@
         BorderThickness="0"
         Height="450"
         ResizeMode="CanResizeWithGrip"
-        MinHeight="600"
+        MinHeight="700"
         MinWidth="800"
         WindowStartupLocation="CenterScreen"
         WindowStyle="None"
@@ -161,7 +161,9 @@
                       Grid.ColumnSpan="2"
                       Grid.Row="1"
                       HorizontalContentAlignment="Stretch"
-                      Margin="5,10,10,10">
+                      Margin="5,10,10,10"
+                      ScrollViewer.CanContentScroll="False">
+                
                 <ListView.ItemContainerStyle>
                     <Style TargetType="{x:Type ListViewItem}">
                         <Setter Property="Template">

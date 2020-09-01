@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.Xml.Serialization;
 
 namespace WindowDictionary.Property.Logic
@@ -15,6 +16,16 @@ namespace WindowDictionary.Property.Logic
     {
         #region Properties
 
+        /// <summary>
+        /// Gets or Sets the Parent Range object
+        /// </summary>
+        [XmlIgnore]
+        public abstract Object Parent { get; set; }
+        /// <summary>
+        /// Gets the Range Collection
+        /// </summary>
+        [XmlElement("RangeCollection")]
+        public abstract ObservableCollection<Range> RangeCollection { get; }
         /// <summary>
         /// Gets or Sets the Name of the Range
         /// </summary>

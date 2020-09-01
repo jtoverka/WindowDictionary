@@ -1,0 +1,127 @@
+﻿<ListViewItem x:Class="WindowDictionary.Property.ListViewItems.LVI_RangeItem"
+              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+              xmlns:local="clr-namespace:WindowDictionary.Property.ListViewItems"
+              mc:Ignorable="d"
+              MinWidth="200">
+    <ListViewItem.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../../StyleDictionary.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </ListViewItem.Resources>
+    <Grid Grid.Column="1">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="2*" />
+            <ColumnDefinition Width="3*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="22" />
+            <RowDefinition Height="27" />
+            <RowDefinition Height="58" />
+            <RowDefinition Height="27" />
+            <RowDefinition Height="27" />
+        </Grid.RowDefinitions>
+        <TextBlock Text="Logic Gate" />
+        <CheckBox x:Name="checkbox"
+                  x:FieldModifier="private"
+                  Grid.Column="1"/>
+        <TextBlock Grid.Row="1"
+                   Text="Range Type" />
+        <ComboBox x:Name="combobox"
+                  x:FieldModifier="private"
+                  Grid.Column="1"
+                  Grid.Row="1"
+                  Height="25"
+                  Margin="5,0,5,0" />
+        <UniformGrid Grid.ColumnSpan="2"
+                     Grid.Row="2"
+                     Rows="2">
+            <TextBlock Text="Minimum" />
+            <TextBox x:Name="min"
+                     x:FieldModifier="private"
+                     Margin="5,0,5,0">
+                <TextBox.Text>
+                    <Binding Path="SelectedRange.Min" />
+                </TextBox.Text>
+            </TextBox>
+            <TextBlock Text="Maximum" />
+            <TextBox x:Name="max"
+                     x:FieldModifier="private"
+                     Margin="5,0,5,0">
+                <TextBox.Text>
+                    <Binding Path="SelectedRange.Max" />
+                </TextBox.Text>
+            </TextBox>
+        </UniformGrid>
+        <Popup x:Name="min_popup"
+               x:FieldModifier="private"
+               AllowsTransparency="True"
+               IsOpen="False"
+               Placement="Top"
+               PopupAnimation="Slide"
+               StaysOpen="True"
+               Visibility="Visible"
+               VerticalOffset="-1">
+            <Popup.PlacementTarget>
+                <Binding ElementName="min" />
+            </Popup.PlacementTarget>
+            <Border Background="White"
+                    BorderBrush="Red"
+                    BorderThickness="1"
+                    CornerRadius="3"
+                    Margin="1,1,1,1">
+                <TextBlock x:Name="min_popupText"
+                           x:FieldModifier="private"
+                           Foreground="Red"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                           Margin="0"
+                           TextWrapping="Wrap" />
+            </Border>
+        </Popup>
+        <Popup x:Name="max_popup"
+               x:FieldModifier="private"
+               AllowsTransparency="True"
+               IsOpen="False"
+               Placement="Top"
+               PopupAnimation="Slide"
+               StaysOpen="True"
+               Visibility="Visible"
+               VerticalOffset="-1">
+            <Popup.PlacementTarget>
+                <Binding ElementName="max" />
+            </Popup.PlacementTarget>
+            <Border Background="White"
+                    BorderBrush="Red"
+                    BorderThickness="1"
+                    CornerRadius="3"
+                    Margin="1,1,1,1">
+                <TextBlock x:Name="max_popupText"
+                           x:FieldModifier="private"
+                           Foreground="Red"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                           Margin="0"
+                           TextWrapping="Wrap" />
+            </Border>
+        </Popup>
+        <TextBlock Grid.Row="3"
+                   Text="New Range" />
+        <Button x:Name="button"
+                x:FieldModifier="private"
+                Grid.Column="1"
+                Grid.Row="3"
+                Content="New" />
+        <TextBlock Grid.Row="4"
+                   Text="Delete Range" />
+        <Button x:Name="delete"
+                x:FieldModifier="private"
+                Grid.Column="1"
+                Grid.Row="4"
+                Content="Delete" />
+    </Grid>
+</ListViewItem>

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Threading;
 using System.Xml;
@@ -14,21 +15,18 @@ namespace WindowDictionary.Property.Logic
     {
         #region Properties
 
-        private string _Label;
+        /// <summary>
+        /// Gets or Sets the Parent Object
+        /// </summary>
+        [XmlIgnore]
+        public override object Parent { get; set; }
+
         /// <summary>
         /// Gets or Sets the label
         /// </summary>
         public override string Label
         {
-            get { return _Label; }
-            set
-            {
-                if (_Label == value)
-                    return;
-
-                _Label = value;
-                OnPropertyChanged("Label");
-            }
+            get { return "String: { " + Min.ToString() + " - " + Max.ToString() + " }"; }
         }
 
         private char _Min;
@@ -41,8 +39,15 @@ namespace WindowDictionary.Property.Logic
             get { return this._Min; }
             set
             {
+                Char value2 = value.ToString().ToCharArray()[0];
 
-                this._Min = value.ToString().ToCharArray()[0];
+                if (value2 == this._Min)
+                    return;
+
+                this._Min = value2;
+
+                OnPropertyChanged("Min");
+                OnPropertyChanged("Label");
             }
         }
 
@@ -56,9 +61,23 @@ namespace WindowDictionary.Property.Logic
             get { return this._Max; }
             set
             {
-                this._Max = value.ToString().ToCharArray()[0];
+                Char value2 = value.ToString().ToCharArray()[0];
+
+                if (value2 == this._Max)
+                    return;
+
+                this._Max = value2;
+
+                OnPropertyChanged("Max");
+                OnPropertyChanged("Label");
             }
         }
+
+        /// <summary>
+        /// Collection of <see cref="Range"/> objects.
+        /// </summary>
+        [XmlElement("RangeCollection")]
+        public override ObservableCollection<Range> RangeCollection { get; } = new ObservableCollection<Range>();
 
         #endregion
 
@@ -73,6 +92,7 @@ namespace WindowDictionary.Property.Logic
         {
             this.Min = min;
             this.Max = max;
+            RangeCollection.CollectionChanged += CollectionChanged;
         }
 
         /// <summary>
@@ -82,6 +102,7 @@ namespace WindowDictionary.Property.Logic
         {
             this.Min = Char.MinValue;
             this.Max = Char.MaxValue;
+            RangeCollection.CollectionChanged += CollectionChanged;
         }
 
         #endregion
@@ -170,6 +191,9 @@ namespace WindowDictionary.Property.Logic
 
         #region Delegates, Events, Handlers
 
+        /// <summary>
+        /// Event property changed
+        /// </summary>
         public event PropertyChangedEventHandler PropertyChanged;
 
         /// <summary>
@@ -179,6 +203,17 @@ namespace WindowDictionary.Property.Logic
         public void OnPropertyChanged(string property)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
+        }
+
+        private void CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            if (e.NewItems == null)
+                return;
+
+            foreach (Range item in e.NewItems)
+            {
+                item.Parent = this;
+            }
         }
 
         #endregion

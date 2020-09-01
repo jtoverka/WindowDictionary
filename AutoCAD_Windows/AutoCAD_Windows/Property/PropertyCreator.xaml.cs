@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Specialized;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
@@ -11,9 +10,7 @@ using System.Xml.Serialization;
 using WindowDictionary.Resources;
 using WindowDictionary.Property.Logic;
 using WindowDictionary.Property.ListViewItems;
-using WindowDictionary.Resources;
 using System.Windows.Data;
-using System.Collections;
 
 namespace WindowDictionary.Property
 {
@@ -557,23 +554,32 @@ namespace WindowDictionary.Property
             
             Open_File(dialog.FileName);
         }
+        public static ObservableCollection<PropertyGroup> Read_File(string filename)
+        {
+            ObservableCollection<PropertyGroup> groups = new ObservableCollection<PropertyGroup>();
+
+            using var file = new FileStream(filename, FileMode.Open);
+            
+            var serializer = new XmlSerializer(typeof(ObservableCollection<PropertyGroup>));
+            var collection = serializer.Deserialize(file) as ObservableCollection<PropertyGroup>;
+            
+            file.Close();
+
+            foreach (PropertyGroup item in collection)
+                groups.Add(item);
+
+            return groups;
+        }
 
         private void Open_File(string filename)
         {
             if (filename != null && filename != "" && File.Exists(filename))
             {
                 this.filename = filename;
-                using var file = new FileStream(this.filename, FileMode.Open);
 
                 try
                 {
-                    var serializer = new XmlSerializer(typeof(ObservableCollection<PropertyGroup>));
-                    var collection = serializer.Deserialize(file) as ObservableCollection<PropertyGroup>;
-
-                    file.Close();
-
-                    this.PropertyGroups.Clear();
-                    foreach (PropertyGroup item in collection)
+                    foreach (PropertyGroup item in Read_File(filename))
                     {
                         item.Parent = this;
                         this.PropertyGroups.Add(item);
@@ -583,7 +589,6 @@ namespace WindowDictionary.Property
                 }
                 catch (Exception)
                 {
-                    file.Close();
                     changedState = true;
                     MessageBox.Show("Invalid File");
                 }
@@ -648,7 +653,7 @@ namespace WindowDictionary.Property
 
                     changedState = false;
                 }
-                catch (Exception exception)
+                catch //(Exception exception)
                 {
                     file.Close();
                     changedState = true;
@@ -828,7 +833,7 @@ namespace WindowDictionary.Property
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        public void text_PreviewKeyDown(object sender, KeyEventArgs e)
+        public void Text_PreviewKeyDown(object sender, KeyEventArgs e)
         {
             var element = sender as TextBox;
 
@@ -847,7 +852,7 @@ namespace WindowDictionary.Property
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        public void text_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        public void Text_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
             var textbox = sender as TextBox;
             var listItem = textbox.DataContext as ListViewItem;
@@ -897,7 +902,7 @@ namespace WindowDictionary.Property
             if (!allowed)
             {
                 e.Handled = true;
-
+                _ = errorMessage;
                 //element.TriggerPopup(errorMessage);
             }
         }
@@ -933,10 +938,10 @@ namespace WindowDictionary.Property
                     case PropertyType.Boolean:
                         if (itemValueIndex == 5)
                         {
-                            var lvi_range = new LVI_Range
-                            {
-                                Root = item.ValueRange,
-                            };
+                            var lvi_range = new LVI_Range();
+
+                            lvi_range.Root.Add(item.ValueRange);
+
                             list.Items.Add(lvi_range);
                         }
                         else
@@ -981,8 +986,8 @@ namespace WindowDictionary.Property
                             var listViewSelection = new LVI_ValueList();
                             listViewSelection.TextBlock.SetBinding(TextBlock.TextProperty, PropertyNameBinding);
                             listViewSelection.ListView.SetBinding(ItemsControl.ItemsSourceProperty, ValuesBinding);
-                            listViewSelection.TextBox.PreviewKeyDown += text_PreviewKeyDown;
-                            listViewSelection.TextBox.PreviewTextInput += text_PreviewTextInput;
+                            listViewSelection.TextBox.PreviewKeyDown += Text_PreviewKeyDown;
+                            listViewSelection.TextBox.PreviewTextInput += Text_PreviewTextInput;
                             listViewSelection.AddButton.Click += Add_Value_Button_Click;
                             listViewSelection.RemoveButton.Click += Remove_Button_Click;
                             listViewSelection.TopButton.Click += Top_Button_Click;

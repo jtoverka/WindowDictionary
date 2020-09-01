@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Threading;
 using System.Xml;
@@ -13,21 +14,18 @@ namespace WindowDictionary.Property.Logic
     {
         #region Properties
 
-        private string _Label;
+        /// <summary>
+        /// Gets or Sets the Parent Object
+        /// </summary>
+        [XmlIgnore]
+        public override object Parent { get; set; }
+
         /// <summary>
         /// Gets or Sets the label
         /// </summary>
         public override string Label
         {
-            get { return _Label; }
-            set
-            {
-                if (_Label == value)
-                    return;
-
-                _Label = value;
-                OnPropertyChanged("Label");
-            }
+            get { return "Integer: { " + Min.ToString() + " - " + Max.ToString() + " }"; }
         }
 
         private int _Min;
@@ -40,7 +38,15 @@ namespace WindowDictionary.Property.Logic
             get { return this._Min; }
             set
             {
-                this._Min = Convert.ToInt32(value);
+                int value2 = Convert.ToInt32(value);
+
+                if (value2 == this._Min)
+                    return;
+
+                this._Min = value2;
+
+                OnPropertyChanged("Min");
+                OnPropertyChanged("Label");
             }
         }
 
@@ -54,25 +60,28 @@ namespace WindowDictionary.Property.Logic
             get { return this._Max; }
             set
             {
-                this._Max = Convert.ToInt32(value);
+                int value2 = Convert.ToInt32(value);
+
+                if (value2 == this._Max)
+                    return;
+
+                this._Max = value2;
+
+                OnPropertyChanged("Min");
+                OnPropertyChanged("Label");
             }
         }
+
+        /// <summary>
+        /// Collection of <see cref="Range"/> objects.
+        /// </summary>
+        [XmlElement("RangeCollection")]
+        public override ObservableCollection<Range> RangeCollection { get; } = new ObservableCollection<Range>();
 
         #endregion
 
         #region Constructors
-
-        /// <summary>
-        /// Initializes a new instance of IntegerRange.
-        /// </summary>
-        /// <param name="min"></param>
-        /// <param name="max"></param>
-        public IntegerRange(int min, int max)
-        {
-            this.Min = min;
-            this.Max = max;
-        }
-
+        
         /// <summary>
         /// Initializes a new instance of IntegerRange.
         /// </summary>
@@ -80,6 +89,7 @@ namespace WindowDictionary.Property.Logic
         {
             this.Min = int.MinValue;
             this.Max = int.MaxValue;
+            RangeCollection.CollectionChanged += CollectionChanged;
         }
 
         #endregion
@@ -168,6 +178,9 @@ namespace WindowDictionary.Property.Logic
 
         #region Delegates, Events, Handlers
 
+        /// <summary>
+        /// Event property changed
+        /// </summary>
         public event PropertyChangedEventHandler PropertyChanged;
 
         /// <summary>
@@ -177,6 +190,16 @@ namespace WindowDictionary.Property.Logic
         public void OnPropertyChanged(string property)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
+        }
+        private void CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            if (e.NewItems == null)
+                return;
+
+            foreach (Range item in e.NewItems)
+            {
+                item.Parent = this;
+            }
         }
 
         #endregion

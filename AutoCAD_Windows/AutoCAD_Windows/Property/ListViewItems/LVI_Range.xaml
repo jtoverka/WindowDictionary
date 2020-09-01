@@ -5,11 +5,12 @@
               xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
               xmlns:local="clr-namespace:WindowDictionary.Property"
               xmlns:logic="clr-namespace:WindowDictionary.Property.Logic"
+              xmlns:list="clr-namespace:WindowDictionary.Property.ListViewItems"
               mc:Ignorable="d"
               Background="Transparent"
               BorderThickness="1"
               BorderBrush="Transparent"
-              MinHeight="20"
+              MinHeight="125"
               MinWidth="200"
               HorizontalContentAlignment="Stretch"
               VerticalContentAlignment="Stretch"
@@ -22,7 +23,7 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </ListViewItem.Resources>
-    <Grid>
+    <Grid x:Name="MainGrid">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="*" />
@@ -39,115 +40,41 @@
         <TreeView x:Name="tree"
                   x:FieldModifier="private"
                   ItemsSource="{Binding Path=Root}"
-                  SelectedItemChanged="tree_SelectedItemChanged"
+                  SelectedItemChanged="Tree_SelectedItemChanged"
                   MinWidth="100">
         </TreeView>
-        <Grid Grid.Column="1">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="2*" />
-                <ColumnDefinition Width="3*" />
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="22" />
-                <RowDefinition Height="27" />
-                <RowDefinition Height="58" />
-                <RowDefinition Height="27" />
-            </Grid.RowDefinitions>
-            <TextBlock Text="Logic Gate" />
-            <CheckBox x:Name="checkbox"
-                      x:FieldModifier="private"
-                      Grid.Column="1"
-                      Checked="Range_CheckBox_Checked"
-                      Unchecked="Range_CheckBox_Unchecked"/>
-            <TextBlock Grid.Row="1"
-                       Text="Range Type" />
-            <ComboBox x:Name="combobox"
-                      x:FieldModifier="private"
-                      SelectionChanged="combobox_SelectionChanged"
-                      Grid.Column="1"
-                      Grid.Row="1"
-                      Height="25"
-                      Margin="5,0,5,0" />
-            <UniformGrid Grid.ColumnSpan="2"
-                         Grid.Row="2"
-                         Rows="2">
-                <TextBlock Text="Minimum" />
-                <TextBox x:Name="min"
-                         x:FieldModifier="private"
-                         Margin="5,0,5,0">
-                    <TextBox.Text>
-                        <Binding Path="SelectedRange.Min"/>
-                    </TextBox.Text>
-                </TextBox>
-                <TextBlock Text="Maximum" />
-                <TextBox x:Name="max"
-                         x:FieldModifier="private"
-                         Margin="5,0,5,0">
-                    <TextBox.Text>
-                        <Binding Path="SelectedRange.Max" />
-                    </TextBox.Text>
-                </TextBox>
-            </UniformGrid>
-            <Popup x:Name="min_popup"
-                   x:FieldModifier="private"
-                   AllowsTransparency="True"
-                   IsOpen="False"
-                   Placement="Top"
-                   PopupAnimation="Slide"
-                   StaysOpen="True"
-                   Visibility="Visible"
-                   VerticalOffset="-1">
-                <Popup.PlacementTarget>
-                    <Binding ElementName="min" />
-                </Popup.PlacementTarget>
-                <Border Background="White"
-                        BorderBrush="Red"
-                        BorderThickness="1"
-                        CornerRadius="3"
-                        Margin="1,1,1,1">
-                    <TextBlock x:Name="min_popupText"
-                               x:FieldModifier="private"
-                               Foreground="Red"
-                               HorizontalAlignment="Center"
-                               VerticalAlignment="Center"
-                               Margin="0"
-                               TextWrapping="Wrap" />
-                </Border>
-            </Popup>
-            <Popup x:Name="max_popup"
-                   x:FieldModifier="private"
-                   AllowsTransparency="True"
-                   IsOpen="False"
-                   Placement="Top"
-                   PopupAnimation="Slide"
-                   StaysOpen="True"
-                   Visibility="Visible"
-                   VerticalOffset="-1">
-                <Popup.PlacementTarget>
-                    <Binding ElementName="max" />
-                </Popup.PlacementTarget>
-                <Border Background="White"
-                        BorderBrush="Red"
-                        BorderThickness="1"
-                        CornerRadius="3"
-                        Margin="1,1,1,1">
-                    <TextBlock x:Name="max_popupText"
-                               x:FieldModifier="private"
-                               Foreground="Red"
-                               HorizontalAlignment="Center"
-                               VerticalAlignment="Center"
-                               Margin="0"
-                               TextWrapping="Wrap" />
-                </Border>
-            </Popup>
-            <TextBlock Grid.Row="3"
-                       Text="New Range" />
-            <Button x:Name="button"
-                    x:FieldModifier="private"
-                    Grid.Column="1"
-                    Grid.Row="3"
-                    Content="New"
-                    Click="Range_Button_Click"/>
-        </Grid>
+        <ListView x:Name="listview"
+                  x:FieldModifier="private"
+                  Grid.Column="1">
+            <ListView.ItemContainerStyle>
+                <Style TargetType="{x:Type ListViewItem}">
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="{x:Type ListBoxItem}">
+                                <Border Name="Border"
+                                        BorderBrush="{TemplateBinding BorderBrush}"
+                                        BorderThickness="{TemplateBinding BorderThickness}"
+                                        Background="{TemplateBinding Background}">
+                                    <ContentPresenter Content="{TemplateBinding Content}"
+                                                      ContentTemplate="{TemplateBinding ContentTemplate}"
+                                                      Margin="{TemplateBinding Padding}" />
+                                </Border>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                    <Setter Property="Focusable"
+                            Value="False" />
+                    <Style.Triggers>
+                        <Trigger Property="IsMouseOver"
+                                 Value="True">
+                            <Setter Property="Background"
+                                    Value="Transparent" />
+                            <Setter Property="BorderBrush"
+                                    Value="Transparent" />
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </ListView.ItemContainerStyle>
+        </ListView>
     </Grid>
 </ListViewItem>

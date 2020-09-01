@@ -19,12 +19,12 @@ namespace WindowDictionary.Property.Logic
         /// </summary>
         public override string Label
         {
-            get { return this.Operator + ": { " + this.Min.ToString() + " - " + this.Max.ToString() + " }"; }
+            get { return this.Operator.ToString(); }
         }
 
         private LogicalOperator _Operator;
         /// <summary>
-        /// The logical operation to perform on the outputs by the Ranges in <see cref="RangeCollection">Range Collection</see>.
+        /// The logical operation to perform on the outputs by the Ranges in <see cref="BooleanRange.RangeCollection">Range Collection</see>.
         /// </summary>
         [XmlElement("Operator")]
         public LogicalOperator Operator
@@ -37,14 +37,9 @@ namespace WindowDictionary.Property.Logic
 
                 this._Operator = value;
                 OnPropertyChanged("Operator");
+                OnPropertyChanged("Label");
             }
         }
-
-        /// <summary>
-        /// Collection of Ranges to apply to a <see cref="Operator">Logical Operation</see>.
-        /// </summary>
-        [XmlElement("RangeCollection")]
-        public ObservableCollection<Range> RangeCollection { get; } = new ObservableCollection<Range>();
 
         #endregion
 
@@ -72,7 +67,7 @@ namespace WindowDictionary.Property.Logic
         #region Functions
 
         /// <summary>
-        /// Performs the Logical Operation specified by <see cref="Operator">Operator</see> on <see cref="RangeCollection">RangeCollection</see>.
+        /// Performs the Logical Operation specified by <see cref="Operator">Operator</see> on <see cref="BooleanRange.RangeCollection">RangeCollection</see>.
         /// </summary>
         /// <returns></returns>
         public override bool IsValid(object value)
@@ -139,24 +134,6 @@ namespace WindowDictionary.Property.Logic
             }
 
             return output;
-        }
-
-        #endregion
-
-        #region Delegates, Events, Handlers
-
-        /// <summary>
-        /// Invoked when a Component Property changes.
-        /// </summary>
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        /// <summary>
-        /// Invokes PropertyChanged Event
-        /// </summary>
-        /// <param name="property"></param>
-        private void OnPropertyChanged(string property)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
         }
 
         #endregion
