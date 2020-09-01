@@ -4,7 +4,6 @@ using System.ComponentModel;
 using System.Xml;
 using System.Xml.Serialization;
 
-
 namespace WindowDictionary.Property.Logic
 {
     /// <summary>
@@ -14,6 +13,14 @@ namespace WindowDictionary.Property.Logic
     public class LogicalGate : BooleanRange, INotifyPropertyChanged
     {
         #region Properties
+
+        /// <summary>
+        /// Gets or Sets the label
+        /// </summary>
+        public override string Label
+        {
+            get { return this.Operator + ": { " + this.Min.ToString() + " - " + this.Max.ToString() + " }"; }
+        }
 
         private LogicalOperator _Operator;
         /// <summary>

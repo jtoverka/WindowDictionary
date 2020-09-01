@@ -59,11 +59,6 @@ namespace WindowDictionary.Property.ListViewItems
 
                 this._SelectedRange = value;
 
-                if (value.GetType() == typeof(LogicalGate))
-                    Range_CheckBox_Checked(this.checkbox, null);
-                else
-                    Range_CheckBox_Unchecked(this.checkbox, null);
-
                 OnPropertyChanged("SelectedRange");
             }
         }
@@ -85,6 +80,8 @@ namespace WindowDictionary.Property.ListViewItems
             minTimer.Tick += MinTimer_Tick;
 
             InitializeComponent();
+
+            Range_CheckBox_Checked(this.checkbox, null);
         }
 
         #endregion
@@ -219,8 +216,9 @@ namespace WindowDictionary.Property.ListViewItems
 
         private void Range_Button_Click(object sender, RoutedEventArgs e)
         {
-            var gate = SelectedRange as LogicalGate;
+            var gate = this.SelectedRange as LogicalGate;
             gate.RangeCollection.Add(new LogicalGate());
+            
         }
 
         private void tree_SelectedItemChanged(object sender, System.Windows.RoutedPropertyChangedEventArgs<object> e)
@@ -232,7 +230,7 @@ namespace WindowDictionary.Property.ListViewItems
 
         private void combobox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-
-        }
+            
+        } vgu       
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Threading;
 using System.Xml;
 using System.Xml.Serialization;
@@ -9,9 +10,26 @@ namespace WindowDictionary.Property.Logic
     /// Represents a string range with two characters
     /// </summary>
     [Serializable]
-    public class CharRange : Range, IEquatable<CharRange>
+    public class CharRange : Range, IEquatable<CharRange>, INotifyPropertyChanged
     {
         #region Properties
+
+        private string _Label;
+        /// <summary>
+        /// Gets or Sets the label
+        /// </summary>
+        public override string Label
+        {
+            get { return _Label; }
+            set
+            {
+                if (_Label == value)
+                    return;
+
+                _Label = value;
+                OnPropertyChanged("Label");
+            }
+        }
 
         private char _Min;
         /// <summary>
@@ -146,6 +164,21 @@ namespace WindowDictionary.Property.Logic
         public string ToString(IFormatProvider provider)
         {
             return string.Format("{0}{2} {1}", this._Min.ToString(provider), this._Max.ToString(provider), Thread.CurrentThread.CurrentCulture.TextInfo.ListSeparator);
+        }
+
+        #endregion
+
+        #region Delegates, Events, Handlers
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        /// <summary>
+        /// Invoke Propaerty Changed event
+        /// </summary>
+        /// <param name="property"></param>
+        public void OnPropertyChanged(string property)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
         }
 
         #endregion

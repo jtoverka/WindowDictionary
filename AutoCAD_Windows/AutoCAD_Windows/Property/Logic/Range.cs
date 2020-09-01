@@ -16,13 +16,19 @@ namespace WindowDictionary.Property.Logic
         #region Properties
 
         /// <summary>
-        /// Holds the maximum value for range comparison.
+        /// Gets or Sets the Name of the Range
+        /// </summary>
+        [XmlElement("Label")]
+        public abstract string Label { get; }
+        
+        /// <summary>
+        /// Gets or Sets the maximum value for range comparison.
         /// </summary>
         [XmlElement("Max")]
         public abstract object Max { get; set; }
 
         /// <summary>
-        /// Holds the minimum value for range comparison.
+        /// Gets or Sets the minimum value for range comparison.
         /// </summary>
         [XmlElement("Min")]
         public abstract object Min { get; set; }

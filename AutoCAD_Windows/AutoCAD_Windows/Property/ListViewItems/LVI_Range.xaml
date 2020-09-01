@@ -32,13 +32,13 @@
                                       ItemsSource="{Binding Path=RangeCollection}">
                 <TextBlock>
                     <TextBlock.Text>
-                        <Binding Path="Operator" />
+                        <Binding Path="Label" />
                     </TextBlock.Text></TextBlock>
             </HierarchicalDataTemplate>
         </Grid.Resources>
         <TreeView x:Name="tree"
                   x:FieldModifier="private"
-                  ItemsSource="{Binding Path=RangeCollection}"
+                  ItemsSource="{Binding Path=Root}"
                   SelectedItemChanged="tree_SelectedItemChanged"
                   MinWidth="100">
         </TreeView>
