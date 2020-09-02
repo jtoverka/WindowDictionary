@@ -1,9 +1,16 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.IO;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
+using System.Xml.Serialization;
+using WindowDictionary.Property.ListViewItems;
+using WindowDictionary.Property.Logic;
+using WindowDictionary.Resources;
 
 namespace WindowDictionary.Property
 {
@@ -14,13 +21,18 @@ namespace WindowDictionary.Property
     {
         #region Fields
 
+        private bool changedState;
+        private string filename;
         private bool mRestoreForDragMove;
+        private PropertyGroup _SelectedPropertyGroup;
+        private ListView _PropertyItems;
+        private System.Windows.Forms.DialogResult _Result = System.Windows.Forms.DialogResult.None;
 
         #endregion
 
+
         #region Properties
 
-        private PropertyGroup _SelectedPropertyGroup;
         /// <summary>
         /// Property Group Selected under groups
         /// </summary>
@@ -33,16 +45,34 @@ namespace WindowDictionary.Property
                     return;
 
                 this._SelectedPropertyGroup = value;
+
+                PropertyItems = Convert(value);
+
                 OnPropertyChanged("SelectedPropertyGroup");
             }
         }
 
         /// <summary>
-        /// Collection of <see cref="PropertyGroup">Property Groups</see>
+        /// Gets the collection of <see cref="PropertyGroup"/> objects.
         /// </summary>
         public ObservableCollection<PropertyGroup> PropertyGroups { get; } = new ObservableCollection<PropertyGroup>();
 
-        private System.Windows.Forms.DialogResult _Result = System.Windows.Forms.DialogResult.None;
+        /// <summary>
+        /// 
+        /// </summary>
+        public ListView PropertyItems
+        {
+            get { return _PropertyItems; }
+            set
+            {
+                if (_PropertyItems == value)
+                    return;
+
+                _PropertyItems = value;
+                OnPropertyChanged("PropertyItems");
+            }
+        }
+
         /// <summary>
         /// The result of the dialog box
         /// </summary>
@@ -61,17 +91,8 @@ namespace WindowDictionary.Property
 
         #endregion
 
+
         #region Constructors
-
-        /// <summary>
-        /// Initializes a new instance of this class
-        /// </summary>
-        public PropertyEditor()
-        {
-            DataContext = this;
-
-            InitializeComponent();
-        }
 
         /// <summary>
         /// Initializes a new instance of this class
@@ -82,6 +103,29 @@ namespace WindowDictionary.Property
             DataContext = this;
 
             InitializeComponent();
+
+            // Set window state
+            switch (WindowState)
+            {
+                case WindowState.Normal:
+                    {
+                        this.Window_Resize_Button.ToolTip = "Maximize";
+                        this.imageResizeApp.Source = new BitmapImage(new Uri(@"../Application/maximizeAppIcon.ico", UriKind.Relative));
+                        this.BorderThickness = new Thickness(0);
+                        break;
+                    }
+                case WindowState.Maximized:
+                    {
+                        this.Window_Resize_Button.ToolTip = "Restore Down";
+                        this.imageResizeApp.Source = new BitmapImage(new Uri(@"../Application/toNormalAppIcon.ico", UriKind.Relative));
+                        this.BorderThickness = new Thickness(7);
+                        break;
+                    }
+            }
+
+            Open_File(filename);
+
+            changedState = false;
         }
 
         #endregion
@@ -98,9 +142,56 @@ namespace WindowDictionary.Property
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
         }
 
+
+
+        private void OK_Click(object sender, RoutedEventArgs e)
+        {
+            this.Result = System.Windows.Forms.DialogResult.OK;
+            this.CloseApplication();
+        }
+
+        private void Cancel_Click(object sender, RoutedEventArgs e)
+        {
+            this.Result = System.Windows.Forms.DialogResult.Cancel;
+            this.CloseApplication();
+        }
+
+        #endregion
+
+
+        #region Delegates, Events, Handlers
+
+
+        /// <summary>
+        /// Operation to perform when closing the application
+        /// </summary>
         private void CloseApplication()
         {
+            if (!ContinueChange())
+                return;
+
             this.Close();
+        }
+
+        /// <summary>
+        /// Check if you wish to continue
+        /// </summary>
+        /// <returns></returns>
+        private bool ContinueChange()
+        {
+            if (changedState)
+            {
+                MessageBoxResult messageBoxResult = MessageBox.Show("Are you sure you want to cancel?", "Cancel Confirmation", MessageBoxButton.YesNoCancel);
+                if (messageBoxResult == MessageBoxResult.Yes)
+                {
+                    if (changedState)
+                        return false;
+                }
+
+                else if (messageBoxResult == MessageBoxResult.Cancel)
+                    return false;
+            }
+            return true;
         }
 
         private void Menu_Grid_MouseDown(object sender, MouseButtonEventArgs e)
@@ -185,17 +276,6 @@ namespace WindowDictionary.Property
             }
         }
 
-        private void OK_Click(object sender, RoutedEventArgs e)
-        {
-            this.Result = System.Windows.Forms.DialogResult.OK;
-            this.CloseApplication();
-        }
-
-        private void Cancel_Click(object sender, RoutedEventArgs e)
-        {
-            this.Result = System.Windows.Forms.DialogResult.Cancel;
-            this.CloseApplication();
-        }
 
         private void Tree_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
@@ -269,6 +349,259 @@ namespace WindowDictionary.Property
                 propertyGroup.Add(property);
             }
             return propertyGroup;
+        }
+
+        public static ObservableCollection<PropertyGroup> Read_File(string filename)
+        {
+            ObservableCollection<PropertyGroup> groups = new ObservableCollection<PropertyGroup>();
+
+            using var file = new FileStream(filename, FileMode.Open);
+
+            var serializer = new XmlSerializer(typeof(ObservableCollection<PropertyGroup>));
+            var collection = serializer.Deserialize(file) as ObservableCollection<PropertyGroup>;
+
+            file.Close();
+
+            foreach (PropertyGroup item in collection)
+                groups.Add(item);
+
+            return groups;
+        }
+
+        private void Open_File(string filename)
+        {
+            if (filename != null && filename != "" && File.Exists(filename))
+            {
+                this.filename = filename;
+
+                try
+                {
+                    foreach (PropertyGroup item in Read_File(filename))
+                    {
+                        item.Parent = this;
+                        this.PropertyGroups.Add(item);
+                    }
+
+                    changedState = false;
+                }
+                catch (Exception)
+                {
+                    changedState = true;
+                    MessageBox.Show("Invalid File");
+                }
+            }
+        }
+
+        private void TextBox_Double_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            UILibrary.TextBox_Double_PreviewKeyDown(sender, e);
+        }
+
+        private void TextBox_Double_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            UILibrary.TextBox_Double_PreviewTextInput(sender, e);
+
+            if (e.Handled == true)
+                return;
+
+            TextBox textbox = sender as TextBox;
+            ListViewItem listviewitem = textbox.DataContext as ListViewItem;
+            PropertyItem Item = listviewitem.Tag as PropertyItem;
+
+            string text = UILibrary.TextBox_PreviewTextInput(sender, e);
+
+            if (!Item.ValueRange.IsValid(text))
+            {
+                e.Handled = true;
+
+            }
+        }
+
+        private void TextBox_Integer_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            UILibrary.TextBox_Integer_PreviewKeyDown(sender, e);
+        }
+
+        private void TextBox_Integer_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            UILibrary.TextBox_String_PreviewTextInput(sender, e);
+
+            if (e.Handled == true)
+                return;
+
+            TextBox textbox = sender as TextBox;
+            ListViewItem listviewitem = textbox.DataContext as ListViewItem;
+            PropertyItem Item = listviewitem.Tag as PropertyItem;
+
+            string text = UILibrary.TextBox_PreviewTextInput(sender, e);
+
+            if (!Item.ValueRange.IsValid(text))
+            {
+                e.Handled = true;
+
+            }
+        }
+
+
+
+
+        /// <summary>
+        /// Rename a group text input
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        public void Rename_Text_Input(object sender, TextChangedEventArgs e)
+        {
+            var textbox = sender as TextBox;
+
+            SelectedPropertyGroup.Title = textbox.Text;
+        }
+
+        /// <summary>
+        /// Add Button is clicked to add value to values collection
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        public void Add_Value_Button_Click(object sender, RoutedEventArgs e)
+        {
+            var button = sender as Control;
+            var element = button.DataContext as LVI_ValueList;
+            var property = element.Tag as PropertyItem;
+
+            if (property.Values.Contains(element.TextBox.Text))
+            {
+                //element.TriggerPopup("No Duplicates are allowed!");
+            }
+            else
+            if (element.TextBox.Text == "")
+            {
+                //element.TriggerPopup("Null values not allowed!");
+            }
+            else
+            {
+                property.Values.Add(element.TextBox.Text);
+                element.TextBox.Text = "";
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        private ListView Convert(object value)
+        {
+            if (value == null)
+                return null;
+
+            var itemParent = value as PropertyGroup;
+            var propertyItems = itemParent.PropertyItems;
+            var list = new ListView();
+
+            foreach (PropertyItem item in propertyItems)
+            {
+                int itemValueIndex = item.ValueIndex;
+                Range range = item.ValueRange;
+                PropertyType itemValueType = item.ValueType;
+                string itemPropertyName = item.PropertyName;
+
+                var PropertyNameBinding = new Binding("PropertyName") { Source = item };
+                var ValueZeroBinding = new Binding("Values[0]") { Source = item };
+                var ValueIndexBinding = new Binding("ValueIndex") { Source = item };
+                var ValuesBinding = new Binding("Values") { Source = item };
+
+                switch (item.ValueType)
+                {
+                    case PropertyType.Boolean:
+                        var checkbox = new LVI_CheckBox();
+
+                        checkbox.CheckBox.SetBinding(CheckBox.IsCheckedProperty, ValueZeroBinding);
+                        checkbox.TextBlock.SetBinding(TextBlock.TextProperty, PropertyNameBinding);
+                        checkbox.Tag = item;
+
+                        list.Items.Add(checkbox);
+                        break;
+                    case PropertyType.Double:
+                        var textBoxDouble = new LVI_TextBox();
+
+                        textBoxDouble.TextBlock.SetBinding(TextBlock.TextProperty, PropertyNameBinding);
+                        textBoxDouble.TextBox.SetBinding(TextBox.TextProperty, ValueZeroBinding);
+                        textBoxDouble.TextBox.PreviewKeyDown += TextBox_Double_PreviewKeyDown;
+                        textBoxDouble.TextBox.PreviewTextInput += TextBox_Double_PreviewTextInput;
+                        textBoxDouble.Tag = item;
+
+                        list.Items.Add(textBoxDouble);
+                        break;
+                    case PropertyType.Integer:
+                        var textBoxInteger = new LVI_TextBox();
+
+                        textBoxInteger.TextBlock.SetBinding(TextBlock.TextProperty, PropertyNameBinding);
+                        textBoxInteger.TextBox.SetBinding(TextBox.TextProperty, ValueZeroBinding);
+                        textBoxInteger.TextBox.PreviewKeyDown += TextBox_Integer_PreviewKeyDown;
+                        textBoxInteger.TextBox.PreviewTextInput += TextBox_Integer_PreviewTextInput;
+                        textBoxInteger.Tag = item;
+
+                        list.Items.Add(textBoxInteger);
+                        break;
+                    case PropertyType.SelectionString:
+                        var ComboString = new LVI_ComboBox();
+
+                        ComboString.TextBlock.SetBinding(TextBlock.TextProperty, PropertyNameBinding);
+                        ComboString.ComboBox.SetBinding(ComboBox.SelectedIndexProperty, ValueIndexBinding);
+                        ComboString.ComboBox.SetBinding(ComboBox.ItemsSourceProperty, ValuesBinding);
+                        ComboString.Tag = item;
+
+                        list.Items.Add(ComboString);
+                        break;
+                    case PropertyType.SelectionEditDouble:
+                        var ComboEditDouble = new LVI_ComboBox();
+
+                        ComboEditDouble.TextBlock.SetBinding(TextBlock.TextProperty, PropertyNameBinding);
+                        ComboEditDouble.ComboBox.SetBinding(ComboBox.SelectedValueProperty, ValueIndexBinding);
+                        ComboEditDouble.ComboBox.SetBinding(ComboBox.ItemsSourceProperty, ValuesBinding);
+                        ComboEditDouble.ComboBox.IsEditable = true;
+                        ComboEditDouble.Tag = item;
+
+                        list.Items.Add(ComboEditDouble);
+                        break;
+                    case PropertyType.SelectionEditInteger:
+                        var ComboEditInteger = new LVI_ComboBox();
+
+                        ComboEditInteger.TextBlock.SetBinding(TextBlock.TextProperty, PropertyNameBinding);
+                        ComboEditInteger.ComboBox.SetBinding(ComboBox.SelectedValueProperty, ValueIndexBinding);
+                        ComboEditInteger.ComboBox.SetBinding(ComboBox.ItemsSourceProperty, ValuesBinding);
+                        ComboEditInteger.ComboBox.IsEditable = true;
+                        ComboEditInteger.Tag = item;
+
+                        list.Items.Add(ComboEditInteger);
+                        break;
+                    case PropertyType.SelectionEditString:
+                        var ComboEditString = new LVI_ComboBox();
+
+                        ComboEditString.TextBlock.SetBinding(TextBlock.TextProperty, PropertyNameBinding);
+                        ComboEditString.ComboBox.SetBinding(ComboBox.SelectedValueProperty, ValueIndexBinding);
+                        ComboEditString.ComboBox.SetBinding(ComboBox.ItemsSourceProperty, ValuesBinding);
+                        ComboEditString.ComboBox.IsEditable = true;
+                        ComboEditString.Tag = item;
+
+                        list.Items.Add(ComboEditString);
+                        break;
+                    case PropertyType.String:
+                        var TextBoxString = new LVI_TextBox();
+
+                        TextBoxString.TextBlock.SetBinding(TextBlock.TextProperty, PropertyNameBinding);
+                        TextBoxString.TextBox.SetBinding(TextBox.TextProperty, ValueZeroBinding);
+                        TextBoxString.Tag = item;
+
+                        if (itemValueIndex == 0)
+                            TextBoxString.TextBox.TextChanged += Rename_Text_Input;
+
+                        list.Items.Add(TextBoxString);
+                        break;
+                }
+            }
+
+            return list;
         }
     }
 }

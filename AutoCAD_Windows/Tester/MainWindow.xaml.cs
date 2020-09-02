@@ -30,9 +30,6 @@ namespace Tester
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            var window = new PropertyEditor();
-            //window.ShowDialog();
-            
             var dialog = new VistaOpenFileDialog()
             {
                 CheckPathExists = true,
@@ -41,16 +38,19 @@ namespace Tester
             };
             dialog.ShowDialog();
 
-            // var property = new PropertyEditor();
-            ObservableCollection<PropertyGroup> groups = PropertyEditor.Convert(dialog.FileName);
-
-            foreach (PropertyGroup group in groups)
+            if ((dialog.FileName == null) || (dialog.FileName == ""))
             {
-                window.PropertyGroups.Add(group);
-            }
-            
-            window.ShowDialog();
-        }
+                ObservableCollection<PropertyGroup> groups = PropertyEditor.Convert(dialog.FileName);
 
+                var window = new PropertyEditor(dialog.FileName);
+
+                foreach (PropertyGroup group in groups)
+                {
+                    window.PropertyGroups.Add(group);
+                }
+
+                window.ShowDialog();
+            }
+        }
     }
 }
