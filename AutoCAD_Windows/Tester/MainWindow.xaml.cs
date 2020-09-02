@@ -30,10 +30,9 @@ namespace Tester
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-
-            var window = new PropertyCreator();
-
-
+            var window = new PropertyEditor();
+            //window.ShowDialog();
+            
             var dialog = new VistaOpenFileDialog()
             {
                 CheckPathExists = true,
@@ -43,83 +42,15 @@ namespace Tester
             dialog.ShowDialog();
 
             // var property = new PropertyEditor();
-            var test = PropertyCreator.Read_File(dialog.FileName);
-            _ = test;
+            ObservableCollection<PropertyGroup> groups = PropertyEditor.Convert(dialog.FileName);
 
-
-            // window.ShowDialog();
-        }
-
-        private ObservableCollection<PropertyGroup> Convert (ObservableCollection<PropertyGroup> groups)
-        {
-            var converted = new ObservableCollection<PropertyGroup>();
-
-            foreach (PropertyGroup item in groups[0].PropertyGroups)
+            foreach (PropertyGroup group in groups)
             {
-                /*
-
-                public void convert()
-   {
-     var converted = new ObservableCollection<PropertyGroup>();
-     PropertyGroup MasterList = fileload[0];
-
-     foreach (PropertyGroup item in MasterList.PropertyGroups)
-     {
-       converted.Add(processGroup(item));
-     }
-   }
-
-   public PropertyGroup processGroup(PropertyGroup group)
-   {
-     var newGroup = new PropertyGroup();
-
-     // Check if group
-     if (group.PropertyItems.Count == 2)
-     {
-       foreach (var item in group.PropertyGroups)
-       {
-         newGroup.PropertyGroups.Add(processGroup(item));
-       }
-       return newGroup;
-     }
-
-     // Check if Property
-     if (group.PropertyItems.Count == 5)
-     {
-       newGroup.Title = group.PropertyItems[1].Values[0];
-
-       var property = new PropertyItem()
-       {
-         PropertyName = group.Title;
-         ValueType = (PropertyType)group.PropertyItems[2].ValueIndex;
-         ValueRange = group.PropertyItems[4].ValueRange;
-       };
-       foreach (var item in group.PropertyItems[3].Values)
-       {
-         property.Values.Add(item)
-       }
-       newGroup.PropertyItems.Add(property);
-       return newGroup;
-     }
-
-     // Check if Groups
-     if (group.PropertyItems.Count == 1)
-     {
-       foreach (var item in group.PropertyGroups)
-       {
-         processGroup(item).PropertyItems[0]
-         newGroup.PropertyItems.Add();
-       }
-       return newGroup
-     }
-
-     return null;
-   }
-
-                */
+                window.PropertyGroups.Add(group);
             }
-
-            return converted;
+            
+            window.ShowDialog();
         }
+
     }
 }

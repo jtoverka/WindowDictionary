@@ -203,5 +203,72 @@ namespace WindowDictionary.Property
         }
 
         #endregion
+
+        /// <summary>
+        /// Converts an xml file to a list of properties for editing
+        /// </summary>
+        /// <param name="filename"></param>
+        /// <returns></returns>
+        public static ObservableCollection<PropertyGroup> Convert(string filename)
+        {
+            PropertyGroup MasterList = PropertyCreator.Read_File(filename)[0];
+
+            return GetPropertyGroups(MasterList.PropertyGroups);
+        }
+
+        /// <summary>
+        /// Gets the property items from the properties group
+        /// </summary>
+        /// <param name="groups"></param>
+        /// <returns></returns>
+        public static ObservableCollection<PropertyItem> GetPropertyItems(ObservableCollection<PropertyGroup> groups)
+        {
+            ObservableCollection<PropertyItem> propertyItems = new ObservableCollection<PropertyItem>();
+
+            foreach (PropertyGroup group in groups)
+            {
+                PropertyItem propertyItem = new PropertyItem()
+                {
+                    PropertyName = group.PropertyItems[1].Values[0].ToString(),
+                    ValueType = (PropertyType)group.PropertyItems[2].ValueIndex,
+                    ValueRange = group.PropertyItems[4].ValueRange,
+                };
+
+                foreach (var item in group.PropertyItems[3].Values)
+                {
+                    propertyItem.Values.Add(item);
+                }
+                propertyItems.Add(propertyItem);
+            }
+
+            return propertyItems;
+        }
+        /// <summary>
+        /// Gets the property groups from the groups collection
+        /// </summary>
+        /// <param name="groups"></param>
+        /// <returns></returns>
+        public static ObservableCollection<PropertyGroup> GetPropertyGroups(ObservableCollection<PropertyGroup> groups)
+        {
+            ObservableCollection<PropertyGroup> propertyGroup = new ObservableCollection<PropertyGroup>();
+
+            foreach (PropertyGroup group in groups)
+            {
+                PropertyGroup property = new PropertyGroup()
+                {
+                    Title = group.Title,
+                };
+                foreach (PropertyItem item in GetPropertyItems(group.PropertyGroups[1].PropertyGroups))
+                {
+                    property.PropertyItems.Add(item);
+                }
+                foreach (PropertyGroup item in GetPropertyGroups(group.PropertyGroups[0].PropertyGroups))
+                {
+                    property.PropertyGroups.Add(item);
+                }
+                propertyGroup.Add(property);
+            }
+            return propertyGroup;
+        }
     }
 }
