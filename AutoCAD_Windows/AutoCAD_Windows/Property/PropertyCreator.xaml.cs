@@ -85,24 +85,6 @@ namespace WindowDictionary.Property
 
             InitializeComponent();
 
-            // Set window state
-            switch (WindowState)
-            {
-                case WindowState.Normal:
-                    {
-                        this.Window_Resize_Button.ToolTip = "Maximize";
-                        this.imageResizeApp.Source = new BitmapImage(new Uri(@"../Application/maximizeAppIcon.ico", UriKind.Relative));
-                        this.BorderThickness = new Thickness(0);
-                        break;
-                    }
-                case WindowState.Maximized:
-                    {
-                        this.Window_Resize_Button.ToolTip = "Restore Down";
-                        this.imageResizeApp.Source = new BitmapImage(new Uri(@"../Application/toNormalAppIcon.ico", UriKind.Relative));
-                        this.BorderThickness = new Thickness(7);
-                        break;
-                    }
-            }
 
             New_File_Click(null, null);
 
@@ -119,24 +101,6 @@ namespace WindowDictionary.Property
 
             InitializeComponent();
 
-            // Set window state
-            switch (WindowState)
-            {
-                case WindowState.Normal:
-                    {
-                        this.Window_Resize_Button.ToolTip = "Maximize";
-                        this.imageResizeApp.Source = new BitmapImage(new Uri(@"../Application/maximizeAppIcon.ico", UriKind.Relative));
-                        this.BorderThickness = new Thickness(0);
-                        break;
-                    }
-                case WindowState.Maximized:
-                    {
-                        this.Window_Resize_Button.ToolTip = "Restore Down";
-                        this.imageResizeApp.Source = new BitmapImage(new Uri(@"../Application/toNormalAppIcon.ico", UriKind.Relative));
-                        this.BorderThickness = new Thickness(7);
-                        break;
-                    }
-            }
 
             Open_File(filename);
 
@@ -195,10 +159,8 @@ namespace WindowDictionary.Property
         {
             if (e.ChangedButton == MouseButton.Left)
             {
-                if (this.mRestoreForDragMove)
+                if (WindowState ==  WindowState.Maximized)
                 {
-                    this.mRestoreForDragMove = false;
-
                     var point = PointToScreen(e.MouseDevice.GetPosition(this));
 
                     Left = point.X - (RestoreBounds.Width * 0.5);
@@ -228,49 +190,10 @@ namespace WindowDictionary.Property
         /// <param name="e"></param>
         private void Window_Resize_Click(object sender, RoutedEventArgs e)
         {
-            switch (WindowState)
-            {
-                case WindowState.Maximized:
-                    WindowState = WindowState.Normal;
-                    this.Window_Resize_Button.ToolTip = "Maximize";
-                    this.imageResizeApp.Source = new BitmapImage(new Uri(@"../Application/maximizeAppIcon.ico", UriKind.Relative));
-                    this.BorderThickness = new Thickness(0);
-                    break;
-                case WindowState.Normal:
-                    WindowState = WindowState.Maximized;
-                    this.Window_Resize_Button.ToolTip = "Restore Down";
-                    this.imageResizeApp.Source = new BitmapImage(new Uri(@"../Application/toNormalAppIcon.ico", UriKind.Relative));
-                    this.BorderThickness = new Thickness(7);
-                    break;
-            }
-        }
-
-        /// <summary>
-        /// Change Window State Icon when maximized or minimized
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
-        {
-            switch (WindowState)
-            {
-                case WindowState.Normal:
-                    {
-                        this.Window_Resize_Button.ToolTip = "Maximize";
-                        this.imageResizeApp.Source = new BitmapImage(new Uri(@"../Application/maximizeAppIcon.ico", UriKind.Relative));
-                        this.BorderThickness = new Thickness(0);
-                        this.mRestoreForDragMove = false;
-                        break;
-                    }
-                case WindowState.Maximized:
-                    {
-                        this.Window_Resize_Button.ToolTip = "Restore Down";
-                        this.imageResizeApp.Source = new BitmapImage(new Uri(@"../Application/toNormalAppIcon.ico", UriKind.Relative));
-                        this.BorderThickness = new Thickness(7);
-                        this.mRestoreForDragMove = true;
-                        break;
-                    }
-            }
+            if (WindowState == WindowState.Maximized)
+                WindowState = WindowState.Normal;
+            else
+                WindowState = WindowState.Maximized;
         }
 
         private void Cancel_Click(object sender, RoutedEventArgs e)

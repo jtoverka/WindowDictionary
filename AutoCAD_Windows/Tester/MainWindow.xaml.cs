@@ -30,6 +30,12 @@ namespace Tester
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
+            var window = new PropertyCreator();
+            window.ShowDialog();
+        }
+
+        private void Button_Click2(object sender, RoutedEventArgs e)
+        {
             var dialog = new VistaOpenFileDialog()
             {
                 CheckPathExists = true,
