@@ -1,9 +1,11 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Collections.ObjectModel;
+using System.Windows.Controls;
 using System.Xml;
 using System.Xml.Serialization;
 using WindowDictionary.Property.Logic;
+using System.Windows;
 
 namespace WindowDictionary.Property
 {
@@ -16,6 +18,7 @@ namespace WindowDictionary.Property
         #region Fields
 
         private object _Parent = null;
+        private Control _Control = null;
         private string _PropertyName = "";
         private Range _ValueRange = new LogicalGate(LogicalOperator.OR);
         private PropertyType _ValueType = PropertyType.String;
@@ -38,7 +41,26 @@ namespace WindowDictionary.Property
                     return;
 
                 _Parent = value;
+
                 OnPropertyChanged("Parent");
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        [XmlIgnore]
+        public Control Control
+        {
+            get { return _Control; }
+            set
+            {
+                if (_Control == value)
+                    return;
+
+                _Control = value;
+                
+                OnPropertyChanged("Control");
             }
         }
 
@@ -55,6 +77,7 @@ namespace WindowDictionary.Property
                     return;
 
                 this._PropertyName = value;
+
                 OnPropertyChanged("PropertyName");
             }
         }
@@ -72,6 +95,7 @@ namespace WindowDictionary.Property
                     return;
 
                 this._ValueType = value;
+
                 OnPropertyChanged("ValueType");
             }
         }
@@ -89,6 +113,7 @@ namespace WindowDictionary.Property
                     return;
 
                 this._ValueRange = value;
+
                 OnPropertyChanged("ValueRange");
             }
         }
@@ -107,6 +132,7 @@ namespace WindowDictionary.Property
                     return;
 
                 _ValueIndex = value;
+
                 OnPropertyChanged("ValueIndex");
             }
         }
@@ -122,9 +148,19 @@ namespace WindowDictionary.Property
         #region Delegates, Events, Handlers
 
         /// <summary>
+        /// 
+        /// </summary>
+        public delegate void PreviewPropertyChangeEventHandler(object sender, string property, ref bool allow);
+
+        /// <summary>
         /// Invoked when a Component Property changes.
         /// </summary>
         public event PropertyChangedEventHandler PropertyChanged;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public event PreviewPropertyChangeEventHandler PreviewPropertyChange;
 
         /// <summary>
         /// Invokes PropertyChanged Event

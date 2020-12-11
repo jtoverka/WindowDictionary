@@ -6,7 +6,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WindowDictionary.Property"
-        xmlns:converter="clr-namespace:WindowDictionary.Converters"
+        xmlns:resource="clr-namespace:WindowDictionary.Resources"
         mc:Ignorable="d"
         Height="450"
         ResizeMode="CanResizeWithGrip"
@@ -71,10 +71,14 @@
                    Height="25"
                    Margin="0"
                    MouseDown="Menu_Grid_MouseDown" />
-        <Menu HorizontalAlignment="Left"
-              VerticalAlignment="Center"
-              Padding="0,3.5,0,3.5">
-            <MenuItem Header="File">
+        <Menu Background="Transparent"
+              HorizontalAlignment="Left"
+              VerticalAlignment="Stretch">
+            <MenuItem Header="File"
+                      ItemContainerStyle="{DynamicResource MenuItemStyle1}"
+                      Style="{StaticResource menuParentStyle}"
+                      Template="{DynamicResource MenuItemControlTemplate2}"
+                      Padding="6,2,6,4">
                 <MenuItem Click="New_File_Click"
                           Header="New" />
                 <MenuItem Click="Open_File_Click" 
@@ -85,145 +89,9 @@
                           Header="Save As" />
             </MenuItem>
         </Menu>
-        <UniformGrid Columns="3"
-                     Grid.Column="2"
-                     HorizontalAlignment="Right">
-            <UniformGrid.Resources>
-                <Style TargetType="Button">
-                    <Setter Property="Width"
-                            Value="25" />
-                    <Setter Property="Background"
-                            Value="Transparent" />
-                    <Setter Property="BorderThickness"
-                            Value="0" />
-                </Style>
-            </UniformGrid.Resources>
-            <Button x:Name="Window_Minimize_Button"
-                    Background="Transparent"
-                    Click="Window_Minimize_Click"
-                    ToolTip="Minimize"
-                    Width="25">
-                <Button.Content>
-                    <Line X1="0"
-                      X2="10"
-                      Y1="4"
-                      Y2="4"
-                      Visibility="Visible"
-                      StrokeThickness="1"
-                      Stroke="#000000"/>
-                </Button.Content>
-            </Button>
-            <Button x:Name="Window_Resize_Button"
-                    Background="Transparent"
-                    Click="Window_Resize_Click"
-                    Width="25">
-                <Button.Style>
-                    <Style TargetType="{x:Type Button}"
-                           BasedOn="{StaticResource MiniButton}">
-                        <Setter Property="Content">
-                            <Setter.Value>
-                                <Polyline Stroke="#000000"
-                                          StrokeThickness="1">
-                                    <Polyline.Points>
-                                        <Point X="0.5" Y="0.5"/>
-                                        <Point X="9.5" Y="0.5"/>
-                                        <Point X="9.5" Y="9.5"/>
-                                        <Point X="0.5" Y="9.5"/>
-                                        <Point X="0.5" Y="0"/>
-                                    </Polyline.Points>
-                                </Polyline>
-                            </Setter.Value>
-                        </Setter>
-                        <Setter Property="ToolTip" 
-                                Value="Maximize"/>
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding WindowState}" 
-                                         Value="Maximized">
-                                <Setter Property="Content">
-                                    <Setter.Value>
-                                        <Polyline Stroke="#000000"
-                                                  StrokeThickness="1">
-                                            <Polyline.Points>
-                                                <Point X="2.5" Y="2.5"/>
-                                                <Point X="2.5" Y="0.5"/>
-                                                <Point X="9.5" Y="0.5"/>
-                                                <Point X="9.5" Y="7.5"/>
-                                                <Point X="7.5" Y="7.5"/>
-                                                <Point X="7.5" Y="9.5"/>
-                                                <Point X="0.5" Y="9.5"/>
-                                                <Point X="0.5" Y="2.5"/>
-                                                <Point X="7.5" Y="2.5"/>
-                                                <Point X="7.5" Y="7.5"/>
-                                            </Polyline.Points>
-                                        </Polyline>
-                                    </Setter.Value>
-                                </Setter>
-                                <Setter Property="ToolTip" Value="Restore Down"/>
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </Button.Style>
-            </Button>
-            <Button x:Name="Window_Exit_Button"
-                    Click="Cancel_Click"
-                    ToolTip="Close"
-                    Width="25">
-                <Button.Style>
-                    <Style TargetType="{x:Type Button}">
-                        <Setter Property="Template">
-                            <Setter.Value>
-                                <ControlTemplate TargetType="{x:Type Button}">
-                                    <Border x:Name="Border"
-                                            Background="{TemplateBinding Background}">
-                                        <Grid HorizontalAlignment="Center"
-                                              VerticalAlignment="Center">
-                                            <Line x:Name="ExitLine1"
-                                                  Visibility="Visible"
-                                                  Stroke="#000000"
-                                                  StrokeStartLineCap="Triangle"
-                                                  StrokeEndLineCap="Triangle"
-                                                  StrokeThickness="1"
-                                                  X1="0"
-                                                  X2="10"
-                                                  Y1="0"
-                                                  Y2="10">
-                                            </Line>
-                                            <Line x:Name="ExitLine2"
-                                                  Visibility="Visible"
-                                                  Stroke="#000000"
-                                                  StrokeStartLineCap="Triangle"
-                                                  StrokeEndLineCap="Triangle"
-                                                  StrokeThickness="1"
-                                                  X1="0"
-                                                  X2="10"
-                                                  Y1="10"
-                                                  Y2="0">
-                                            </Line>
-                                        </Grid>
-                                    </Border>
-                                    <ControlTemplate.Triggers>
-                                        <Trigger Property="IsMouseOver"
-                                                 Value="True">
-                                            <Setter Property="Background"
-                                                    Value="Red"
-                                                    TargetName="Border" />
-                                            <Setter Property="Stroke"
-                                                    TargetName="ExitLine1"
-                                                    Value="#FFFFFF"/>
-                                            <Setter Property="Stroke"
-                                                    TargetName="ExitLine2"
-                                                    Value="#FFFFFF"/>
-                                        </Trigger>
-                                    </ControlTemplate.Triggers>
-                                </ControlTemplate>
-                            </Setter.Value>
-                        </Setter>
-                        <Setter Property="Background"
-                                Value="Transparent" />
-                    </Style>
-                </Button.Style>
-            </Button>
-        </UniformGrid>
+        <resource:WindowControl x:Name="WindowControl"
+                                Grid.Column="2"
+                                HorizontalAlignment="Right"/>
         <Grid Grid.ColumnSpan="2"
               Grid.Row="1">
             <Grid.ColumnDefinitions>

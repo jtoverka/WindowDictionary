@@ -11,7 +11,7 @@ namespace WindowDictionary.Property.ListViewItems
         #region Properties
 
         /// <summary>
-        /// Gets the <see cref="System.Windows.Controls.TextBlock">TextBlock</see> element.
+        /// Gets the <see cref="TextBlock">TextBlock</see> element.
         /// </summary>
         public TextBlock TextBlock
         {
@@ -19,7 +19,7 @@ namespace WindowDictionary.Property.ListViewItems
         }
 
         /// <summary>
-        /// Gets the <see cref="System.Windows.Controls.ComboBox">ComboBox</see> element.
+        /// Gets the <see cref="ComboBox">ComboBox</see> element.
         /// </summary>
         public ComboBox ComboBox
         {
@@ -27,7 +27,7 @@ namespace WindowDictionary.Property.ListViewItems
         }
 
         /// <summary>
-        /// Gets the <see cref="System.Windows.Controls.Primitives.Popup">Popup</see> element.
+        /// Gets the <see cref="Primitives.Popup">Popup</see> element.
         /// </summary>
         public Popup Popup
         {
@@ -35,7 +35,7 @@ namespace WindowDictionary.Property.ListViewItems
         }
 
         /// <summary>
-        /// Gets the <see cref="System.Windows.Controls.TextBlock">TextBlock</see> element within the <see cref="System.Windows.Controls.Primitives.Popup">Popup</see> element.
+        /// Gets the <see cref="TextBlock">TextBlock</see> element within the <see cref="Primitives.Popup">Popup</see> element.
         /// </summary>
         public TextBlock PopupTextBlock
         {

@@ -114,6 +114,9 @@
     <Compile Include="Property\Logic\Range.cs" />
     <Compile Include="Resources\UILibrary.cs" />
     <Compile Include="Property\Logic\CharRange.cs" />
+    <Compile Include="Resources\WindowControl.xaml.cs">
+      <DependentUpon>WindowControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Textstyle.xaml.cs">
       <DependentUpon>Textstyle.xaml</DependentUpon>
     </Compile>
@@ -182,6 +185,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Property\PropertyEditor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Resources\WindowControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

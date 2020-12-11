@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.IO;
 using System.Windows;
@@ -23,7 +24,6 @@ namespace WindowDictionary.Property
 
         private bool changedState;
         private string filename;
-        private bool mRestoreForDragMove;
         private PropertyGroup _SelectedPropertyGroup;
 
         #endregion
@@ -82,12 +82,12 @@ namespace WindowDictionary.Property
         public PropertyCreator()
         {
             DataContext = this;
-
             InitializeComponent();
-
-
+            
+            WindowControl.Window = this;
+            WindowControl.WindowExit += WindowControl_WindowExit;
+            
             New_File_Click(null, null);
-
             changedState = true;
         }
 
@@ -98,12 +98,12 @@ namespace WindowDictionary.Property
         public PropertyCreator(string filename)
         {
             DataContext = this;
-
             InitializeComponent();
-
+            
+            WindowControl.Window = this;
+            WindowControl.WindowExit += WindowControl_WindowExit;
 
             Open_File(filename);
-
             changedState = false;
         }
 
@@ -121,6 +121,10 @@ namespace WindowDictionary.Property
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
         }
 
+        private void WindowControl_WindowExit(object sender, EventArgs e)
+        {
+            CloseApplication();
+        }
         /// <summary>
         /// Operation to perform when closing the application
         /// </summary>
@@ -140,7 +144,7 @@ namespace WindowDictionary.Property
         {
             if (changedState)
             {
-                MessageBoxResult messageBoxResult = System.Windows.MessageBox.Show("Do you want to save your progress?", "Continue Confirmation", System.Windows.MessageBoxButton.YesNoCancel);
+                MessageBoxResult messageBoxResult = MessageBox.Show("Do you want to save your progress?", "Continue Confirmation", System.Windows.MessageBoxButton.YesNoCancel);
                 if (messageBoxResult == MessageBoxResult.Yes)
                 {
                     Save_Click(null, null);
@@ -171,34 +175,6 @@ namespace WindowDictionary.Property
 
                 this.DragMove();
             }
-        }
-
-        /// <summary>
-        /// Window minimize button
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void Window_Minimize_Click(object sender, RoutedEventArgs e)
-        {
-            WindowState = WindowState.Minimized;
-        }
-
-        /// <summary>
-        /// Window resize button
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void Window_Resize_Click(object sender, RoutedEventArgs e)
-        {
-            if (WindowState == WindowState.Maximized)
-                WindowState = WindowState.Normal;
-            else
-                WindowState = WindowState.Maximized;
-        }
-
-        private void Cancel_Click(object sender, RoutedEventArgs e)
-        {
-            this.CloseApplication();
         }
 
         private void Tree_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
@@ -429,6 +405,27 @@ namespace WindowDictionary.Property
             return item;
         }
 
+        private bool revertCombo = false;
+        private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (revertCombo)
+                return;
+
+            ComboBox box = sender as ComboBox;
+
+            if (box == null)
+                return;
+
+            MessageBoxResult messageBoxResult = MessageBox.Show("This will clear the property values box.\nDo you wish to continue?", "Continue Confirmation", MessageBoxButton.YesNo);
+
+            if (messageBoxResult == MessageBoxResult.Yes)
+                return;
+
+            revertCombo = true;
+            box.SelectedItem = e.RemovedItems[0];
+            revertCombo = false;
+        }
+
         private void New_File_Click(object sender, RoutedEventArgs e)
         {
             if (!ContinueChange())
@@ -477,6 +474,12 @@ namespace WindowDictionary.Property
             
             Open_File(dialog.FileName);
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="filename"></param>
+        /// <returns></returns>
         public static ObservableCollection<PropertyGroup> Read_File(string filename)
         {
             ObservableCollection<PropertyGroup> groups = new ObservableCollection<PropertyGroup>();
@@ -853,7 +856,7 @@ namespace WindowDictionary.Property
 
                 var PropertyNameBinding = new Binding("PropertyName") { Source = item };
                 var ValueZeroBinding = new Binding("Values[0]") { Source = item };
-                var ValueIndexBinding = new Binding("ValueIndex") { Source = item };
+                var ValueIndexBinding = new Binding("ValueIndex") { Source = item, Mode= BindingMode.TwoWay };
                 var ValuesBinding = new Binding("Values") { Source = item };
 
                 switch (item.ValueType)
@@ -862,7 +865,7 @@ namespace WindowDictionary.Property
                         if (itemValueIndex == 5)
                         {
                             var lvi_range = new LVI_Range();
-
+                            item.Control = lvi_range;
                             lvi_range.Root.Add(item.ValueRange);
 
                             list.Items.Add(lvi_range);
@@ -871,6 +874,7 @@ namespace WindowDictionary.Property
                         if (itemValueIndex == 4)
                         {
                             var button = new LVI_Button();
+                            item.Control = button;
 
                             button.TextBlock.SetBinding(TextBlock.TextProperty, PropertyNameBinding);
                             button.Button.SetBinding(Button.ContentProperty, ValueZeroBinding);
@@ -883,6 +887,7 @@ namespace WindowDictionary.Property
                         if (itemValueIndex == 3)
                         {
                             var button = new LVI_Button();
+                            item.Control = button;
 
                             button.TextBlock.SetBinding(TextBlock.TextProperty, PropertyNameBinding);
                             button.Button.SetBinding(Button.ContentProperty, ValueZeroBinding);
@@ -895,6 +900,7 @@ namespace WindowDictionary.Property
                         if (itemValueIndex == 2)
                         {
                             var button = new LVI_Button();
+                            item.Control = button;
 
                             button.TextBlock.SetBinding(TextBlock.TextProperty, PropertyNameBinding);
                             button.Button.SetBinding(Button.ContentProperty, ValueZeroBinding);
@@ -924,7 +930,8 @@ namespace WindowDictionary.Property
                         if (itemValueIndex == 0)
                         {
                             var checkbox = new LVI_CheckBox();
-                            
+                            item.Control = checkbox;
+
                             checkbox.CheckBox.SetBinding(CheckBox.IsCheckedProperty, ValueZeroBinding);
                             checkbox.TextBlock.SetBinding(TextBlock.TextProperty, PropertyNameBinding);
                             checkbox.Tag = item;
@@ -934,8 +941,9 @@ namespace WindowDictionary.Property
                         break;
                     case PropertyType.Double:
                         var textBoxDouble = new LVI_TextBox();
-                       
-                        textBoxDouble.TextBlock.SetBinding(TextBlock.TextProperty, PropertyNameBinding);
+                        item.Control = textBoxDouble;
+
+                    textBoxDouble.TextBlock.SetBinding(TextBlock.TextProperty, PropertyNameBinding);
                         textBoxDouble.TextBox.SetBinding(TextBox.TextProperty, ValueZeroBinding);
                         textBoxDouble.TextBox.PreviewKeyDown += TextBox_Double_PreviewKeyDown;
                         textBoxDouble.TextBox.PreviewTextInput += TextBox_Double_PreviewTextInput;
@@ -945,7 +953,8 @@ namespace WindowDictionary.Property
                         break;
                     case PropertyType.Integer:
                         var textBoxInteger = new LVI_TextBox();
-                        
+                        item.Control = textBoxInteger;
+
                         textBoxInteger.TextBlock.SetBinding(TextBlock.TextProperty, PropertyNameBinding);
                         textBoxInteger.TextBox.SetBinding(TextBox.TextProperty, ValueZeroBinding);
                         textBoxInteger.TextBox.PreviewKeyDown += TextBox_Integer_PreviewKeyDown;
@@ -956,16 +965,21 @@ namespace WindowDictionary.Property
                         break;
                     case PropertyType.SelectionString:
                         var ComboString = new LVI_ComboBox();
+                        item.Control = ComboString;
 
                         ComboString.TextBlock.SetBinding(TextBlock.TextProperty, PropertyNameBinding);
                         ComboString.ComboBox.SetBinding(ComboBox.SelectedIndexProperty, ValueIndexBinding);
                         ComboString.ComboBox.SetBinding(ComboBox.ItemsSourceProperty, ValuesBinding);
                         ComboString.Tag = item;
 
+                        if (item.PropertyName == "Property Type")
+                            ComboString.ComboBox.SelectionChanged += ComboBox_SelectionChanged;
+
                         list.Items.Add(ComboString);
                         break;
                     case PropertyType.SelectionEditDouble:
                         var ComboEditDouble = new LVI_ComboBox();
+                        item.Control = ComboEditDouble;
 
                         ComboEditDouble.TextBlock.SetBinding(TextBlock.TextProperty, PropertyNameBinding);
                         ComboEditDouble.ComboBox.SetBinding(ComboBox.SelectedValueProperty, ValueIndexBinding);
@@ -977,6 +991,7 @@ namespace WindowDictionary.Property
                         break;
                     case PropertyType.SelectionEditInteger:
                         var ComboEditInteger = new LVI_ComboBox();
+                        item.Control = ComboEditInteger;
 
                         ComboEditInteger.TextBlock.SetBinding(TextBlock.TextProperty, PropertyNameBinding);
                         ComboEditInteger.ComboBox.SetBinding(ComboBox.SelectedValueProperty, ValueIndexBinding);
@@ -988,6 +1003,7 @@ namespace WindowDictionary.Property
                         break;
                     case PropertyType.SelectionEditString:
                         var ComboEditString = new LVI_ComboBox();
+                        item.Control = ComboEditString;
 
                         ComboEditString.TextBlock.SetBinding(TextBlock.TextProperty, PropertyNameBinding);
                         ComboEditString.ComboBox.SetBinding(ComboBox.SelectedValueProperty, ValueIndexBinding);
@@ -999,6 +1015,7 @@ namespace WindowDictionary.Property
                         break;
                     case PropertyType.String:
                         var TextBoxString = new LVI_TextBox();
+                        item.Control = TextBoxString;
 
                         TextBoxString.TextBlock.SetBinding(TextBlock.TextProperty, PropertyNameBinding);
                         TextBoxString.TextBox.SetBinding(TextBox.TextProperty, ValueZeroBinding);

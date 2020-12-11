@@ -350,7 +350,11 @@ namespace WindowDictionary.Property
             }
             return propertyGroup;
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="filename"></param>
+        /// <returns></returns>
         public static ObservableCollection<PropertyGroup> Read_File(string filename)
         {
             ObservableCollection<PropertyGroup> groups = new ObservableCollection<PropertyGroup>();
