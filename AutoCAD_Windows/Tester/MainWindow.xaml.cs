@@ -15,6 +15,8 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using WindowDictionary.Property;
+using WindowDictionary.Property.Creator;
+using WindowDictionary.Property.Editor;
 
 namespace Tester
 {

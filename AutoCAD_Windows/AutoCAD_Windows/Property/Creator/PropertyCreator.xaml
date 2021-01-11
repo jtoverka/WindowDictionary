@@ -1,6 +1,4 @@
-﻿<Window x:Name="Window"
-        x:FieldModifier="internal"
-        x:Class="WindowDictionary.Property.PropertyCreator"
+﻿<Window x:Class="WindowDictionary.Property.Creator.PropertyCreator"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -17,12 +15,13 @@
         Width="800">
     <Window.Style>
         <Style TargetType="{x:Type Window}">
-            <Setter Property="BorderThickness" 
-                    Value="0"/>
+            <Setter Property="BorderThickness"
+                    Value="0" />
             <Style.Triggers>
-                <DataTrigger Binding="{Binding WindowState}" 
-                                         Value="Maximized">
-                    <Setter Property="BorderThickness" Value="7"/>
+                <DataTrigger Binding="{Binding WindowState}"
+                             Value="Maximized">
+                    <Setter Property="BorderThickness"
+                            Value="7" />
                 </DataTrigger>
             </Style.Triggers>
         </Style>
@@ -34,7 +33,7 @@
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="../StyleDictionary.xaml" />
+                <ResourceDictionary Source="../../StyleDictionary.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Window.Resources>
@@ -57,16 +56,16 @@
                     </TextBlock.Text></TextBlock>
             </HierarchicalDataTemplate>
         </Grid.Resources>
+        <Border Background="#F8F8F8"
+                BorderThickness="1"
+                Grid.ColumnSpan="4" />
         <Border BorderBrush="#E0E0E0EE"
                 BorderThickness="1"
                 Grid.ColumnSpan="4"
-                Grid.RowSpan="4"/>
-        <Border Background="#FBFBFB"
-                BorderThickness="1"
-                Grid.ColumnSpan="4"/>
+                Grid.RowSpan="4" />
         <TextBlock Grid.ColumnSpan="3"
                    HorizontalAlignment="Center"
-                   Text="Property Creator"/>
+                   Text="Property Creator" />
         <TextBlock Grid.ColumnSpan="3"
                    Height="25"
                    Margin="0"
@@ -81,7 +80,7 @@
                       Padding="6,2,6,4">
                 <MenuItem Click="New_File_Click"
                           Header="New" />
-                <MenuItem Click="Open_File_Click" 
+                <MenuItem Click="Open_File_Click"
                           Header="Open" />
                 <MenuItem Click="Save_Click"
                           Header="Save" />
@@ -91,27 +90,30 @@
         </Menu>
         <resource:WindowControl x:Name="WindowControl"
                                 Grid.Column="2"
-                                HorizontalAlignment="Right"/>
+                                HorizontalAlignment="Right" />
         <Grid Grid.ColumnSpan="2"
               Grid.Row="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition MinWidth="200"
-                                  Width="*"/>
+                                  Width="262*" />
                 <ColumnDefinition Width="5" />
                 <ColumnDefinition MinWidth="200"
-                                  Width="2*"/>
+                                  Width="329*" />
+                <ColumnDefinition Width="141*" />
+                <ColumnDefinition Width="55*" />
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="20" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
             <TextBlock HorizontalAlignment="Center"
-                       Text="Groups" />
+                       Text="Groups"
+                       Margin="114,2,109,2" />
             <TreeView x:Name="Tree"
                       Grid.Row="1"
                       ItemsSource="{Binding Path=PropertyGroups}"
                       SelectedItemChanged="Tree_SelectedItemChanged"
-                      Margin="10,10,5,10"></TreeView>
+                      Margin="10,10,5,10" />
             <GridSplitter Background="Transparent"
                           Grid.Column="1"
                           Grid.RowSpan="2"
@@ -120,49 +122,53 @@
                           ClipToBounds="True"
                           Width="5"></GridSplitter>
             <TextBlock Grid.Column="2"
-                       Grid.ColumnSpan="2"
                        HorizontalAlignment="Center"
-                       Text="Properties" />
+                       Text="Properties"
+                       Margin="238,2,37,2" />
             <ListView x:Name="Properties"
                       Grid.Column="2"
-                      Grid.ColumnSpan="2"
+                      Grid.ColumnSpan="3"
                       Grid.Row="1"
                       HorizontalContentAlignment="Stretch"
                       Margin="5,10,10,10"
-                      ScrollViewer.CanContentScroll="False">
-                
+                      ScrollViewer.CanContentScroll="False"
+                      ItemsSource="{Binding Path=SelectedPropertyGroup.PropertyItems}">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ContentControl Content="{Binding}">
+                            <ContentControl.Style>
+                                <Style TargetType="ContentControl">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Type.CPropertyType, Mode=OneTime}"
+                                                     Value="CGroup">
+                                            <Setter Property="ContentTemplate"
+                                                    Value="{StaticResource CGroupTemplate}" />
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding Type.CPropertyType, Mode=OneTime}"
+                                                     Value="CGroupCollection">
+                                            <Setter Property="ContentTemplate"
+                                                    Value="{StaticResource CGroupCollectionTemplate}" />
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding Type.CPropertyType, Mode=OneTime}"
+                                                     Value="CProperty">
+                                            <Setter Property="ContentTemplate"
+                                                    Value="{StaticResource CPropertyTemplate}" />
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding Type.CPropertyType, Mode=OneTime}"
+                                                     Value="CPropertyCollection">
+                                            <Setter Property="ContentTemplate"
+                                                    Value="{StaticResource CPropertyCollectionTemplate}" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </ContentControl.Style>
+                        </ContentControl>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
                 <ListView.ItemContainerStyle>
-                    <Style TargetType="{x:Type ListViewItem}">
-                        <Setter Property="Template">
-                            <Setter.Value>
-                                <ControlTemplate TargetType="{x:Type ListBoxItem}">
-                                    <Border Name="Border"
-                                            BorderBrush="{TemplateBinding BorderBrush}"
-                                            BorderThickness="{TemplateBinding BorderThickness}"
-                                            Background="{TemplateBinding Background}">
-                                        <ContentPresenter Content="{TemplateBinding Content}"
-                                                          ContentTemplate="{TemplateBinding ContentTemplate}"
-                                                          Margin="{TemplateBinding Padding}" />
-                                    </Border>
-                                </ControlTemplate>
-                            </Setter.Value>
-                        </Setter>
-                        <Setter Property="Focusable"
-                                Value="False" />
-                        <Style.Triggers>
-                            <Trigger Property="IsMouseOver"
-                                     Value="True">
-                                <Setter Property="Background"
-                                        Value="Transparent" />
-                                <Setter Property="BorderBrush"
-                                        Value="Transparent" />
-                            </Trigger>
-                        </Style.Triggers>
-                    </Style>
+                    <Style BasedOn="{StaticResource PropertyItems}"
+                           TargetType="{x:Type ListViewItem}"></Style>
                 </ListView.ItemContainerStyle>
-                <ListView.ItemsSource>
-                    <Binding Path="PropertyItems.Items" />
-                </ListView.ItemsSource>
             </ListView>
         </Grid>
     </Grid>

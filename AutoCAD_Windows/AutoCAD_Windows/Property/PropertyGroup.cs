@@ -2,8 +2,10 @@
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Windows;
 using System.Xml;
 using System.Xml.Serialization;
+using WindowDictionary.Property.Editor;
 
 namespace WindowDictionary.Property
 {
@@ -11,11 +13,11 @@ namespace WindowDictionary.Property
     /// Represents a group of property items and other property groups
     /// </summary>
     [Serializable]
-    public class PropertyGroup : INotifyPropertyChanged
+    public class PropertyGroup : INotifyPropertyChanged, IPropertyControl
     {
         #region Fields
 
-        private object _Parent;
+        private IPropertyControl _Parent;
         private string _Title = "Root";
 
         #endregion
@@ -26,7 +28,7 @@ namespace WindowDictionary.Property
         /// Gets or Sets the reference to the parent object
         /// </summary>
         [XmlIgnore]
-        public object Parent
+        public IPropertyControl Parent
         {
             get { return _Parent; }
             set

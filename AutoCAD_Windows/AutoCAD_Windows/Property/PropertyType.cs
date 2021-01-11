@@ -1,48 +1,62 @@
-﻿namespace WindowDictionary.Property
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using WindowDictionary.Property.Editor;
+using WindowDictionary.Property.Creator;
+using System.Windows;
+
+namespace WindowDictionary.Property
 {
     /// <summary>
-    /// Property Item Type
+    /// Select the property type from either property creator or property editor
     /// </summary>
-    public enum PropertyType
+    public class PropertyType : DependencyObject
     {
         /// <summary>
-        /// Displays Property Item as a CheckBox
+        /// Get or Set the property creator property type
         /// </summary>
-        Boolean,
+        public CPropertyType CPropertyType
+        {
+            get { return (CPropertyType)GetValue(CPropertyProperty); }
+            set { SetValue(CPropertyProperty, value); }
+        }
 
         /// <summary>
-        /// Displays Property Item as a TextBox that prevents Cut, Copy, Paste, and improper key input. Only Allows number Double input.
+        /// Using a DependencyProperty as the backing store for CProperty.  This enables animation, styling, binding, etc...
         /// </summary>
-        Double,
+        public static readonly DependencyProperty CPropertyProperty =
+            DependencyProperty.Register("CPropertyType", typeof(CPropertyType), typeof(PropertyType));
 
         /// <summary>
-        /// Displays Property Item as a TextBox that prevents Cut, Copy, Paste, and improper key input. Only Allows number Integer input.
+        /// Get or Set property creator or editor
         /// </summary>
-        Integer,
+        public PropertyTypes TypeSelected
+        {
+            get { return (PropertyTypes)GetValue(TypeSelectedProperty); }
+            set { SetValue(TypeSelectedProperty, value); }
+        }
 
         /// <summary>
-        /// Displays Property Item as a ComboBox. This does not allow ComboBox Editing.
+        /// Using a DependencyProperty as the backing store for TypeSelected.  This enables animation, styling, binding, etc...
         /// </summary>
-        SelectionString,
+        public static readonly DependencyProperty TypeSelectedProperty =
+            DependencyProperty.Register("TypeSelected", typeof(PropertyTypes), typeof(PropertyType));
 
         /// <summary>
-        /// Displays Property Item as a ComboBox. This does allow ComboBox Editing for a number Double input.
+        /// Get or Set the property editor property type
         /// </summary>
-        SelectionEditDouble,
+        public EPropertyType EPropertyType
+        {
+            get { return (EPropertyType)GetValue(EPropertyTypeProperty); }
+            set { SetValue(EPropertyTypeProperty, value); }
+        }
 
         /// <summary>
-        /// Displays Property Item as a ComboBox. This does allow ComboBox Editing for a number Integer input.
+        /// Using a DependencyProperty as the backing store for EPropertyType.  This enables animation, styling, binding, etc...
         /// </summary>
-        SelectionEditInteger,
-
-        /// <summary>
-        /// Displays Property Item as a ComboBox. This does allow ComboBox Editing for a String input.
-        /// </summary>
-        SelectionEditString,
-
-        /// <summary>
-        /// Displays Property Item as a TextBox for a String input.
-        /// </summary>
-        String,
+        public static readonly DependencyProperty EPropertyTypeProperty =
+            DependencyProperty.Register("EPropertyType", typeof(EPropertyType), typeof(PropertyType));
     }
 }

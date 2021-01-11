@@ -1,16 +1,18 @@
-﻿<ListViewItem x:Class="WindowDictionary.Property.ListViewItems.LVI_TextBox"
+﻿<ListViewItem x:Class="WindowDictionary.Property.Editor.EComboBox"
               xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
               xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
               xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
               xmlns:local="clr-namespace:WindowDictionary.Property"
               xmlns:converter="clr-namespace:WindowDictionary.Converters"
               mc:Ignorable="d"
+              Background="Transparent"
+              BorderThickness="1"
+              BorderBrush="Transparent"
               MinHeight="20"
               MinWidth="200"
               HorizontalContentAlignment="Stretch"
               VerticalContentAlignment="Stretch"
-              BorderThickness="1"
               Margin="0"
               Padding="0">
     <ListViewItem.Resources>
@@ -20,19 +22,21 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </ListViewItem.Resources>
+    <ListViewItem.Style>
+        <Style BasedOn="{StaticResource PropertyItems}"
+               TargetType="{x:Type ListViewItem}" />
+    </ListViewItem.Style>
     <Grid>
-        <Grid.Resources>
-            <converter:IntegerConverter x:Key="IntegerConverter" />
-        </Grid.Resources>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="2*"/>
             <ColumnDefinition Width="3*"/>
         </Grid.ColumnDefinitions>
-        <TextBlock x:Name="textblock"
-                   x:FieldModifier="private"/>
-        <TextBox x:Name="textbox"
-                 x:FieldModifier="private"
-                 Grid.Column="1" />
+        <TextBlock Text="{Binding Path=PropertyItem.PropertyName}" />
+        <ComboBox x:Name="combobox"
+                  x:FieldModifier="private"
+                  SelectedIndex="{Binding Path=PropertyItem.ValueIndex}"
+                  ItemsSource="{Binding Path=PropertyItem.Values}"
+                  Grid.Column="1" />
         <Popup x:Name="popup"
                x:FieldModifier="private"
                AllowsTransparency="True"
@@ -43,14 +47,14 @@
                Visibility="Visible"
                VerticalOffset="-1">
             <Popup.PlacementTarget>
-                <Binding ElementName="textbox" />
+                <Binding ElementName="combobox" />
             </Popup.PlacementTarget>
             <Border Background="White"
                     BorderBrush="Red"
                     BorderThickness="1"
                     CornerRadius="3"
                     Margin="1,1,1,1">
-                <TextBlock x:Name="popuptext"
+                <TextBlock x:Name="popupText"
                            x:FieldModifier="private"
                            Foreground="Red"
                            HorizontalAlignment="Center"

@@ -6,8 +6,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{F5D25712-5584-495C-9925-9A832638EA14}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>AutoCAD_Windows</RootNamespace>
-    <AssemblyName>AutoCAD_Windows</AssemblyName>
+    <RootNamespace>WindowDictionary</RootNamespace>
+    <AssemblyName>WindowDictionary</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -24,7 +24,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Debug\AutoCAD_Windows.xml</DocumentationFile>
+    <DocumentationFile>bin\Debug\WindowDictionary.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -68,52 +68,47 @@
     <Compile Include="Converters\CollectionItemConverter.cs" />
     <Compile Include="Converters\DoubleConverter.cs" />
     <Compile Include="Converters\IntegerConverter.cs" />
-    <Compile Include="Converters\LogicRangeConverter.cs" />
-    <Compile Include="Converters\RangeConverter.cs" />
-    <Compile Include="Property\ListViewItems\LVI_Range.xaml.cs">
-      <DependentUpon>LVI_Range.xaml</DependentUpon>
+    <Compile Include="Property\Creator\CGroup.xaml.cs">
+      <DependentUpon>CGroup.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Property\ListViewItems\LVI_RangeItem.xaml.cs">
-      <DependentUpon>LVI_RangeItem.xaml</DependentUpon>
+    <Compile Include="Property\Creator\CPropertyCollection.xaml.cs">
+      <DependentUpon>CPropertyCollection.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Property\Logic\BooleanRange.cs" />
+    <Compile Include="Property\Creator\CGroupCollection.xaml.cs">
+      <DependentUpon>CGroupCollection.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Property\Creator\CProperty.xaml.cs">
+      <DependentUpon>CProperty.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Property\Creator\CPropertyType.cs" />
+    <Compile Include="Property\Creator\PropertyCreator.xaml.cs">
+      <DependentUpon>PropertyCreator.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Property\IPropertyControl.cs" />
+    <Compile Include="Property\Creator\Initialize.cs" />
     <Compile Include="Converters\LayerTransparencyConverter.cs" />
-    <Compile Include="Property\Logic\DoubleRange.cs" />
     <Compile Include="Extensions\DxfLayerExtended.cs" />
-    <Compile Include="Property\ListViewItems\LVI_CheckBox.xaml.cs">
-      <DependentUpon>LVI_CheckBox.xaml</DependentUpon>
+    <Compile Include="Property\Editor\ECheckBox.xaml.cs">
+      <DependentUpon>ECheckBox.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Property\ListViewItems\LVI_Button.xaml.cs">
-      <DependentUpon>LVI_Button.xaml</DependentUpon>
+    <Compile Include="Property\Editor\ETextBox.xaml.cs">
+      <DependentUpon>ETextBox.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Property\ListViewItems\LVI_TextBox.xaml.cs">
-      <DependentUpon>LVI_TextBox.xaml</DependentUpon>
+    <Compile Include="Property\Editor\EComboBox.xaml.cs">
+      <DependentUpon>EComboBox.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Property\ListViewItems\LVI_ComboBox.xaml.cs">
-      <DependentUpon>LVI_ComboBox.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Property\ListViewItems\LVI_ValueList.xaml.cs">
-      <DependentUpon>LVI_ValueList.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Property\Logic\LogicalGate.cs" />
-    <Compile Include="Property\Logic\IntegerRange.cs" />
     <Compile Include="LayerTransparency.xaml.cs">
       <DependentUpon>LayerTransparency.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Property\Logic\LogicalOperator.cs" />
-    <Compile Include="Property\Logic\RangeOperator.cs" />
-    <Compile Include="Property\PropertyCreator.xaml.cs">
-      <DependentUpon>PropertyCreator.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Property\PropertyEditor.xaml.cs">
+    <Compile Include="Property\Editor\PropertyEditor.xaml.cs">
       <DependentUpon>PropertyEditor.xaml</DependentUpon>
     </Compile>
     <Compile Include="Property\PropertyGroup.cs" />
-    <Compile Include="Property\PropertyType.cs" />
+    <Compile Include="Property\Editor\EPropertyType.cs" />
     <Compile Include="Property\PropertyItem.cs" />
-    <Compile Include="Property\Logic\Range.cs" />
+    <Compile Include="Property\PropertyType.cs" />
+    <Compile Include="Property\PropertyTypes.cs" />
     <Compile Include="Resources\UILibrary.cs" />
-    <Compile Include="Property\Logic\CharRange.cs" />
     <Compile Include="Resources\WindowControl.xaml.cs">
       <DependentUpon>WindowControl.xaml</DependentUpon>
     </Compile>
@@ -152,39 +147,39 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Property\ListViewItems\LVI_CheckBox.xaml">
+    <Page Include="Property\Creator\CGroup.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Property\ListViewItems\LVI_Button.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Property\ListViewItems\LVI_RangeItem.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Property\ListViewItems\LVI_TextBox.xaml">
+    <Page Include="Property\Creator\CPropertyCollection.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Property\ListViewItems\LVI_ComboBox.xaml">
+    <Page Include="Property\Creator\CGroupCollection.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Property\ListViewItems\LVI_ValueList.xaml">
+    <Page Include="Property\Creator\CProperty.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Property\ListViewItems\LVI_Range.xaml">
+    <Page Include="Property\Creator\PropertyCreator.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Property\Editor\ECheckBox.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Property\PropertyCreator.xaml">
+    <Page Include="Property\Editor\ETextBox.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Property\Editor\EComboBox.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Property\PropertyEditor.xaml">
+    <Page Include="Property\Editor\PropertyEditor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -254,5 +249,6 @@
     <Resource Include="Application\DeleteLayer.bmp" />
     <Resource Include="Application\NewLayer.bmp" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

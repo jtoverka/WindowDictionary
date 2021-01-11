@@ -1,0 +1,32 @@
+﻿<ListViewItem x:Class="WindowDictionary.Property.Creator.CGroupCollection"
+              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+              mc:Ignorable="d"
+              HorizontalContentAlignment="Stretch"
+              VerticalContentAlignment="Stretch"
+              MinHeight="40"
+              MinWidth="400">
+    <ListViewItem.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../../StyleDictionary.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </ListViewItem.Resources>
+    <ListViewItem.Style>
+        <Style TargetType="{x:Type ListViewItem}"
+               BasedOn="{StaticResource PropertyItems}"/>
+    </ListViewItem.Style>
+    <Grid>
+        <Grid Margin="5">
+            <TextBlock Margin="0"
+                       Text="Add Group" />
+            <Button Click="Add_Group_Button_Click"
+                    Content="Add"
+                    HorizontalAlignment="Right"
+                    Margin="0" />
+        </Grid>
+    </Grid>
+</ListViewItem>

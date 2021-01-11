@@ -4,8 +4,8 @@ using System.Collections.ObjectModel;
 using System.Windows.Controls;
 using System.Xml;
 using System.Xml.Serialization;
-using WindowDictionary.Property.Logic;
 using System.Windows;
+using WindowDictionary.Property.Editor;
 
 namespace WindowDictionary.Property
 {
@@ -13,162 +13,123 @@ namespace WindowDictionary.Property
     /// Represents a single property in a group
     /// </summary>
     [Serializable]
-    public class PropertyItem : INotifyPropertyChanged
+    public class PropertyItem : DependencyObject
     {
-        #region Fields
+        #region Properties
 
-        private object _Parent = null;
-        private Control _Control = null;
-        private string _PropertyName = "";
-        private Range _ValueRange = new LogicalGate(LogicalOperator.OR);
-        private PropertyType _ValueType = PropertyType.String;
-        private int _ValueIndex = 0;
+        #region Property - CollectionRegex : string
+
+        /// <summary>
+        /// Gets or Sets the property dependency collection regular expression of this object.
+        /// </summary>
+        [XmlElement("CollectionRegex")]
+        public string CollectionRegex
+        {
+            get { return (string)GetValue(CollectionRegexProperty); }
+            set { SetValue(CollectionRegexProperty, value); }
+        }
+
+        /// <summary>
+        /// Using a DependencyProperty as the backing store for CollectionRegex.  This enables animation, styling, binding, etc...
+        /// </summary>
+        public static readonly DependencyProperty CollectionRegexProperty =
+            DependencyProperty.Register("CollectionRegex", typeof(string), typeof(PropertyItem));
 
         #endregion
+        #region Property - Name : string
 
-        #region Properties
+        /// <summary>
+        /// Gets the name of the parent title
+        /// </summary>
+        public string Name 
+        { 
+            get 
+            {
+                if (this.Parent == null)
+                    return "";
+
+                return this.Parent.Title;
+            }
+        }
+
+        #endregion
+        #region Property - Parent : PropertyGroup
 
         /// <summary>
         /// Gets or Sets the reference to the parent object.
         /// </summary>
         [XmlIgnore]
-        public object Parent
+        public PropertyGroup Parent
         {
-            get { return _Parent; }
-            set
-            {
-                if (_Parent == value)
-                    return;
-
-                _Parent = value;
-
-                OnPropertyChanged("Parent");
-            }
+            get { return (PropertyGroup)GetValue(ParentProperty); }
+            set { SetValue(ParentProperty, value); }
         }
 
         /// <summary>
-        /// 
+        /// Using a DependencyProperty as the backing store for CollectionRegex.  This enables animation, styling, binding, etc...
         /// </summary>
-        [XmlIgnore]
-        public Control Control
-        {
-            get { return _Control; }
-            set
-            {
-                if (_Control == value)
-                    return;
+        public static readonly DependencyProperty ParentProperty =
+            DependencyProperty.Register("Parent", typeof(PropertyGroup), typeof(PropertyItem));
 
-                _Control = value;
-                
-                OnPropertyChanged("Control");
-            }
+        #endregion
+        #region Property - Regex : string
+
+        /// <summary>
+        /// Gets or Sets the property regular expression of this object.
+        /// </summary>
+        [XmlElement("Regex")]
+        public string Regex
+        {
+            get { return (string)GetValue(RegexProperty); }
+            set { SetValue(RegexProperty, value); }
         }
 
         /// <summary>
-        /// Gets or Sets the property name of this object.
+        /// Using a DependencyProperty as the backing store for CollectionRegex.  This enables animation, styling, binding, etc...
         /// </summary>
-        [XmlElement("PropertyName")]
-        public string PropertyName
+        public static readonly DependencyProperty RegexProperty =
+            DependencyProperty.Register("Regex", typeof(string), typeof(PropertyItem));
+
+        #endregion
+        #region Property - Type : PropertyType
+
+        /// <summary>
+        /// Gets or Sets the property type of this object.
+        /// </summary>
+        [XmlElement("Type")]
+        public PropertyType Type
         {
-            get { return this._PropertyName; }
-            set
-            {
-                if (this._PropertyName == value)
-                    return;
-
-                this._PropertyName = value;
-
-                OnPropertyChanged("PropertyName");
-            }
+            get { return (PropertyType)GetValue(TypeProperty); }
+            set { SetValue(TypeProperty, value); }
         }
 
         /// <summary>
-        /// Gets or Sets the property type input.
+        /// Using a DependencyProperty as the backing store for CollectionRegex.  This enables animation, styling, binding, etc...
         /// </summary>
-        [XmlElement("ValueType")]
-        public PropertyType ValueType
-        {
-            get { return this._ValueType; }
-            set
-            {
-                if (this._ValueType == value)
-                    return;
-
-                this._ValueType = value;
-
-                OnPropertyChanged("ValueType");
-            }
-        }
-
-        /// <summary>
-        /// Gets or Sets the restriction for this object.
-        /// </summary>
-        [XmlElement("ValueRange")]
-        public Range ValueRange
-        {
-            get { return this._ValueRange; }
-            set
-            {
-                if (this._ValueRange == value)
-                    return;
-
-                this._ValueRange = value;
-
-                OnPropertyChanged("ValueRange");
-            }
-        }
-
-
-        /// <summary>
-        /// Gets or Sets the index of the values collection.
-        /// </summary>
-        [XmlElement("ValueIndex")]
-        public int ValueIndex
-        {
-            get { return _ValueIndex; }
-            set
-            {
-                if (_ValueIndex == value)
-                    return;
-
-                _ValueIndex = value;
-
-                OnPropertyChanged("ValueIndex");
-            }
-        }
+        public static readonly DependencyProperty TypeProperty =
+            DependencyProperty.Register("Type", typeof(PropertyType), typeof(PropertyItem));
+        #endregion
+        #region Property - Values : ObservableCollection<string>
 
         /// <summary>
         /// Gets the collection of values to choose from.
         /// </summary>
         [XmlElement("Values")]
-        public ObservableCollection<object> Values { get; } = new ObservableCollection<object>();
+        public ObservableCollection<string> Values { get; } = new ObservableCollection<string>();
 
         #endregion
 
-        #region Delegates, Events, Handlers
+        #endregion
+
+        #region Constructors
 
         /// <summary>
-        /// 
+        /// Initializes a new instance of this class
         /// </summary>
-        public delegate void PreviewPropertyChangeEventHandler(object sender, string property, ref bool allow);
-
-        /// <summary>
-        /// Invoked when a Component Property changes.
-        /// </summary>
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public event PreviewPropertyChangeEventHandler PreviewPropertyChange;
-
-        /// <summary>
-        /// Invokes PropertyChanged Event
-        /// </summary>
-        /// <param name="property"></param>
-        private void OnPropertyChanged(string property)
+        public PropertyItem()
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
+            this.CollectionRegex = "";
+            this.Regex = ".*";
         }
 
         #endregion

@@ -1,0 +1,43 @@
+﻿<ListViewItem x:Class="WindowDictionary.Property.Creator.CGroup"
+              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+              xmlns:local="clr-namespace:WindowDictionary.Property"
+              mc:Ignorable="d"
+              HorizontalContentAlignment="Stretch"
+              VerticalContentAlignment="Stretch"
+              MinHeight="80"
+              MinWidth="400">
+    <ListViewItem.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../../StyleDictionary.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </ListViewItem.Resources>
+    <ListViewItem.Style>
+        <Style TargetType="{x:Type ListViewItem}"
+               BasedOn="{StaticResource PropertyItems}" />
+    </ListViewItem.Style>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="40" />
+            <RowDefinition Height="40" />
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0"
+              Margin="5">
+            <TextBlock Text="Delete Group" />
+            <Button Click="Delete_Group_Button_Click"
+                    Content="Delete"
+                    HorizontalAlignment="Right"/>
+        </Grid>
+        <Grid Grid.Row="1"
+              Margin="5">
+            <TextBlock Text="Group Name" />
+            <TextBox HorizontalAlignment="Right"
+                     Width="250"
+                     Text="{Binding Path=PropertyItem.Parent.Title}"/>
+        </Grid>
+    </Grid>
+</ListViewItem>
