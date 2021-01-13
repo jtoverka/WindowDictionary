@@ -8,7 +8,7 @@
         mc:Ignorable="d"
         Height="450"
         ResizeMode="CanResizeWithGrip"
-        MinHeight="700"
+        MinHeight="800"
         MinWidth="800"
         WindowStartupLocation="CenterScreen"
         WindowStyle="None"
@@ -107,10 +107,10 @@
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
             <TextBlock HorizontalAlignment="Center"
-                       Text="Groups"
-                       Margin="114,2,109,2" />
+                       Text="Groups"/>
             <TreeView x:Name="Tree"
                       Grid.Row="1"
+                      BorderBrush="#7d7d7d"
                       ItemsSource="{Binding Path=PropertyGroups}"
                       SelectedItemChanged="Tree_SelectedItemChanged"
                       Margin="10,10,5,10" />
@@ -122,10 +122,12 @@
                           ClipToBounds="True"
                           Width="5"></GridSplitter>
             <TextBlock Grid.Column="2"
+                       Grid.ColumnSpan="2"
                        HorizontalAlignment="Center"
                        Text="Properties"
-                       Margin="238,2,37,2" />
+                        />
             <ListView x:Name="Properties"
+                      BorderBrush="#7d7d7d"
                       Grid.Column="2"
                       Grid.ColumnSpan="3"
                       Grid.Row="1"

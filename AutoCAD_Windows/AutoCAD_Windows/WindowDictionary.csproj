@@ -68,6 +68,7 @@
     <Compile Include="Converters\CollectionItemConverter.cs" />
     <Compile Include="Converters\DoubleConverter.cs" />
     <Compile Include="Converters\IntegerConverter.cs" />
+    <Compile Include="Extensions\DxfLayerExtended.cs" />
     <Compile Include="Property\Creator\CGroup.xaml.cs">
       <DependentUpon>CGroup.xaml</DependentUpon>
     </Compile>
@@ -80,14 +81,23 @@
     <Compile Include="Property\Creator\CProperty.xaml.cs">
       <DependentUpon>CProperty.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Property\Creator\CPropertyDependency.xaml.cs">
+      <DependentUpon>CPropertyDependency.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Property\Creator\CCollectionRegex.xaml.cs">
+      <DependentUpon>CCollectionRegex.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Property\Creator\CPropertyRegex.xaml.cs">
+      <DependentUpon>CPropertyRegex.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Property\Creator\CPropertyType.cs" />
     <Compile Include="Property\Creator\PropertyCreator.xaml.cs">
       <DependentUpon>PropertyCreator.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Property\DependencyItem.cs" />
     <Compile Include="Property\IPropertyControl.cs" />
     <Compile Include="Property\Creator\Initialize.cs" />
     <Compile Include="Converters\LayerTransparencyConverter.cs" />
-    <Compile Include="Extensions\DxfLayerExtended.cs" />
     <Compile Include="Property\Editor\ECheckBox.xaml.cs">
       <DependentUpon>ECheckBox.xaml</DependentUpon>
     </Compile>
@@ -107,7 +117,7 @@
     <Compile Include="Property\Editor\EPropertyType.cs" />
     <Compile Include="Property\PropertyItem.cs" />
     <Compile Include="Property\PropertyType.cs" />
-    <Compile Include="Property\PropertyTypes.cs" />
+    <Compile Include="Resources\DialogResult.cs" />
     <Compile Include="Resources\UILibrary.cs" />
     <Compile Include="Resources\WindowControl.xaml.cs">
       <DependentUpon>WindowControl.xaml</DependentUpon>
@@ -160,6 +170,18 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Property\Creator\CProperty.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Property\Creator\CPropertyDependency.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Property\Creator\CCollectionRegex.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Property\Creator\CPropertyRegex.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

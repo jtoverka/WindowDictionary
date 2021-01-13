@@ -1,30 +1,28 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace WindowDictionary.Property.Creator
 {
     /// <summary>
-    /// Interaction logic for CGroup.xaml
+    /// Interaction logic for CPropertyRegex.xaml
     /// </summary>
-    public partial class CGroup : ListViewItem
+    public partial class CCollectionRegex : Window
     {
+        #region Fields
+
+        private bool changedSource = false;
+
+        #endregion
+
         #region Properties
+        #region Property - PropertyItem : PropertyItem
 
         /// <summary>
-        /// Gets or Sets the PropertyItem object.
+        /// Gets or Sets the <see cref="PropertyItem"/> object.
         /// </summary>
         public PropertyItem PropertyItem
         {
@@ -36,8 +34,9 @@ namespace WindowDictionary.Property.Creator
         /// Using a DependencyProperty as the backing store for PropertyItem.  This enables animation, styling, binding, etc...
         /// </summary>
         public static readonly DependencyProperty PropertyItemProperty =
-            DependencyProperty.Register("PropertyItem", typeof(PropertyItem), typeof(CGroup));
+            DependencyProperty.Register("PropertyItem", typeof(PropertyItem), typeof(CCollectionRegex));
 
+        #endregion
         #endregion
 
         #region Constructors
@@ -45,7 +44,7 @@ namespace WindowDictionary.Property.Creator
         /// <summary>
         /// Initializes a new instance of this class
         /// </summary>
-        public CGroup()
+        public CCollectionRegex()
         {
             DataContext = this;
             InitializeComponent();
@@ -55,21 +54,34 @@ namespace WindowDictionary.Property.Creator
 
         #region Delegates, Events, Handlers
 
-        private void Delete_Group_Button_Click(object sender, RoutedEventArgs e)
-        {
-            PropertyGroup PropertyItemParent = PropertyItem.Parent;
-            IPropertyControl parent = PropertyItemParent.Parent;
-            parent.PropertyGroups.Remove(PropertyItemParent);
-        }
-
         private void TextBox_KeyUp(object sender, KeyEventArgs e)
         {
             TextBox box = sender as TextBox;
             if ((box == null)
-                || (!this.IsLoaded))
+                || !this.IsLoaded)
                 return;
 
+            changedSource = true;
+
             box.GetBindingExpression(TextBox.TextProperty).UpdateSource();
+        }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            if (!changedSource)
+                return;
+
+            Regex expression;
+            try
+            {
+                expression = new Regex(regex.Text);
+            }
+            catch (Exception error)
+            {
+                MessageBox.Show("Invalid Regular Expression:\n" + error.Message, "Invalid Input", MessageBoxButton.OK);
+                e.Cancel = true;
+                return;
+            }
         }
 
         #endregion

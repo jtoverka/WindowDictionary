@@ -136,7 +136,7 @@
                                 </Setter.Value>
                             </Setter>
                             <Setter Property="ToolTip"
-                                    Value="Minimize" />
+                                    Value="Restore Down" />
                         </DataTrigger>
                         <Trigger Property="IsMouseOver"
                                  Value="True">

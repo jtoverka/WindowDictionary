@@ -310,5 +310,10 @@ namespace WindowDictionary.Property.Editor
         {
             this.CloseApplication();
         }
+
+        public ObservableCollection<PropertyGroup> GetProperties()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

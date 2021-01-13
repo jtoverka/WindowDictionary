@@ -37,7 +37,8 @@
             <TextBlock Text="Group Name" />
             <TextBox HorizontalAlignment="Right"
                      Width="250"
-                     Text="{Binding Path=PropertyItem.Parent.Title}"/>
+                     Text="{Binding Path=PropertyItem.Parent.Title}"
+                     KeyUp="TextBox_KeyUp"/>
         </Grid>
     </Grid>
 </ListViewItem>

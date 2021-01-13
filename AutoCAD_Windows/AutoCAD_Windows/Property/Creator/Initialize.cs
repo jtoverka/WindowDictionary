@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.ObjectModel;
-using WindowDictionary.Property;
-using WindowDictionary.Property.Creator;
-using WindowDictionary.Property.Editor;
+﻿using WindowDictionary.Property.Creator;
 
 namespace WindowDictionary.Property
 {
@@ -29,7 +25,6 @@ namespace WindowDictionary.Property
             };
             Properties = new PropertyType()
             {
-                TypeSelected = PropertyTypes.CPropertyType,
                 CPropertyType = Creator.CPropertyType.CGroup,
             };
             Property = new PropertyItem()
@@ -46,7 +41,6 @@ namespace WindowDictionary.Property
             };
             Properties = new PropertyType()
             {
-                TypeSelected = PropertyTypes.CPropertyType,
                 CPropertyType = Creator.CPropertyType.CGroupCollection,
             };
             Property = new PropertyItem()
@@ -68,7 +62,6 @@ namespace WindowDictionary.Property
             };
             Properties = new PropertyType()
             {
-                TypeSelected = PropertyTypes.CPropertyType,
                 CPropertyType = Creator.CPropertyType.CPropertyCollection,
             };
             Property = new PropertyItem()
@@ -104,8 +97,8 @@ namespace WindowDictionary.Property
             };
             Properties = new PropertyType()
             {
-                TypeSelected = PropertyTypes.CPropertyType,
                 CPropertyType = CPropertyType.CProperty,
+                EPropertyType = Editor.EPropertyType.TextBox,
             };
             Property = new PropertyItem()
             {

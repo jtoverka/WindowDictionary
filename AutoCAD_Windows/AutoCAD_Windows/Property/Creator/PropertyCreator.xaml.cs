@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
@@ -79,6 +80,47 @@ namespace WindowDictionary.Property.Creator
 
             Open_File(filename);
             changedState = false;
+        }
+
+        #endregion
+
+        #region Methods
+
+        /// <summary>
+        /// Get all property groups within this tree
+        /// </summary>
+        /// <returns></returns>
+        public ObservableCollection<PropertyGroup> GetProperties()
+        {
+            ObservableCollection<PropertyGroup> properties = new ObservableCollection<PropertyGroup>();
+            foreach (PropertyGroup group in this.PropertyGroups)
+            {
+                foreach (PropertyGroup item in CollectGroups(group))
+                {
+                    if (group.PropertyItems[0].Type.CPropertyType == CPropertyType.CProperty)
+                    {
+                        properties.Add(group);
+                    }
+                }
+            }
+            
+            return properties;
+        }
+
+        private ObservableCollection<PropertyGroup> CollectGroups(PropertyGroup group)
+        {
+            ObservableCollection<PropertyGroup> groups = new ObservableCollection<PropertyGroup>();
+
+            foreach (PropertyGroup subGroup in group.PropertyGroups)
+            {
+                foreach (PropertyGroup item in CollectGroups(subGroup))
+                {
+                    groups.Add(item);
+                }
+            }
+            groups.Add(group);
+
+            return groups;
         }
 
         #endregion
@@ -238,21 +280,30 @@ namespace WindowDictionary.Property.Creator
             {
                 this.filename = filename;
 
+                ObservableCollection<PropertyGroup> import = new ObservableCollection<PropertyGroup>();
                 try
                 {
-                    foreach (PropertyGroup item in Read_File(filename))
-                    {
-                        item.Parent = this;
-                        this.PropertyGroups.Add(item);
-                    }
-
-                    changedState = false;
+                    // import file
+                    import = Read_File(filename);
                 }
                 catch (Exception)
                 {
                     changedState = true;
                     MessageBox.Show("Invalid File");
+                    return;
                 }
+
+                // Clear existing application
+                this.PropertyGroups.Clear();
+
+                // Add imported items
+                foreach (PropertyGroup item in import)
+                {
+                    item.Parent = this;
+                    this.PropertyGroups.Add(item);
+                }
+
+                changedState = false;
             }
         }
 

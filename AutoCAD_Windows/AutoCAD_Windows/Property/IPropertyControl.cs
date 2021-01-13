@@ -11,5 +11,11 @@ namespace WindowDictionary.Property
         /// Property PropertyGroups 
         /// </summary>
         public ObservableCollection<PropertyGroup> PropertyGroups { get; }
+
+        /// <summary>
+        /// Traverse the tree to root, then collects all the property groups
+        /// </summary>
+        /// <returns></returns>
+        public ObservableCollection<PropertyGroup> GetProperties();
     }
 }

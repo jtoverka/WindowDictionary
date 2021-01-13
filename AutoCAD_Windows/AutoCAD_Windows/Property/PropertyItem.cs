@@ -16,7 +16,24 @@ namespace WindowDictionary.Property
     public class PropertyItem : DependencyObject
     {
         #region Properties
+        #region Property - Collapsible : bool
 
+        /// <summary>
+        /// Gets or Sets the visibility of the property. Collapsible if true, Gray out if false.
+        /// </summary>
+        public bool Collapsible
+        {
+            get { return (bool)GetValue(CollapsibleProperty); }
+            set { SetValue(CollapsibleProperty, value); }
+        }
+
+        /// <summary>
+        /// Using a DependencyProperty as the backing store for Collapsible.  This enables animation, styling, binding, etc...
+        /// </summary>
+        public static readonly DependencyProperty CollapsibleProperty =
+            DependencyProperty.Register("Collapsible", typeof(bool), typeof(DependencyItem));
+
+        #endregion
         #region Property - CollectionRegex : string
 
         /// <summary>
@@ -36,11 +53,29 @@ namespace WindowDictionary.Property
             DependencyProperty.Register("CollectionRegex", typeof(string), typeof(PropertyItem));
 
         #endregion
+        #region Property - Help : string
+
+        /// <summary>
+        /// Gets or Sets the help text
+        /// </summary>
+        [XmlElement("Help")]
+        public string Help
+        {
+            get { return (string)GetValue(HelpProperty); }
+            set { SetValue(HelpProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for Help.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty HelpProperty =
+            DependencyProperty.Register("Help", typeof(string), typeof(PropertyItem));
+
+        #endregion
         #region Property - Name : string
 
         /// <summary>
         /// Gets the name of the parent title
         /// </summary>
+        [XmlIgnore]
         public string Name 
         { 
             get 
@@ -118,7 +153,15 @@ namespace WindowDictionary.Property
         public ObservableCollection<string> Values { get; } = new ObservableCollection<string>();
 
         #endregion
+        #region Property - DependencyItems : ObservableCollection<DependencyItem>
 
+        /// <summary>
+        /// Gets the collection of dependency items
+        /// </summary>
+        [XmlElement("DependencyItems")]
+        public ObservableCollection<DependencyItem> DependencyItems { get; } = new ObservableCollection<DependencyItem>();
+
+        #endregion
         #endregion
 
         #region Constructors
@@ -128,8 +171,9 @@ namespace WindowDictionary.Property
         /// </summary>
         public PropertyItem()
         {
-            this.CollectionRegex = "";
+            this.CollectionRegex = ".*";
             this.Regex = ".*";
+            this.Help = "Any value is allowed.";
         }
 
         #endregion

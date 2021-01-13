@@ -10,7 +10,7 @@
               HorizontalContentAlignment="Stretch"
               VerticalContentAlignment="Stretch"
               MinHeight="580"
-              MinWidth="400">
+              MinWidth="300">
     <ListViewItem.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -31,19 +31,22 @@
         <Style TargetType="{x:Type ListViewItem}"
                BasedOn="{StaticResource PropertyItems}" />
     </ListViewItem.Style>
-    <Grid Focusable="True">
+    <Grid Focusable="True"
+          IsManipulationEnabled="False">
         <Grid.RowDefinitions>
             <RowDefinition Height="40" />
-            <RowDefinition Height="60" />
-            <RowDefinition Height="40" />
+            <RowDefinition Height="100" />
             <RowDefinition Height="240" />
-            <RowDefinition Height="200" />
+            <RowDefinition Height="100" />
+            <RowDefinition Height="50" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <Grid Grid.Row="0"
-              Margin="5">
+              Margin="5"
+              IsManipulationEnabled="False">
             <TextBlock Text="Delete Property"
-                       Margin="0"/>
+                       Margin="0"
+                       IsManipulationEnabled="False"/>
             <Button Content="Delete"
                     Click="Delete_Property_Button_Click"
                     HorizontalAlignment="Right"
@@ -53,37 +56,45 @@
               MaxWidth="{Binding RelativeSource={RelativeSource AncestorType=ListView},Path=ActualWidth}">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition />
-                <ColumnDefinition />
+                <ColumnDefinition MaxWidth="224" />
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition />
                 <RowDefinition />
+                <RowDefinition />
             </Grid.RowDefinitions>
             <TextBlock Text="Property Name"
-                       Margin="5,0,0,0" />
-            <TextBlock Grid.Column="1"
-                       Text="Property Value Regex"
-                       Margin="2,0,5,0" />
-            <TextBox Grid.Row="1"
-                     Margin="5,0,2,0"
+                       Margin="5,0,0,0"
+                       IsManipulationEnabled="False" />
+            <TextBox Grid.Column="1"
+                     Margin="2,0,5,0"
+                     MinWidth="112"
+                     MaxWidth="224"
                      Text="{Binding PropertyItem.Parent.Title}"
-                     KeyUp="TextBox_KeyUp"/>
-            <TextBox x:Name="regex"
-                     Grid.Column="1"
-                     Grid.Row="1" Margin="2,0,5,0"
-                     Text="{Binding PropertyItem.Regex}"
-                     TextChanged="TextBox_TextChanged"/>
-        </Grid>
-        <UniformGrid Grid.Row="2"
-                     Rows="1">
-            <TextBlock Text="Property Type" />
-            <ComboBox Height="25"
+                     KeyUp="TextBox_KeyUp" />
+            <TextBlock Grid.Row="1"
+                       Text="Property Value Regex"
+                       Margin="5"
+                       IsManipulationEnabled="False" />
+            <Button Grid.Column="1" 
+                    Grid.Row="1" 
+                    Click="Regex_Edit_Button_Click"
+                    Content="Edit"
+                    HorizontalAlignment="Right" />
+            <TextBlock Grid.Row="2"
+                       Text="Property Type"
+                       IsManipulationEnabled="False" />
+            <ComboBox Grid.Row="2"
+                      Grid.Column="1"
+                      Height="25"
+                      MinWidth="112"
+                      MaxWidth="224"
                       ItemsSource="{Binding Source={StaticResource EPropertyType}}"
                       SelectedItem="{Binding PropertyItem.Type.EPropertyType}"
                       Margin="2,0,5,0"
-                      SelectionChanged="ComboBox_SelectionChanged"/>
-        </UniformGrid>
-        <Grid Grid.Row="3"
+                      SelectionChanged="ComboBox_SelectionChanged" />
+        </Grid>
+        <Grid Grid.Row="2"
               Margin="5,0,5,0">
             <Grid.RowDefinitions>
                 <RowDefinition Height="40" />
@@ -92,7 +103,8 @@
                 <RowDefinition Height="40" />
             </Grid.RowDefinitions>
             <TextBlock Text="Property Value(s)"
-                       Margin="0" />
+                       Margin="0"
+                       IsManipulationEnabled="False" />
             <ListView x:Name="values"
                       Grid.Row="1"
                       ItemsSource="{Binding PropertyItem.Values}"/>
@@ -111,60 +123,33 @@
                         Content="Delete Value" />
             </UniformGrid>
         </Grid>
-        <Grid Grid.Row="4"
-              Margin="5,5,5,5">
+        <Grid Grid.Row="3"
+              Margin="5">
             <Grid.RowDefinitions>
-                <RowDefinition Height="80" />
-                <RowDefinition Height="*" />
+                <RowDefinition Height="25" />
+                <RowDefinition />
             </Grid.RowDefinitions>
-            <UniformGrid Columns="2">
-                <TextBlock Text="Property Dependencies" />
-                <Button Click="Add_Dependency_Button_Click"
-                        Content="Add"
-                        HorizontalAlignment="Right"
-                        Margin="0"/>
-                <RadioButton Content="Collapse"
-                             GroupName="View"
-                             IsEnabled="False"
-                             VerticalAlignment="Center">
-                    <RadioButton.Style>
-                        <Style TargetType="{x:Type RadioButton}">
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding ElementName=PropertyDependencies, Path=items.IsEmpty}"
-                                             Value="False">
-                                    <Setter Property="IsEnabled"
-                                            Value="True" />
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </RadioButton.Style>
-                </RadioButton>
-                <RadioButton Content="Gray-Out"
-                             GroupName="View"
-                             IsEnabled="False"
-                             VerticalAlignment="Center">
-                    <RadioButton.Style>
-                        <Style TargetType="{x:Type RadioButton}">
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding ElementName=PropertyDependencies, Path=items.IsEmpty}"
-                                             Value="False">
-                                    <Setter Property="IsEnabled"
-                                            Value="True" />
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </RadioButton.Style>
-                </RadioButton>
-                <TextBlock Text="Collection Regex"
-                           Grid.Row="1"
-                           Margin="0" />
-                <TextBox Text="{Binding PropertyItem.CollectionRegex}"/>
-            </UniformGrid>
-            <ListView x:Name="PropertyDependencies"
-                      x:FieldModifier="private"
-                      Grid.Row="1"
-                      Margin="0">
-            </ListView>
+            <TextBlock Text="Regex Help Message"
+                       IsManipulationEnabled="False" 
+                       Margin="0"/>
+            <TextBox Grid.Row="1"
+                     HorizontalContentAlignment="Left"
+                     VerticalContentAlignment="Top"
+                     AcceptsReturn="True"
+                     Text="{Binding PropertyItem.Help}">
+                <TextBox.Style>
+                    <Style TargetType="{x:Type TextBox}" />
+                </TextBox.Style>
+            </TextBox>
         </Grid>
+        <UniformGrid Grid.Row="4" Columns="2">
+            <TextBlock Text="Property Dependencies"
+                        IsManipulationEnabled="False"
+                        Margin="0"/>
+            <Button Click="Add_Dependency_Button_Click"
+                    Content="Edit"
+                    HorizontalAlignment="Right"
+                    Margin="0"/>
+        </UniformGrid>
     </Grid>
 </ListViewItem>

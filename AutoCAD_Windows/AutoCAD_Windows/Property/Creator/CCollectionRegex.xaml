@@ -1,0 +1,21 @@
+﻿<Window x:Class="WindowDictionary.Property.Creator.CCollectionRegex"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WindowDictionary.Property.Creator"
+        mc:Ignorable="d"
+        Title=" Collection Regular Expression (regex)"
+        Height="200" 
+        Width="400"
+        WindowStartupLocation="CenterScreen"
+        WindowStyle="ToolWindow"
+        ResizeMode="NoResize"
+        Closing="Window_Closing">
+    <Grid>
+        <TextBox x:Name="regex"
+                 Text="{Binding PropertyItem.CollectionRegex}"
+                 KeyUp="TextBox_KeyUp">
+        </TextBox>
+    </Grid>
+</Window>

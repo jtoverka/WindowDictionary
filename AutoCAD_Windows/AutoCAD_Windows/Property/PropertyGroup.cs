@@ -85,6 +85,19 @@ namespace WindowDictionary.Property
 
         #endregion
 
+        #region Public Methods
+
+        /// <summary>
+        /// Returns all of the properties in the parent tree.
+        /// </summary>
+        /// <returns></returns>
+        public ObservableCollection<PropertyGroup> GetProperties()
+        {
+            return this.Parent.GetProperties();
+        }
+
+        #endregion
+
         #region Delegates, Events, Handlers
 
         /// <summary>

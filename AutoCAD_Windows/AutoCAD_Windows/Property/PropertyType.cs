@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using WindowDictionary.Property.Editor;
+﻿using WindowDictionary.Property.Editor;
 using WindowDictionary.Property.Creator;
 using System.Windows;
 
@@ -14,6 +9,9 @@ namespace WindowDictionary.Property
     /// </summary>
     public class PropertyType : DependencyObject
     {
+        #region Properties
+        #region Property - CPropertyType : CPropertyType
+
         /// <summary>
         /// Get or Set the property creator property type
         /// </summary>
@@ -29,20 +27,8 @@ namespace WindowDictionary.Property
         public static readonly DependencyProperty CPropertyProperty =
             DependencyProperty.Register("CPropertyType", typeof(CPropertyType), typeof(PropertyType));
 
-        /// <summary>
-        /// Get or Set property creator or editor
-        /// </summary>
-        public PropertyTypes TypeSelected
-        {
-            get { return (PropertyTypes)GetValue(TypeSelectedProperty); }
-            set { SetValue(TypeSelectedProperty, value); }
-        }
-
-        /// <summary>
-        /// Using a DependencyProperty as the backing store for TypeSelected.  This enables animation, styling, binding, etc...
-        /// </summary>
-        public static readonly DependencyProperty TypeSelectedProperty =
-            DependencyProperty.Register("TypeSelected", typeof(PropertyTypes), typeof(PropertyType));
+        #endregion
+        #region Property - EPropertyType : EPropertyType
 
         /// <summary>
         /// Get or Set the property editor property type
@@ -58,5 +44,8 @@ namespace WindowDictionary.Property
         /// </summary>
         public static readonly DependencyProperty EPropertyTypeProperty =
             DependencyProperty.Register("EPropertyType", typeof(EPropertyType), typeof(PropertyType));
+
+        #endregion
+        #endregion
     }
 }
