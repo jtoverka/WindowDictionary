@@ -47,6 +47,11 @@ namespace WindowDictionary.Property.Creator
         /// </summary>
         public ObservableCollection<PropertyGroup> PropertyGroups { get; } = new ObservableCollection<PropertyGroup>();
 
+        /// <summary>
+        /// Gets the root path
+        /// </summary>
+        public string Path { get; } = "";
+
         #endregion
 
         #region Constructors
@@ -97,9 +102,9 @@ namespace WindowDictionary.Property.Creator
             {
                 foreach (PropertyGroup item in CollectGroups(group))
                 {
-                    if (group.PropertyItems[0].Type.CPropertyType == CPropertyType.CProperty)
+                    if (item.PropertyItems[0].Type.CPropertyType == CPropertyType.CProperty)
                     {
-                        properties.Add(group);
+                        properties.Add(item);
                     }
                 }
             }
@@ -123,6 +128,20 @@ namespace WindowDictionary.Property.Creator
             return groups;
         }
 
+        /// <summary>
+        /// Determines if the name provided is a unique name
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public bool IsPropertyGroupUnique(string name)
+        {
+            foreach (PropertyGroup item in this.PropertyGroups)
+            {
+                if (item.Title == name)
+                    return false;
+            }
+            return true;
+        }
         #endregion
 
         #region Delegates, Events, Handlers
@@ -280,7 +299,8 @@ namespace WindowDictionary.Property.Creator
             {
                 this.filename = filename;
 
-                ObservableCollection<PropertyGroup> import = new ObservableCollection<PropertyGroup>();
+                ObservableCollection<PropertyGroup> import;
+
                 try
                 {
                     // import file
@@ -371,6 +391,15 @@ namespace WindowDictionary.Property.Creator
                     changedState = true;
                 }
             }
+        }
+
+        /// <summary>
+        /// Returns the root
+        /// </summary>
+        /// <returns></returns>
+        public string GetTreePath()
+        {
+            return "";
         }
 
         #endregion

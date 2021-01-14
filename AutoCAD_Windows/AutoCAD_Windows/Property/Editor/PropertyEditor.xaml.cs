@@ -30,6 +30,11 @@ namespace WindowDictionary.Property.Editor
         #region Properties
 
         /// <summary>
+        /// Gets the root path
+        /// </summary>
+        public string Path { get; } = "";
+
+        /// <summary>
         /// Property Group Selected under groups
         /// </summary>
         public PropertyGroup SelectedPropertyGroup
@@ -311,7 +316,30 @@ namespace WindowDictionary.Property.Editor
             this.CloseApplication();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public ObservableCollection<PropertyGroup> GetProperties()
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public bool IsPropertyGroupUnique(string name)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public string GetTreePath()
         {
             throw new NotImplementedException();
         }

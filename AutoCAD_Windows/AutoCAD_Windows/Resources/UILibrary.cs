@@ -355,51 +355,6 @@ namespace WindowDictionary.Resources
                     collection.Move(oldIndices[i], newIndices[i]);
             }
         }
-        /// <summary>
-        /// Move selected elements up the collection
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        /// <param name="selection"></param>
-        /// <param name="collection"></param>
-        /// <example><![CDATA[
-        ///private void Up_Button_Click(object sender, RoutedEventArgs e, IList selection, ObservableCollection<object> collection)
-        ///{
-        ///    UILibrary.Up_Button_Click(sender, e, selection, collection);
-        ///}
-        ///]]></example>
-        public static void Up_Button_Click(object sender, RoutedEventArgs e, IList selection, ItemCollection collection)
-        {
-            _ = e;
-            _ = sender;
-            int[] oldIndices = new int[selection.Count];
-            int[] newIndices = new int[selection.Count];
-            object item;
-
-            for (int i = 0; i < selection.Count; i++)
-                oldIndices[i] = collection.IndexOf(selection[i]);
-
-            Array.Sort(oldIndices);
-
-            for (int i = 0; i < selection.Count; i++)
-            {
-                if (oldIndices[i] > i)
-                    newIndices[i] = oldIndices[i] - 1;
-                else
-                    newIndices[i] = oldIndices[i];
-            }
-            Array.Sort(newIndices, oldIndices);
-
-            for (int i = 0; i < selection.Count; i++)
-            {
-                if (oldIndices[i] != newIndices[i])
-                {
-                    item = collection[i];
-                    collection.RemoveAt(oldIndices[i]);
-                    collection.Insert(newIndices[i], item);
-                }
-            }
-        }
 
         /// <summary>
         /// Move selected elements down the collection
@@ -444,54 +399,6 @@ namespace WindowDictionary.Resources
                     collection.Move(oldIndices[i], newIndices[i]);
             }
         }
-        /// <summary>
-        /// Move selected elements down the collection
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        /// <param name="selection"></param>
-        /// <param name="collection"></param>
-        /// <example><![CDATA[
-        ///private void Down_Button_Click(object sender, RoutedEventArgs e, IList selection, ObservableCollection<object> collection)
-        ///{
-        ///    UILibrary.Down_Button_Click(sender, e, selection, collection);
-        ///}
-        ///]]></example>
-        public static void Down_Button_Click(object sender, RoutedEventArgs e, IList selection, ItemCollection collection)
-        {
-            _ = e;
-            _ = sender;
-            int lastBoxIndex = collection.Count - 1;
-
-            int[] oldIndices = new int[selection.Count];
-            int[] newIndices = new int[selection.Count];
-            object item;
-
-            for (int i = 0; i < selection.Count; i++)
-                oldIndices[i] = collection.IndexOf(selection[i]);
-
-            Array.Sort(oldIndices);
-
-            for (int i = 0, j = selection.Count - 1; i < selection.Count; i++, j--)
-            {
-                if (oldIndices[i] < lastBoxIndex - j)
-                    newIndices[i] = oldIndices[i] + 1;
-                else
-                    newIndices[i] = oldIndices[i];
-            }
-
-            Array.Sort(newIndices, oldIndices);
-
-            for (int i = selection.Count - 1; i >= 0; i--)
-            {
-                if (oldIndices[i] != newIndices[i])
-                {
-                    item = collection[i];
-                    collection.RemoveAt(oldIndices[i]);
-                    collection.Insert(newIndices[i], item);
-                }
-            }
-        }
 
         /// <summary>
         /// Move the selected elements to the top of the collection
@@ -525,46 +432,6 @@ namespace WindowDictionary.Resources
             {
                 if (oldIndices[i] != newIndices[i])
                     collection.Move(oldIndices[i], newIndices[i]);
-            }
-        }
-
-        /// <summary>
-        /// Move the selected elements to the top of the collection
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        /// <param name="selection"></param>
-        /// <param name="collection"></param>
-        /// <example><![CDATA[
-        ///private void Top_Button_Click(object sender, RoutedEventArgs e, IList selection, ObservableCollection<object> collection)
-        ///{
-        ///    UILibrary.Top_Button_Click(sender, e, selection, collection);
-        ///}
-        ///]]></example>
-        public static void Top_Button_Click(object sender, RoutedEventArgs e, IList selection, ItemCollection collection)
-        {
-            _ = e;
-            _ = sender;
-            int[] oldIndices = new int[selection.Count];
-            int[] newIndices = new int[selection.Count];
-            object item;
-
-            for (int i = 0; i < selection.Count; i++)
-            {
-                oldIndices[i] = collection.IndexOf(selection[i]);
-                newIndices[i] = i;
-            }
-            Array.Sort(oldIndices);
-            Array.Sort(newIndices, oldIndices);
-
-            for (int i = 0; i < selection.Count; i++)
-            {
-                if (oldIndices[i] != newIndices[i])
-                {
-                    item = collection[i];
-                    collection.RemoveAt(oldIndices[i]);
-                    collection.Insert(newIndices[i], item);
-                }
             }
         }
 
@@ -608,50 +475,6 @@ namespace WindowDictionary.Resources
         }
 
         /// <summary>
-        /// Move the selected elements to the bottom of the collection
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        /// <param name="selection"></param>
-        /// <param name="collection"></param>
-        /// <example><![CDATA[
-        ///private void Bottom_Button_Click(object sender, RoutedEventArgs e, IList selection, ObservableCollection<object> collection)
-        ///{
-        ///    UILibrary.Bottom_Button_Click(sender, e, selection, collection);
-        ///}
-        ///]]></example>
-        public static void Bottom_Button_Click(object sender, RoutedEventArgs e, IList selection, ItemCollection collection)
-        {
-            _ = e;
-            _ = sender;
-            int lastBoxIndex = collection.Count - 1;
-
-            int[] oldIndices = new int[selection.Count];
-            int[] newIndices = new int[selection.Count];
-            object item;
-
-            for (int i = 0, j = lastBoxIndex;
-                i < selection.Count;
-                i++, j--)
-            {
-                oldIndices[i] = collection.IndexOf(selection[i]);
-                newIndices[i] = j;
-            }
-            Array.Sort(oldIndices);
-            Array.Sort(newIndices);
-
-            for (int i = selection.Count - 1; i >= 0; i--)
-            {
-                if (oldIndices[i] != newIndices[i])
-                {
-                    item = collection[i];
-                    collection.RemoveAt(oldIndices[i]);
-                    collection.Insert(newIndices[i], item);
-                }
-            }
-        }
-
-        /// <summary>
         /// Remove the selected elements from the collection
         /// </summary>
         /// <param name="sender"></param>
@@ -665,29 +488,6 @@ namespace WindowDictionary.Resources
         ///}
         ///]]></example>
         public static void Remove_Button_Click(object sender, RoutedEventArgs e, IList selection, ObservableCollection<object> collection)
-        {
-            _ = e;
-            _ = sender;
-            for (int i = selection.Count - 1; i >= 0; i--)
-            {
-                collection.Remove(selection[i]);
-            }
-        }
-
-        /// <summary>
-        /// Remove the selected elements from the collection
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        /// <param name="selection"></param>
-        /// <param name="collection"></param>
-        /// <example><![CDATA[
-        ///private void Remove_Button_Click(object sender, RoutedEventArgs e, IList selection, ObservableCollection<object> collection)
-        ///{
-        ///    UILibrary.Remove_Button_Click(sender, e, selection, collection);
-        ///}
-        ///]]></example>
-        public static void Remove_Button_Click(object sender, RoutedEventArgs e, IList selection, ItemCollection collection)
         {
             _ = e;
             _ = sender;

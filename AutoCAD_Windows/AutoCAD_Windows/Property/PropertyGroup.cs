@@ -25,6 +25,20 @@ namespace WindowDictionary.Property
         #region Properties
 
         /// <summary>
+        /// Gets the tree path
+        /// </summary>
+        [XmlIgnore]
+        public string Path
+        {
+            get 
+            {
+                if (this.Parent == null)
+                    return this.Title;
+                else
+                    return this.Parent.Path + "/" + this.Title;
+            }
+        }
+        /// <summary>
         /// Gets or Sets the reference to the parent object
         /// </summary>
         [XmlIgnore]
@@ -94,6 +108,23 @@ namespace WindowDictionary.Property
         public ObservableCollection<PropertyGroup> GetProperties()
         {
             return this.Parent.GetProperties();
+        }
+
+        /// <summary>
+        /// Returns false if the string provided exists in the property group collection
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public bool IsPropertyGroupUnique(string name)
+        {
+            foreach (PropertyGroup item in this.PropertyGroups)
+            {
+                if (item.Title == name)
+                {
+                    return false;
+                }
+            }
+            return true;
         }
 
         #endregion

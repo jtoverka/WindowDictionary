@@ -7,6 +7,7 @@ namespace WindowDictionary.Property
     /// <summary>
     /// Represents a remote property to depend on
     /// </summary>
+    [Serializable]
     public class DependencyItem : DependencyObject
     {
         #region Properties
@@ -35,9 +36,9 @@ namespace WindowDictionary.Property
         /// Get or Set the property name to depend on
         /// </summary>
         [XmlElement("Property")]
-        public PropertyGroup Property
+        public string Property
         {
-            get { return (PropertyGroup)GetValue(PropertyProperty); }
+            get { return (string)GetValue(PropertyProperty); }
             set { SetValue(PropertyProperty, value); }
         }
 
@@ -45,7 +46,7 @@ namespace WindowDictionary.Property
         /// Using a DependencyProperty as the backing store for Property.  This enables animation, styling, binding, etc...
         /// </summary>
         public static readonly DependencyProperty PropertyProperty =
-            DependencyProperty.Register("Property", typeof(PropertyGroup), typeof(DependencyItem));
+            DependencyProperty.Register("Property", typeof(string), typeof(DependencyItem));
 
         #endregion
         #region Property - Regex : string

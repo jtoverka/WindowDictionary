@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
@@ -8,9 +7,9 @@ using System.Windows.Input;
 namespace WindowDictionary.Property.Creator
 {
     /// <summary>
-    /// Interaction logic for CPropertyRegex.xaml
+    /// Interaction logic for CDependencyRegex.xaml
     /// </summary>
-    public partial class CCollectionRegex : Window
+    public partial class CDependencyRegex : Window
     {
         #region Fields
 
@@ -19,22 +18,23 @@ namespace WindowDictionary.Property.Creator
         #endregion
 
         #region Properties
-        #region Property - PropertyItem : PropertyItem
+        #region Property - DependencyItem : DependencyItem
 
         /// <summary>
-        /// Gets or Sets the <see cref="PropertyItem"/> object.
+        /// Gets or Sets the DependencyItem property
         /// </summary>
-        public PropertyItem PropertyItem
+        public DependencyItem DependencyItem
         {
-            get { return (PropertyItem)GetValue(PropertyItemProperty); }
-            set { SetValue(PropertyItemProperty, value); }
+            get { return (DependencyItem)GetValue(DependencyItemProperty); }
+            set { SetValue(DependencyItemProperty, value); }
         }
 
         /// <summary>
-        /// Using a DependencyProperty as the backing store for PropertyItem.  This enables animation, styling, binding, etc...
+        /// Using a DependencyProperty as the backing store for DependencyItem.  This enables animation, styling, binding, etc...
         /// </summary>
-        public static readonly DependencyProperty PropertyItemProperty =
-            DependencyProperty.Register("PropertyItem", typeof(PropertyItem), typeof(CCollectionRegex));
+        public static readonly DependencyProperty DependencyItemProperty =
+            DependencyProperty.Register("DependencyItem", typeof(DependencyItem), typeof(CDependencyRegex));
+
 
         #endregion
         #endregion
@@ -42,9 +42,9 @@ namespace WindowDictionary.Property.Creator
         #region Constructors
 
         /// <summary>
-        /// Initializes a new instance of this class
+        /// Initialize a new instance of this class
         /// </summary>
-        public CCollectionRegex()
+        public CDependencyRegex()
         {
             DataContext = this;
             InitializeComponent();
@@ -53,17 +53,6 @@ namespace WindowDictionary.Property.Creator
         #endregion
 
         #region Delegates, Events, Handlers
-
-        private void TextBox_KeyUp(object sender, KeyEventArgs e)
-        {
-            if ((!(sender is TextBox box))
-                || !this.IsLoaded)
-                return;
-
-            changedSource = true;
-
-            box.GetBindingExpression(TextBox.TextProperty).UpdateSource();
-        }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
@@ -81,6 +70,17 @@ namespace WindowDictionary.Property.Creator
                 e.Cancel = true;
                 return;
             }
+        }
+
+        private void TextBox_KeyUp(object sender, KeyEventArgs e)
+        {
+            if ((!(sender is TextBox box))
+                || !this.IsLoaded)
+                return;
+
+            changedSource = true;
+
+            box.GetBindingExpression(TextBox.TextProperty).UpdateSource();
         }
 
         #endregion

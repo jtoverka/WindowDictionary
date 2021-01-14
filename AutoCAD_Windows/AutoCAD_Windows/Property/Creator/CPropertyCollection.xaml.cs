@@ -58,8 +58,16 @@ namespace WindowDictionary.Property.Creator
 
         private void Add_Property_Button_Click(object sender, RoutedEventArgs e)
         {
-            PropertyGroup groups = PropertyItem.Parent;
-            groups.PropertyGroups.Add(Initialize.Property("Property"));
+            PropertyGroup group = PropertyItem.Parent;
+            string name = "Property";
+            for (long i = 1; i < long.MaxValue; i++)
+            {
+                if (group.IsPropertyGroupUnique(name + i))
+                {
+                    group.PropertyGroups.Add(Initialize.Property(name + i));
+                    break;
+                }
+            }
         }
 
         #endregion

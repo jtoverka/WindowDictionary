@@ -76,12 +76,23 @@ namespace WindowDictionary.Property.Creator
         /// <param name="e"></param>
         private void TextBox_KeyUp(object sender, KeyEventArgs e)
         {
-            TextBox box = sender as TextBox;
-            if ((box == null)
-                || !this.IsLoaded)
+            if ((!(sender is TextBox box))
+                || (!this.IsLoaded))
                 return;
 
-            box.GetBindingExpression(TextBox.TextProperty).UpdateSource();
+            if (box.Text == PropertyItem.Name)
+                return;
+
+            if (this.PropertyItem.Parent.Parent.IsPropertyGroupUnique(box.Text))
+            {
+                box.GetBindingExpression(TextBox.TextProperty).UpdateSource();
+            }
+            else
+            {
+                e.Handled = true;
+                MessageBox.Show("Group names must be unique", "Warning", MessageBoxButton.OK);
+                box.GetBindingExpression(TextBox.TextProperty).UpdateTarget();
+            }
         }
 
         /// <summary>
@@ -91,8 +102,7 @@ namespace WindowDictionary.Property.Creator
         /// <param name="e"></param>
         private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            TextBox box = sender as TextBox;
-            if ((box == null)
+            if ((!(sender is TextBox box))
                 || !this.IsLoaded)
                 return;
 
@@ -139,8 +149,10 @@ namespace WindowDictionary.Property.Creator
         /// <param name="e"></param>
         private void Regex_Edit_Button_Click(object sender, RoutedEventArgs e)
         {
-            CPropertyRegex window = new CPropertyRegex();
-            window.PropertyItem = this.PropertyItem;
+            CPropertyRegex window = new CPropertyRegex
+            {
+                PropertyItem = this.PropertyItem
+            };
             window.ShowDialog();
         }
 
@@ -151,70 +163,80 @@ namespace WindowDictionary.Property.Creator
         /// <param name="e"></param>
         private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            ComboBox combo = sender as ComboBox;
-            if ((combo == null)
+            if ((!(sender is ComboBox combo))
                 || !this.IsLoaded)
                 return;
-            
-            
+
             EPropertyType type = (EPropertyType)combo.SelectedIndex;
 
             MessageBoxResult result = MessageBox.Show("This may remove property values.\nDo you wish to continue?", "Caution", MessageBoxButton.YesNoCancel);
             if (result == MessageBoxResult.Yes)
             {
-                switch (type)
-                {
-                    case EPropertyType.CheckBox:
-                        values.IsEnabled = false;
+                UpdateUI(type);
+            }
+        }
+
+        private void UpdateUI(EPropertyType type)
+        {
+            switch (type)
+            {
+                case EPropertyType.CheckBox:
+                    values.IsEnabled = false;
+                    PropertyItem.Values.Clear();
+                    PropertyItem.Values.Add("True");
+                    PropertyItem.Values.Add("False");
+                    values.SelectedItem = null;
+                    value.IsEnabled = false;
+                    PropertyItem.Regex = "[True|False]";
+                    add.IsEnabled = false;
+                    delete.IsEnabled = false;
+                    break;
+                case EPropertyType.ComboBox:
+                    if (PropertyItem?.Type.EPropertyType == EPropertyType.CheckBox)
+                    {
                         PropertyItem.Values.Clear();
-                        PropertyItem.Values.Add("True");
-                        PropertyItem.Values.Add("False");
-                        values.SelectedItem = null;
-                        value.IsEnabled = false;
-                        PropertyItem.Regex = "[True|False]";
+                        PropertyItem.Regex = ".*";
+                    }
+
+                    values.IsEnabled = true;
+                    value.IsEnabled = true;
+                    add.IsEnabled = true;
+                    delete.IsEnabled = true;
+
+                    break;
+                case EPropertyType.ComboBoxEdit:
+                    if (PropertyItem?.Type.EPropertyType == EPropertyType.CheckBox)
+                    {
+                        PropertyItem.Values.Clear();
+                        PropertyItem.Regex = ".*";
+                    }
+
+                    values.IsEnabled = true;
+                    value.IsEnabled = true;
+                    add.IsEnabled = true;
+                    delete.IsEnabled = true;
+
+                    break;
+                case EPropertyType.TextBox:
+                    if (PropertyItem?.Type.EPropertyType == EPropertyType.CheckBox)
+                    {
+                        PropertyItem.Values.Clear();
+                        PropertyItem.Regex = ".*";
+                    }
+
+                    if ((PropertyItem?.Type.EPropertyType == EPropertyType.TextBox)
+                        && PropertyItem.Values.Count == 0)
+                        add.IsEnabled = true;
+                    else
                         add.IsEnabled = false;
-                        delete.IsEnabled = false;
-                        break;
-                    case EPropertyType.ComboBox:
-                        if (PropertyItem.Type.EPropertyType == EPropertyType.CheckBox)
-                        {
-                            PropertyItem.Values.Clear();
-                            PropertyItem.Regex = ".*";
-                        }
 
-                        values.IsEnabled = true;
-                        value.IsEnabled = true;
-                        add.IsEnabled = true;
-                        delete.IsEnabled = true;
+                    values.IsEnabled = true;
+                    value.IsEnabled = true;
+                    delete.IsEnabled = true;
 
-                        break;
-                    case EPropertyType.ComboBoxEdit:
-                        if (PropertyItem.Type.EPropertyType == EPropertyType.CheckBox)
-                        {
-                            PropertyItem.Values.Clear();
-                            PropertyItem.Regex = ".*";
-                        }
-
-                        values.IsEnabled = true;
-                        value.IsEnabled = true;
-                        add.IsEnabled = true;
-                        delete.IsEnabled = true;
-
-                        break;
-                    case EPropertyType.TextBox:
-                        if (PropertyItem.Type.EPropertyType == EPropertyType.CheckBox)
-                        {
-                            PropertyItem.Values.Clear();
-                            PropertyItem.Regex = ".*";
-                        }
-
-                        values.IsEnabled = true;
-                        value.IsEnabled = true;
-                        add.IsEnabled = true;
-                        delete.IsEnabled = true;
-
-                        break;
-                }
+                    break;
+                default:
+                    break;
             }
         }
 
@@ -251,6 +273,12 @@ namespace WindowDictionary.Property.Creator
                 MessageBox.Show("The value you have provided does not meet the (regex) regular expression", "Invalid Input", MessageBoxButton.OK);
                 value.Focus();
             }
+
+            if ((PropertyItem.Type.EPropertyType == EPropertyType.TextBox)
+                && PropertyItem.Values.Count > 0)
+                add.IsEnabled = false;
+            else
+                add.IsEnabled = true;
         }
 
         /// <summary>
@@ -265,6 +293,12 @@ namespace WindowDictionary.Property.Creator
                 return;
 
             PropertyItem.Values.Remove(values.SelectedItem.ToString());
+
+            if ((PropertyItem.Type.EPropertyType == EPropertyType.TextBox)
+                && PropertyItem.Values.Count > 0)
+                add.IsEnabled = false;
+            else
+                add.IsEnabled = true;
         }
 
         /// <summary>
@@ -272,7 +306,7 @@ namespace WindowDictionary.Property.Creator
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void value_PreviewKeyUp(object sender, KeyEventArgs e)
+        private void Value_PreviewKeyDown(object sender, KeyEventArgs e)
         {
             if (!this.IsLoaded)
                 return;
@@ -295,24 +329,48 @@ namespace WindowDictionary.Property.Creator
                 return;
 
             CPropertyDependency window = new CPropertyDependency();
-            window.PropertyItem.Collapsible = this.PropertyItem.Collapsible;
-            window.PropertyItem.CollectionRegex = this.PropertyItem.CollectionRegex;
-            window.PropertyItem.Help = this.PropertyItem.Help;
-            window.PropertyItem.Parent = this.PropertyItem.Parent;
-            window.PropertyItem.Regex = this.PropertyItem.Regex;
-            window.PropertyItem.Type = this.PropertyItem.Type;
-            window.PropertyItem.Values.Concat(this.PropertyItem.Values);
-            window.PropertyItem.DependencyItems.Concat(this.PropertyItem.DependencyItems);
-            window.UpdateList();
+            PropertyItem property = new PropertyItem()
+            {
+                Collapsible = this.PropertyItem.Collapsible,
+                CollectionRegex = this.PropertyItem.CollectionRegex,
+                Help = this.PropertyItem.Help,
+                Parent = this.PropertyItem.Parent,
+                Regex = this.PropertyItem.Regex,
+                Type = this.PropertyItem.Type,
+            };
+            foreach (string item in this.PropertyItem.Values)
+            {
+                property.Values.Add(item);
+            }
+            foreach (DependencyItem item in this.PropertyItem.DependencyItems)
+            {
+                property.DependencyItems.Add(item);
+            }
+            window.PropertyItem = property;
             window.ShowDialog();
 
             if (window.Result != WindowDictionary.Resources.DialogResult.OK)
                 return;
 
             this.PropertyItem.DependencyItems.Clear();
-            this.PropertyItem.DependencyItems.Concat(window.DependencyItems);
+            foreach (DependencyItem item in window.DependencyItems)
+            {
+                this.PropertyItem.DependencyItems.Add(item);
+            }
             this.PropertyItem.CollectionRegex = window.PropertyItem.CollectionRegex;
             this.PropertyItem.Collapsible = window.PropertyItem.Collapsible;
+        }
+
+        private void ListViewItem_Loaded(object sender, RoutedEventArgs e)
+        {
+            if (PropertyItem == null)
+            {
+                UpdateUI(EPropertyType.TextBox);
+            }
+            else
+            {
+                UpdateUI(PropertyItem.Type.EPropertyType);
+            }
         }
 
         #endregion

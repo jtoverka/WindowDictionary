@@ -62,14 +62,30 @@ namespace WindowDictionary.Property.Creator
             parent.PropertyGroups.Remove(PropertyItemParent);
         }
 
+        /// <summary>
+        /// Update the title property from PropertyGroup object
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void TextBox_KeyUp(object sender, KeyEventArgs e)
         {
-            TextBox box = sender as TextBox;
-            if ((box == null)
+            if ((!(sender is TextBox box))
                 || (!this.IsLoaded))
                 return;
 
-            box.GetBindingExpression(TextBox.TextProperty).UpdateSource();
+            if (box.Text == PropertyItem.Name)
+                return;
+
+            if (this.PropertyItem.Parent.Parent.IsPropertyGroupUnique(box.Text))
+            {
+                box.GetBindingExpression(TextBox.TextProperty).UpdateSource();
+            }
+            else
+            {
+                e.Handled = true;
+                MessageBox.Show("Group names must be unique", "Warning", MessageBoxButton.OK);
+                box.GetBindingExpression(TextBox.TextProperty).UpdateTarget();
+            }
         }
 
         #endregion

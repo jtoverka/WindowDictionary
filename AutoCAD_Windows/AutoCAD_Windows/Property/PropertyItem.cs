@@ -65,7 +65,9 @@ namespace WindowDictionary.Property
             set { SetValue(HelpProperty, value); }
         }
 
-        // Using a DependencyProperty as the backing store for Help.  This enables animation, styling, binding, etc...
+        /// <summary>
+        /// Using a DependencyProperty as the backing store for Help.  This enables animation, styling, binding, etc...
+        /// </summary>
         public static readonly DependencyProperty HelpProperty =
             DependencyProperty.Register("Help", typeof(string), typeof(PropertyItem));
 

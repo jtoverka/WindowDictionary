@@ -1,6 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
+using System.Windows.Controls;
 using WindowDictionary.Resources;
 
 namespace WindowDictionary.Property.Creator
@@ -19,7 +20,11 @@ namespace WindowDictionary.Property.Creator
         public PropertyItem PropertyItem
         {
             get { return (PropertyItem)GetValue(PropertyItemProperty); }
-            internal set { SetValue(PropertyItemProperty, value); }
+            set 
+            {
+                UpdateList(value);
+                SetValue(PropertyItemProperty, value); 
+            }
         }
 
         /// <summary>
@@ -52,7 +57,15 @@ namespace WindowDictionary.Property.Creator
         /// <summary>
         /// Gets the collection of dependency items
         /// </summary>
-        public ObservableCollection<DependencyItem> DependencyItems { get; } = new ObservableCollection<DependencyItem>();
+        public ObservableCollection<object> DependencyItems { get; } = new ObservableCollection<object>();
+
+        #endregion
+        #region Property - DependencyItems : ObservableCollection<DependencyItem>
+
+        /// <summary>
+        /// Gets the collection of available property items
+        /// </summary>
+        public ObservableCollection<object> AvailableProperties { get; } = new ObservableCollection<object>();
 
         #endregion
         #endregion
@@ -78,13 +91,32 @@ namespace WindowDictionary.Property.Creator
         /// <summary>
         /// Clears the dependencies list and updates the properties list
         /// </summary>
-        public void UpdateList()
+        private void UpdateList(PropertyItem property)
         {
-            MainList.Items.Clear();
-            DependencyList.Items.Clear();
-            foreach (PropertyGroup item in this.PropertyItem.Parent.GetProperties())
+            if (property.Parent == null)
+                return;
+
+            this.AvailableProperties.Clear();
+            this.DependencyItems.Clear();
+            bool skip = false;
+            foreach (PropertyGroup item in property.Parent.GetProperties())
             {
-                MainList.Items.Add(item);
+                foreach (DependencyItem dependency in property.DependencyItems)
+                {
+                    if (dependency.Property.Equals(item.Path))
+                    {
+                        skip = true;
+                        break;
+                    }
+                }
+                if (!skip)
+                    AvailableProperties.Add(item.Path);
+
+                skip = false;
+            }
+            foreach (DependencyItem dependency in property.DependencyItems)
+            {
+                this.DependencyItems.Add(dependency);
             }
         }
 
@@ -94,48 +126,56 @@ namespace WindowDictionary.Property.Creator
 
         private void Add_Property_Button_Click(object sender, RoutedEventArgs e)
         {
-            PropertyGroup[] groups = MainList.SelectedItems.Cast<PropertyGroup>().ToArray();
-            foreach (PropertyGroup item in groups)
+            string[] groups = MainList.SelectedItems.Cast<string>().ToArray();
+            foreach (string item in groups)
             {
-                DependencyList.Items.Add(item);
-                MainList.Items.Remove(item);
+                this.DependencyItems.Add(
+                    new DependencyItem()
+                    {
+                        Code = "P",
+                        Property = item,
+                        Regex = ".*",
+                    });
+                this.AvailableProperties.Remove(item);
             }
         }
 
         private void Remove_Property_Button_Click(object sender, RoutedEventArgs e)
         {
-            PropertyGroup[] groups = DependencyList.SelectedItems.Cast<PropertyGroup>().ToArray();
-            foreach (PropertyGroup item in groups)
+            DependencyItem[] groups = DependencyList.SelectedItems.Cast<DependencyItem>().ToArray();
+            foreach (DependencyItem item in groups)
             {
-                MainList.Items.Add(item);
-                DependencyList.Items.Remove(item);
+                this.AvailableProperties.Add(item.Property);
+                this.DependencyItems.Remove(item);
             }
         }
 
         private void MoveItemUp_Button_Click(object sender, RoutedEventArgs e)
         {
-            UILibrary.Up_Button_Click(null, null, DependencyList.SelectedItems, DependencyList.Items);
+            UILibrary.Up_Button_Click(null, null, DependencyList.SelectedItems, this.DependencyItems);
         }
 
         private void MoveItemDown_Button_Click(object sender, RoutedEventArgs e)
         {
-            UILibrary.Down_Button_Click(null, null, DependencyList.SelectedItems, DependencyList.Items);
+            UILibrary.Down_Button_Click(null, null, DependencyList.SelectedItems, this.DependencyItems);
         }
 
         private void MoveItemTop_Button_Click(object sender, RoutedEventArgs e)
         {
-            UILibrary.Top_Button_Click(null, null, DependencyList.SelectedItems, DependencyList.Items);
+            UILibrary.Top_Button_Click(null, null, DependencyList.SelectedItems, this.DependencyItems);
         }
 
         private void MoveItemBottom_Button_Click(object sender, RoutedEventArgs e)
         {
-            UILibrary.Bottom_Button_Click(null, null, DependencyList.SelectedItems, DependencyList.Items);
+            UILibrary.Bottom_Button_Click(null, null, DependencyList.SelectedItems, this.DependencyItems);
         }
 
         private void EditCollectionRegex_Button_Click(object sender, RoutedEventArgs e)
         {
-            CCollectionRegex window = new CCollectionRegex();
-            window.PropertyItem = this.PropertyItem;
+            CCollectionRegex window = new CCollectionRegex
+            {
+                PropertyItem = this.PropertyItem
+            };
             window.ShowDialog();
         }
 
@@ -158,5 +198,18 @@ namespace WindowDictionary.Property.Creator
         }
 
         #endregion
+
+        private void DependencyList_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            if (!(sender is ListViewItem item))
+                return;
+
+            if (!(item.DataContext is DependencyItem dependency))
+                return;
+
+            CDependencyRegex window = new CDependencyRegex();
+            window.DependencyItem = dependency;
+            window.ShowDialog();
+        }
     }
 }
