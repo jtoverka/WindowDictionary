@@ -14,14 +14,8 @@ namespace WindowDictionary.Property.Editor
     /// </summary>
     public partial class ETextBox : ListViewItem
     {
-        #region Fields
-
-        readonly DispatcherTimer timer = new DispatcherTimer();
-
-        #endregion
-
         #region Properties
-
+        #region Property - PropertyItem : PropertyItem
         /// <summary>
         /// Gets or Sets the <see cref="PropertyItem"/> element/>
         /// </summary>
@@ -36,23 +30,7 @@ namespace WindowDictionary.Property.Editor
         /// </summary>
         public static readonly DependencyProperty PropertyItemProperty =
             DependencyProperty.Register("PropertyItem", typeof(PropertyItem), typeof(ETextBox));
-
-        /// <summary>
-        /// Gets the <see cref="System.Windows.Controls.Primitives.Popup">Popup</see> that represents the popup.
-        /// </summary>
-        public Popup Popup
-        {
-            get { return this.popup; }
-        }
-
-        /// <summary>
-        /// Gets the <see cref="System.Windows.Controls.TextBlock">TextBlock</see> that represents the popup text.
-        /// </summary>
-        public TextBlock PopupTextBlock
-        {
-            get { return this.popuptext; }
-        }
-
+        #endregion
         #endregion
 
         #region Constructors
@@ -64,90 +42,37 @@ namespace WindowDictionary.Property.Editor
         {
             DataContext = this;
 
-            timer.Interval = TimeSpan.FromSeconds(4);
-            timer.Tick += Popup_Timer_Tick;
-
             InitializeComponent();
-        }
-
-        #endregion
-
-        #region Methods
-
-        /// <summary>
-        /// Displays popup with error message 
-        /// </summary>
-        /// <param name="message"></param>
-        public void TriggerPopup(string message)
-        {
-            popuptext.Text = message;
-            popuptext.MaxWidth = textbox.ActualWidth;
-            popup.Width = textbox.ActualWidth;
-            popup.IsOpen = false;
-            popup.IsOpen = true;
-
-            timer.Stop();
-            timer.Start();
-        }
-        private void TextBox_Double_PreviewKeyDown(object sender, KeyEventArgs e)
-        {
-            UILibrary.TextBox_Double_PreviewKeyDown(sender, e);
-        }
-
-        private void TextBox_Double_PreviewTextInput(object sender, TextCompositionEventArgs e)
-        {
-            UILibrary.TextBox_Double_PreviewTextInput(sender, e);
-
-            if (e.Handled == true)
-                return;
-
-            TextBox textbox = sender as TextBox;
-            ListViewItem listviewitem = textbox.DataContext as ListViewItem;
-            PropertyItem Item = listviewitem.Tag as PropertyItem;
-
-            string text = UILibrary.TextBox_PreviewTextInput(sender, e);
-
-            Regex expression = new Regex(Item.Regex);
-            if (!expression.IsMatch(text))
-            {
-                e.Handled = true;
-
-            }
-        }
-
-        private void TextBox_Integer_PreviewKeyDown(object sender, KeyEventArgs e)
-        {
-            UILibrary.TextBox_Integer_PreviewKeyDown(sender, e);
-        }
-
-        private void TextBox_Integer_PreviewTextInput(object sender, TextCompositionEventArgs e)
-        {
-            UILibrary.TextBox_String_PreviewTextInput(sender, e);
-
-            if (e.Handled == true)
-                return;
-
-            TextBox textbox = sender as TextBox;
-            ListViewItem listviewitem = textbox.DataContext as ListViewItem;
-            PropertyItem Item = listviewitem.Tag as PropertyItem;
-
-            string text = UILibrary.TextBox_PreviewTextInput(sender, e);
-
-            Regex expression = new Regex(Item.Regex);
-            if (!expression.IsMatch(text))
-            {
-                e.Handled = true;
-            }
         }
 
         #endregion
 
         #region Delegates, Events, Handlers
 
-        private void Popup_Timer_Tick(object sender, EventArgs e)
+        private void TextBox_KeyUp(object sender, KeyEventArgs e)
         {
-            popup.IsOpen = false;
-            timer.Stop();
+            if (!(sender is TextBox box)
+                || (!this.IsLoaded))
+                return;
+
+            Regex regex = new Regex(this.PropertyItem.Regex);
+
+            if (regex.IsMatch(box.Text))
+            {
+                box.GetBindingExpression(TextBox.TextProperty).UpdateSource();
+            }
+            else
+            {
+                e.Handled = true;
+                MessageBox.Show(this.PropertyItem.Help, "Error", MessageBoxButton.OK);
+                box.GetBindingExpression(TextBox.TextProperty).UpdateTarget();
+            }
+        }
+
+        private void Property_Loaded(object sender, RoutedEventArgs e)
+        {
+            if (PropertyItem.Values.Count > 0)
+                PropertyItem.SelectedValue = PropertyItem.Values[0];
         }
 
         #endregion

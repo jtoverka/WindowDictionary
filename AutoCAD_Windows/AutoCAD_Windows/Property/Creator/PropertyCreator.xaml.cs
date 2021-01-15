@@ -142,6 +142,29 @@ namespace WindowDictionary.Property.Creator
             }
             return true;
         }
+
+        /// <summary>
+        /// Read XML file
+        /// </summary>
+        /// <param name="filename"></param>
+        /// <returns></returns>
+        public static ObservableCollection<PropertyGroup> Read_File(string filename)
+        {
+            ObservableCollection<PropertyGroup> groups = new ObservableCollection<PropertyGroup>();
+
+            using var file = new FileStream(filename, FileMode.Open);
+
+            var serializer = new XmlSerializer(typeof(ObservableCollection<PropertyGroup>));
+            var collection = serializer.Deserialize(file) as ObservableCollection<PropertyGroup>;
+
+            file.Close();
+
+            foreach (PropertyGroup item in collection)
+                groups.Add(item);
+
+            return groups;
+        }
+
         #endregion
 
         #region Delegates, Events, Handlers
@@ -268,28 +291,6 @@ namespace WindowDictionary.Property.Creator
         }
 
         /// <summary>
-        /// Read XML file
-        /// </summary>
-        /// <param name="filename"></param>
-        /// <returns></returns>
-        private ObservableCollection<PropertyGroup> Read_File(string filename)
-        {
-            ObservableCollection<PropertyGroup> groups = new ObservableCollection<PropertyGroup>();
-
-            using var file = new FileStream(filename, FileMode.Open);
-
-            var serializer = new XmlSerializer(typeof(ObservableCollection<PropertyGroup>));
-            var collection = serializer.Deserialize(file) as ObservableCollection<PropertyGroup>;
-
-            file.Close();
-
-            foreach (PropertyGroup item in collection)
-                groups.Add(item);
-
-            return groups;
-        }
-
-        /// <summary>
         /// Open standard file
         /// </summary>
         /// <param name="filename"></param>
@@ -391,15 +392,6 @@ namespace WindowDictionary.Property.Creator
                     changedState = true;
                 }
             }
-        }
-
-        /// <summary>
-        /// Returns the root
-        /// </summary>
-        /// <returns></returns>
-        public string GetTreePath()
-        {
-            return "";
         }
 
         #endregion

@@ -28,6 +28,7 @@
                 x:FieldModifier="private"
                 Click="Window_Minimize_Click"
                 ToolTip="Minimize"
+                Visibility="{Binding MinVisibility}"
                 Width="25">
             <Button.Style>
                 <Style TargetType="{x:Type Button}"
@@ -66,6 +67,7 @@
         <Button x:Name="Window_Resize_Button"
                 x:FieldModifier="private"
                 Click="Window_Resize_Click"
+                Visibility="{Binding MaxVisibility}"
                 Width="25">
             <Button.Style>
                 <Style TargetType="{x:Type Button}"
@@ -104,7 +106,7 @@
                         </Setter.Value>
                     </Setter>
                     <Style.Triggers>
-                        <DataTrigger Binding="{Binding WindowState}"
+                        <DataTrigger Binding="{Binding Window.WindowState}"
                                      Value="Maximized">
                             <Setter Property="Content">
                                 <Setter.Value>

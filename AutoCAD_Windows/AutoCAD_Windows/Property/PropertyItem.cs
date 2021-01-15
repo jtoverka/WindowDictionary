@@ -13,7 +13,7 @@ namespace WindowDictionary.Property
     /// Represents a single property in a group
     /// </summary>
     [Serializable]
-    public class PropertyItem : DependencyObject
+    public class PropertyItem : DependencyObject, ICloneable, INotifyPropertyChanged
     {
         #region Properties
         #region Property - Collapsible : bool
@@ -73,19 +73,33 @@ namespace WindowDictionary.Property
 
         #endregion
         #region Property - Name : string
+        private string _Name;
 
         /// <summary>
-        /// Gets the name of the parent title
+        /// Gets or Sets the name of this property item
         /// </summary>
-        [XmlIgnore]
-        public string Name 
-        { 
+        public string Name
+        {
             get 
             {
-                if (this.Parent == null)
-                    return "";
+                if (_Name == null)
+                {
+                    if (Parent == null)
+                        return "";
 
-                return this.Parent.Title;
+                    _Name = Parent.Title;
+                }
+
+                return _Name;
+            }
+            set 
+            {
+                if (value == _Name)
+                    return;
+
+                _Name = value;
+
+                OnPropertyChanged("Name");
             }
         }
 
@@ -128,6 +142,24 @@ namespace WindowDictionary.Property
             DependencyProperty.Register("Regex", typeof(string), typeof(PropertyItem));
 
         #endregion
+        #region Property - SelectedValue : string
+
+        /// <summary>
+        /// Gets or Sets the selected value from the values list
+        /// </summary>
+        public string SelectedValue
+        {
+            get { return (string)GetValue(SelectedValueProperty); }
+            set { SetValue(SelectedValueProperty, value); }
+        }
+
+        /// <summary>
+        /// Using a DependencyProperty as the backing store for SelectedValue.  This enables animation, styling, binding, etc...
+        /// </summary>
+        public static readonly DependencyProperty SelectedValueProperty =
+            DependencyProperty.Register("SelectedValue", typeof(string), typeof(PropertyItem));
+
+        #endregion
         #region Property - Type : PropertyType
 
         /// <summary>
@@ -145,13 +177,15 @@ namespace WindowDictionary.Property
         /// </summary>
         public static readonly DependencyProperty TypeProperty =
             DependencyProperty.Register("Type", typeof(PropertyType), typeof(PropertyItem));
+
         #endregion
         #region Property - Values : ObservableCollection<string>
 
         /// <summary>
         /// Gets the collection of values to choose from.
         /// </summary>
-        [XmlElement("Values")]
+        [XmlArray("Values")]
+        [XmlArrayItem("Value")]
         public ObservableCollection<string> Values { get; } = new ObservableCollection<string>();
 
         #endregion
@@ -160,7 +194,8 @@ namespace WindowDictionary.Property
         /// <summary>
         /// Gets the collection of dependency items
         /// </summary>
-        [XmlElement("DependencyItems")]
+        [XmlArray("DependencyItems")]
+        [XmlArrayItem("DependencyItem")]
         public ObservableCollection<DependencyItem> DependencyItems { get; } = new ObservableCollection<DependencyItem>();
 
         #endregion
@@ -176,6 +211,51 @@ namespace WindowDictionary.Property
             this.CollectionRegex = ".*";
             this.Regex = ".*";
             this.Help = "Any value is allowed.";
+        }
+
+        #endregion
+
+        #region Methods
+
+        /// <summary>
+        /// Clones this object
+        /// </summary>
+        /// <returns></returns>
+        public object Clone()
+        {
+            PropertyItem property = new PropertyItem()
+            {
+                Collapsible = this.Collapsible,
+                CollectionRegex = this.CollectionRegex,
+                Help = this.Help,
+                Regex = this.Regex,
+                Type = this.Type,
+                SelectedValue = this.SelectedValue,
+                Name = this.Name,
+            };
+            property.Type = this.Type.Clone() as PropertyType;
+            foreach (string value in this.Values)
+            {
+                property.Values.Add(value);
+            }
+            foreach (DependencyItem item in this.DependencyItems)
+            {
+                property.DependencyItems.Add(item.Clone() as DependencyItem);
+            }
+            return property;
+        }
+
+        #endregion
+
+        #region Delegates, Events, Handlers
+
+        /// <summary>
+        /// Raise event on this object property changed
+        /// </summary>
+        public event PropertyChangedEventHandler PropertyChanged;
+        private void OnPropertyChanged(string property)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
         }
 
         #endregion

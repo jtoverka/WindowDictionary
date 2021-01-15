@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.Text.RegularExpressions;
+using System.Windows;
 using System.Windows.Controls;
 
 namespace WindowDictionary.Property.Editor
@@ -9,6 +10,7 @@ namespace WindowDictionary.Property.Editor
     public partial class ECheckBox : ListViewItem
     {
         #region Property
+        #region Property - PropertyItem : PropertyItem
 
         /// <summary>
         /// Gets or Sets the <see cref="PropertyItem"/> element/>
@@ -26,6 +28,7 @@ namespace WindowDictionary.Property.Editor
             DependencyProperty.Register("PropertyItem", typeof(PropertyItem), typeof(ECheckBox));
 
         #endregion
+        #endregion
 
         #region Constructors
 
@@ -37,6 +40,16 @@ namespace WindowDictionary.Property.Editor
             DataContext = this;
 
             InitializeComponent();
+        }
+
+        #endregion
+
+        #region Delegates, Events, Handlers
+
+        private void Property_Loaded(object sender, RoutedEventArgs e)
+        {
+            if (PropertyItem.Values.Count > 0)
+                PropertyItem.SelectedValue = PropertyItem.Values[0];
         }
 
         #endregion

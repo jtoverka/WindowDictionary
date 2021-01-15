@@ -463,4 +463,13 @@
     <DataTemplate x:Key="CPropertyCollectionTemplate">
         <creator:CPropertyCollection PropertyItem="{Binding Mode=OneTime, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ContentControl}}, Path=Content}" />
     </DataTemplate>
+    <DataTemplate x:Key="ECheckBoxTemplate">
+        <editor:ECheckBox PropertyItem="{Binding Mode=OneTime, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ContentControl}}, Path=Content}" />
+    </DataTemplate>
+    <DataTemplate x:Key="EComboBoxTemplate">
+        <editor:EComboBox PropertyItem="{Binding Mode=OneTime, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ContentControl}}, Path=Content}" />
+    </DataTemplate>
+    <DataTemplate x:Key="ETextBoxTemplate">
+        <editor:ETextBox PropertyItem="{Binding Mode=OneTime, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ContentControl}}, Path=Content}" />
+    </DataTemplate>
 </ResourceDictionary>

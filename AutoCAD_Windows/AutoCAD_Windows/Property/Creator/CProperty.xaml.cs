@@ -76,11 +76,11 @@ namespace WindowDictionary.Property.Creator
         /// <param name="e"></param>
         private void TextBox_KeyUp(object sender, KeyEventArgs e)
         {
-            if ((!(sender is TextBox box))
+            if (!(sender is TextBox box)
                 || (!this.IsLoaded))
                 return;
 
-            if (box.Text == PropertyItem.Name)
+            if (box.Text == PropertyItem.Parent.Title)
                 return;
 
             if (this.PropertyItem.Parent.Parent.IsPropertyGroupUnique(box.Text))

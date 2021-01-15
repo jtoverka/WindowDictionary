@@ -63,34 +63,33 @@
                 BorderThickness="1"
                 Grid.ColumnSpan="4"
                 Grid.RowSpan="4" />
-        <TextBlock Grid.ColumnSpan="3"
-                   HorizontalAlignment="Center"
-                   Text="Property Creator" />
-        <TextBlock Grid.ColumnSpan="3"
-                   Height="25"
-                   Margin="0"
-                   MouseDown="Menu_Grid_MouseDown" />
-        <Menu Background="Transparent"
-              HorizontalAlignment="Left"
-              VerticalAlignment="Stretch">
-            <MenuItem Header="File"
-                      ItemContainerStyle="{DynamicResource MenuItemStyle1}"
-                      Style="{StaticResource menuParentStyle}"
-                      Template="{DynamicResource MenuItemControlTemplate2}"
-                      Padding="6,2,6,4">
-                <MenuItem Click="New_File_Click"
-                          Header="New" />
-                <MenuItem Click="Open_File_Click"
-                          Header="Open" />
-                <MenuItem Click="Save_Click"
-                          Header="Save" />
-                <MenuItem Click="Save_As_Click"
-                          Header="Save As" />
-            </MenuItem>
-        </Menu>
-        <resource:WindowControl x:Name="WindowControl"
-                                Grid.Column="2"
-                                HorizontalAlignment="Right" />
+        <Grid Grid.ColumnSpan="3">
+            <TextBlock HorizontalAlignment="Center"
+                       Text="Property Creator" />
+            <TextBlock Height="25"
+                       Margin="0"
+                       MouseDown="Menu_Grid_MouseDown" />
+            <Menu Background="Transparent"
+                  HorizontalAlignment="Left"
+                  VerticalAlignment="Stretch">
+                <MenuItem Header="File"
+                          ItemContainerStyle="{DynamicResource MenuItemStyle1}"
+                          Style="{StaticResource menuParentStyle}"
+                          Template="{DynamicResource MenuItemControlTemplate2}"
+                          Padding="6,2,6,4">
+                    <MenuItem Click="New_File_Click"
+                              Header="New" />
+                    <MenuItem Click="Open_File_Click"
+                              Header="Open" />
+                    <MenuItem Click="Save_Click"
+                              Header="Save" />
+                    <MenuItem Click="Save_As_Click"
+                              Header="Save As" />
+                </MenuItem>
+            </Menu>
+            <resource:WindowControl x:Name="WindowControl"
+                                    HorizontalAlignment="Right" />
+        </Grid>
         <Grid Grid.ColumnSpan="2"
               Grid.Row="1">
             <Grid.ColumnDefinitions>

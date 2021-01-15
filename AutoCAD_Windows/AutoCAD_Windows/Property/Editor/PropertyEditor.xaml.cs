@@ -9,6 +9,7 @@ using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using System.Xml.Serialization;
 using WindowDictionary.Resources;
+using WindowDictionary.Property.Creator;
 
 namespace WindowDictionary.Property.Editor
 {
@@ -19,20 +20,16 @@ namespace WindowDictionary.Property.Editor
     {
         #region Fields
 
-        private bool changedState;
-        private string filename;
         private PropertyGroup _SelectedPropertyGroup;
-        private ListView _PropertyItems;
-        private System.Windows.Forms.DialogResult _Result = System.Windows.Forms.DialogResult.None;
 
         #endregion
 
         #region Properties
 
         /// <summary>
-        /// Gets the root path
+        /// Gets the <see cref="DialogResult">Result</see> of this dialog box
         /// </summary>
-        public string Path { get; } = "";
+        public DialogResult Result { get; set; } = WindowDictionary.Resources.DialogResult.None;
 
         /// <summary>
         /// Property Group Selected under groups
@@ -57,36 +54,9 @@ namespace WindowDictionary.Property.Editor
         public ObservableCollection<PropertyGroup> PropertyGroups { get; } = new ObservableCollection<PropertyGroup>();
 
         /// <summary>
-        /// 
+        /// Gets the root path
         /// </summary>
-        public ListView PropertyItems
-        {
-            get { return _PropertyItems; }
-            set
-            {
-                if (_PropertyItems == value)
-                    return;
-
-                _PropertyItems = value;
-                OnPropertyChanged("PropertyItems");
-            }
-        }
-
-        /// <summary>
-        /// The result of the dialog box
-        /// </summary>
-        public System.Windows.Forms.DialogResult Result
-        {
-            get { return this._Result; }
-            set
-            {
-                if (this._Result == value)
-                    return;
-
-                this._Result = value;
-                OnPropertyChanged("Result");
-            }
-        }
+        public string Path { get; } = "";
 
         #endregion
 
@@ -95,19 +65,114 @@ namespace WindowDictionary.Property.Editor
         /// <summary>
         /// Initializes a new instance of this class
         /// </summary>
-        /// <param name="filename"></param>
-        public PropertyEditor(string filename)
+        public PropertyEditor()
         {
             DataContext = this;
-
             InitializeComponent();
 
             WindowControl.Window = this;
             WindowControl.WindowExit += WindowControl_WindowExit;
+        }
 
-            Open_File(filename);
+        #endregion
 
-            changedState = false;
+        #region Methods
+
+        /// <summary>
+        /// Get all property groups within this tree
+        /// </summary>
+        /// <returns></returns>
+        public ObservableCollection<PropertyGroup> GetProperties()
+        {
+            ObservableCollection<PropertyGroup> properties = new ObservableCollection<PropertyGroup>();
+            foreach (PropertyGroup group in this.PropertyGroups)
+            {
+                foreach (PropertyGroup item in CollectGroups(group))
+                {
+                    if (item.PropertyItems[0].Type.CPropertyType == CPropertyType.CProperty)
+                    {
+                        properties.Add(item);
+                    }
+                }
+            }
+
+            return properties;
+        }
+
+        /// <summary>
+        /// Collect all sub-groups within a group
+        /// </summary>
+        /// <param name="group"></param>
+        /// <returns></returns>
+        private ObservableCollection<PropertyGroup> CollectGroups(PropertyGroup group)
+        {
+            ObservableCollection<PropertyGroup> groups = new ObservableCollection<PropertyGroup>();
+
+            foreach (PropertyGroup subGroup in group.PropertyGroups)
+            {
+                foreach (PropertyGroup item in CollectGroups(subGroup))
+                {
+                    groups.Add(item);
+                }
+            }
+            groups.Add(group);
+
+            return groups;
+        }
+
+        /// <summary>
+        /// Determines if the name provided is a unique name
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public bool IsPropertyGroupUnique(string name)
+        {
+            foreach (PropertyGroup item in this.PropertyGroups)
+            {
+                if (item.Title == name)
+                    return false;
+            }
+            return true;
+        }
+
+        /// <summary>
+        /// Convert a file read from <see cref="PropertyCreator.Read_File(string)"/> to be used by the property editor
+        /// </summary>
+        /// <param name="ParentCollection"></param>
+        /// <returns></returns>
+        public static PropertyGroup Convert(PropertyGroup ParentCollection)
+        {
+            PropertyGroup ConvertedCollection = new PropertyGroup()
+            {
+                Parent = ParentCollection.Parent,
+                Title = ParentCollection.Title,
+            };
+            foreach (PropertyGroup Group in ParentCollection.PropertyGroups)
+            {
+                if (Group.PropertyItems[0].Type.CPropertyType == CPropertyType.CGroup)
+                {
+                    PropertyGroup ConvertedGroup = new PropertyGroup()
+                    {
+                        Parent = ConvertedCollection,
+                        Title = Group.Title,
+                    };
+                    // Get groups from groups collection
+                    if (Group.PropertyGroups[0].PropertyGroups.Count > 0)
+                    {
+                        foreach (PropertyGroup SubGroup in Convert(Group.PropertyGroups[0]).PropertyGroups)
+                        {
+                            ConvertedGroup.PropertyGroups.Add(SubGroup);
+                        }
+                    }
+                    // Get properties from properties collection
+                    foreach (PropertyGroup property in Group.PropertyGroups[1].PropertyGroups)
+                    {
+                        ConvertedGroup.PropertyItems.Add(property.PropertyItems[0].Clone() as PropertyItem);
+                    }
+                    ConvertedCollection.PropertyGroups.Add(ConvertedGroup);
+                }
+            }
+            return ConvertedCollection;
         }
 
         #endregion
@@ -118,66 +183,24 @@ namespace WindowDictionary.Property.Editor
         /// Property Changed event
         /// </summary>
         public event PropertyChangedEventHandler PropertyChanged;
-
         private void OnPropertyChanged(string property)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
         }
 
-        private void OK_Click(object sender, RoutedEventArgs e)
+        private void WindowControl_WindowExit(object sender, EventArgs e)
         {
-            this.Result = System.Windows.Forms.DialogResult.OK;
-            this.CloseApplication();
-        }
-
-        private void Cancel_Click(object sender, RoutedEventArgs e)
-        {
-            this.Result = System.Windows.Forms.DialogResult.Cancel;
-            this.CloseApplication();
-        }
-
-        #endregion
-
-        #region Delegates, Events, Handlers
-
-
-        /// <summary>
-        /// Operation to perform when closing the application
-        /// </summary>
-        private void CloseApplication()
-        {
-            if (!ContinueChange())
-                return;
+            if (Result == WindowDictionary.Resources.DialogResult.None)
+                Result = WindowDictionary.Resources.DialogResult.Cancel;
 
             this.Close();
-        }
-
-        /// <summary>
-        /// Check if you wish to continue
-        /// </summary>
-        /// <returns></returns>
-        private bool ContinueChange()
-        {
-            if (changedState)
-            {
-                MessageBoxResult messageBoxResult = MessageBox.Show("Are you sure you want to cancel?", "Cancel Confirmation", MessageBoxButton.YesNoCancel);
-                if (messageBoxResult == MessageBoxResult.Yes)
-                {
-                    if (changedState)
-                        return false;
-                }
-
-                else if (messageBoxResult == MessageBoxResult.Cancel)
-                    return false;
-            }
-            return true;
         }
 
         private void Menu_Grid_MouseDown(object sender, MouseButtonEventArgs e)
         {
             if (e.ChangedButton == MouseButton.Left)
             {
-                if (this.WindowState == WindowState.Maximized)
+                if (WindowState == WindowState.Maximized)
                 {
                     var point = PointToScreen(e.MouseDevice.GetPosition(this));
 
@@ -191,157 +214,23 @@ namespace WindowDictionary.Property.Editor
             }
         }
 
-        /// <summary>
-        /// Window minimize button
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void Window_Minimize_Click(object sender, RoutedEventArgs e)
-        {
-            WindowState = WindowState.Minimized;
-        }
-
         private void Tree_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
             SelectedPropertyGroup = Tree.SelectedItem as PropertyGroup;
         }
 
+        private void OK_Button_Click(object sender, RoutedEventArgs e)
+        {
+            Result = WindowDictionary.Resources.DialogResult.OK;
+            this.Close();
+        }
+
+        private void Cancel_Button_Click(object sender, RoutedEventArgs e)
+        {
+            Result = WindowDictionary.Resources.DialogResult.Cancel;
+            this.Close();
+        }
+
         #endregion
-
-        /// <summary>
-        /// Converts an xml file to a list of properties for editing
-        /// </summary>
-        /// <param name="filename"></param>
-        /// <returns></returns>
-        public static ObservableCollection<PropertyGroup> Convert(string filename)
-        {
-            //PropertyGroup MasterList = Read_File(filename)[0];
-
-            return GetPropertyGroups(null);//MasterList.PropertyGroups);
-        }
-
-        /// <summary>
-        /// Gets the property items from the properties group
-        /// </summary>
-        /// <param name="groups"></param>
-        /// <returns></returns>
-        public static ObservableCollection<PropertyItem> GetPropertyItems(ObservableCollection<PropertyGroup> groups)
-        {
-            ObservableCollection<PropertyItem> propertyItems = new ObservableCollection<PropertyItem>();
-
-            foreach (PropertyGroup group in groups)
-            {
-                PropertyItem propertyItem = new PropertyItem();
-
-                foreach (var item in group.PropertyItems[3].Values)
-                {
-                    propertyItem.Values.Add(item);
-                }
-                propertyItems.Add(propertyItem);
-            }
-
-            return propertyItems;
-        }
-        /// <summary>
-        /// Gets the property groups from the groups collection
-        /// </summary>
-        /// <param name="groups"></param>
-        /// <returns></returns>
-        public static ObservableCollection<PropertyGroup> GetPropertyGroups(ObservableCollection<PropertyGroup> groups)
-        {
-            ObservableCollection<PropertyGroup> propertyGroup = new ObservableCollection<PropertyGroup>();
-
-            foreach (PropertyGroup group in groups)
-            {
-                PropertyGroup property = new PropertyGroup()
-                {
-                    Title = group.Title,
-                };
-                foreach (PropertyItem item in GetPropertyItems(group.PropertyGroups[1].PropertyGroups))
-                {
-                    property.PropertyItems.Add(item);
-                }
-                foreach (PropertyGroup item in GetPropertyGroups(group.PropertyGroups[0].PropertyGroups))
-                {
-                    property.PropertyGroups.Add(item);
-                }
-                propertyGroup.Add(property);
-            }
-            return propertyGroup;
-        }
-
-        private ObservableCollection<PropertyGroup> Read_File(string filename)
-        {
-            ObservableCollection<PropertyGroup> groups = new ObservableCollection<PropertyGroup>();
-
-            using var file = new FileStream(filename, FileMode.Open);
-
-            var serializer = new XmlSerializer(typeof(ObservableCollection<PropertyGroup>));
-            var collection = serializer.Deserialize(file) as ObservableCollection<PropertyGroup>;
-
-            file.Close();
-
-            foreach (PropertyGroup item in collection)
-                groups.Add(item);
-
-            return groups;
-        }
-
-        private void Open_File(string filename)
-        {
-            if (filename != null && filename != "" && File.Exists(filename))
-            {
-                this.filename = filename;
-
-                try
-                {
-                    foreach (PropertyGroup item in Read_File(this.filename))
-                    {
-                        item.Parent = this;
-                        this.PropertyGroups.Add(item);
-                    }
-
-                    changedState = false;
-                }
-                catch (Exception)
-                {
-                    changedState = true;
-                    MessageBox.Show("Invalid File");
-                }
-            }
-        }
-
-        private void WindowControl_WindowExit(object sender, EventArgs e)
-        {
-            this.CloseApplication();
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        public ObservableCollection<PropertyGroup> GetProperties()
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="name"></param>
-        /// <returns></returns>
-        public bool IsPropertyGroupUnique(string name)
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        public string GetTreePath()
-        {
-            throw new NotImplementedException();
-        }
     }
 }

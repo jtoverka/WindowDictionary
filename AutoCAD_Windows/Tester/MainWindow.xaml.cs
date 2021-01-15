@@ -46,18 +46,24 @@ namespace Tester
             };
             dialog.ShowDialog();
 
-            if ((dialog.FileName == null) || (dialog.FileName == ""))
+            if ((dialog.FileName != null) && (dialog.FileName != ""))
             {
-                ObservableCollection<PropertyGroup> groups = PropertyEditor.Convert(dialog.FileName);
-
-                var window = new PropertyEditor(dialog.FileName);
-
-                foreach (PropertyGroup group in groups)
+                var window = new PropertyEditor();
+                ObservableCollection<PropertyGroup> read = PropertyCreator.Read_File(dialog.FileName);
+                foreach (PropertyGroup group in read)
                 {
-                    window.PropertyGroups.Add(group);
+                    foreach (PropertyGroup item in PropertyEditor.Convert(group).PropertyGroups)
+                    {
+                        window.PropertyGroups.Add(item);
+                    }
                 }
 
                 window.ShowDialog();
+
+                if (window.Result != WindowDictionary.Resources.DialogResult.Yes)
+                    return;
+
+                _ = window.PropertyGroups;
             }
         }
     }

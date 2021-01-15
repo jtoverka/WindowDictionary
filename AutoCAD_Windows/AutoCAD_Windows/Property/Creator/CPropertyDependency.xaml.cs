@@ -207,8 +207,10 @@ namespace WindowDictionary.Property.Creator
             if (!(item.DataContext is DependencyItem dependency))
                 return;
 
-            CDependencyRegex window = new CDependencyRegex();
-            window.DependencyItem = dependency;
+            CDependencyRegex window = new CDependencyRegex
+            {
+                DependencyItem = dependency
+            };
             window.ShowDialog();
         }
     }

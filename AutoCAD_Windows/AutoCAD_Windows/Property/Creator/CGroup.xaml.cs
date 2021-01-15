@@ -73,7 +73,7 @@ namespace WindowDictionary.Property.Creator
                 || (!this.IsLoaded))
                 return;
 
-            if (box.Text == PropertyItem.Name)
+            if (box.Text == PropertyItem.Parent.Title)
                 return;
 
             if (this.PropertyItem.Parent.Parent.IsPropertyGroupUnique(box.Text))

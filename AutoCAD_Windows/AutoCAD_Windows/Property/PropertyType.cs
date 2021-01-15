@@ -1,13 +1,14 @@
 ﻿using WindowDictionary.Property.Editor;
 using WindowDictionary.Property.Creator;
 using System.Windows;
+using System;
 
 namespace WindowDictionary.Property
 {
     /// <summary>
     /// Select the property type from either property creator or property editor
     /// </summary>
-    public class PropertyType : DependencyObject
+    public class PropertyType : DependencyObject, ICloneable
     {
         #region Properties
         #region Property - CPropertyType : CPropertyType
@@ -46,6 +47,23 @@ namespace WindowDictionary.Property
             DependencyProperty.Register("EPropertyType", typeof(EPropertyType), typeof(PropertyType));
 
         #endregion
+        #endregion
+
+        #region Methods
+
+        /// <summary>
+        /// Clones this object
+        /// </summary>
+        /// <returns></returns>
+        public object Clone()
+        {
+            PropertyType type = new PropertyType()
+            {
+                CPropertyType = this.CPropertyType,
+                EPropertyType = this.EPropertyType,
+            };
+            return type;
+        }
         #endregion
     }
 }

@@ -10,10 +10,14 @@
         WindowStartupLocation="CenterScreen"
         Height="200" 
         Width="200">
-    <Grid>
-        <Button Click="Button_Click" 
-                Content="Test"
+    <UniformGrid Columns="1">
+        <Button Click="Button_Click"
+                Content="Test1"
                 Height="25"
-                Width="112"/>
-    </Grid>
+                Width="112" />
+        <Button Click="Button_Click2"
+                Content="Test2"
+                Height="25"
+                Width="112" />
+    </UniformGrid>
 </Window>

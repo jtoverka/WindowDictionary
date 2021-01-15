@@ -3,18 +3,35 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:resource="clr-namespace:WindowDictionary.Resources"
         xmlns:local="clr-namespace:WindowDictionary.Property.Editor"
         xmlns:property="clr-namespace:WindowDictionary.Property"
         xmlns:r="clr-namespace:WindowDictionary.Resources"
         mc:Ignorable="d"
-        BorderThickness="0"
         Height="450"
         ResizeMode="CanResizeWithGrip"
-        MinHeight="450"
+        MinHeight="800"
         MinWidth="800"
         WindowStartupLocation="CenterScreen"
         WindowStyle="None"
         Width="800">
+    <Window.Style>
+        <Style TargetType="{x:Type Window}">
+            <Setter Property="BorderThickness"
+                    Value="0" />
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding WindowState}"
+                             Value="Maximized">
+                    <Setter Property="BorderThickness"
+                            Value="7" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Style>
+    <WindowChrome.WindowChrome>
+        <WindowChrome CaptionHeight="0"
+                      ResizeBorderThickness="5" />
+    </WindowChrome.WindowChrome>
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -41,22 +58,34 @@
                     </TextBlock.Text></TextBlock>
             </HierarchicalDataTemplate>
         </Grid.Resources>
-        <TextBlock Text="Property Editor" />
-        <TextBlock Grid.ColumnSpan="3"
-                   Height="25"
-                   Margin="0"
-                   MouseDown="Menu_Grid_MouseDown" />
-        <r:WindowControl x:Name="WindowControl"
-                         Grid.Column="2"
-                         HorizontalAlignment="Right"/>
+        <Border Background="#F8F8F8"
+                BorderThickness="1"
+                Grid.ColumnSpan="4" />
+        <Border BorderBrush="#E0E0E0EE"
+                BorderThickness="1"
+                Grid.ColumnSpan="4"
+                Grid.RowSpan="4" />
+        <Grid Grid.ColumnSpan="3">
+            <TextBlock HorizontalAlignment="Center"
+                       Text="Property Editor" />
+            <TextBlock Height="25"
+                       Margin="0"
+                       MouseDown="Menu_Grid_MouseDown" />
+            <resource:WindowControl x:Name="WindowControl"
+                                    HorizontalAlignment="Right"
+                                    MinVisibility="Hidden"
+                                    MaxVisibility="Hidden"/>
+        </Grid>
         <Grid Grid.ColumnSpan="2"
               Grid.Row="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition MinWidth="200"
-                                  Width="*" />
+                                  Width="262*" />
                 <ColumnDefinition Width="5" />
                 <ColumnDefinition MinWidth="200"
-                                  Width="2*" />
+                                  Width="329*" />
+                <ColumnDefinition Width="141*" />
+                <ColumnDefinition Width="55*" />
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="20" />
@@ -66,9 +95,10 @@
                        Text="Groups" />
             <TreeView x:Name="Tree"
                       Grid.Row="1"
+                      BorderBrush="#7d7d7d"
                       ItemsSource="{Binding Path=PropertyGroups}"
                       SelectedItemChanged="Tree_SelectedItemChanged"
-                      Margin="10,10,5,10"></TreeView>
+                      Margin="10,10,5,10" />
             <GridSplitter Background="Transparent"
                           Grid.Column="1"
                           Grid.RowSpan="2"
@@ -81,54 +111,61 @@
                        HorizontalAlignment="Center"
                        Text="Properties" />
             <ListView x:Name="Properties"
+                      BorderBrush="#7d7d7d"
                       Grid.Column="2"
-                      Grid.ColumnSpan="2"
+                      Grid.ColumnSpan="3"
                       Grid.Row="1"
                       HorizontalContentAlignment="Stretch"
                       Margin="5,10,10,10"
-                      ScrollViewer.CanContentScroll="False">
+                      ScrollViewer.CanContentScroll="False"
+                      ItemsSource="{Binding Path=SelectedPropertyGroup.PropertyItems}">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ContentControl Content="{Binding}">
+                            <ContentControl.Style>
+                                <Style TargetType="ContentControl">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Type.EPropertyType, Mode=OneTime}"
+                                                     Value="CheckBox">
+                                            <Setter Property="ContentTemplate"
+                                                    Value="{StaticResource ECheckBoxTemplate}" />
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding Type.EPropertyType, Mode=OneTime}"
+                                                     Value="ComboBox">
+                                            <Setter Property="ContentTemplate"
+                                                    Value="{StaticResource EComboBoxTemplate}" />
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding Type.EPropertyType, Mode=OneTime}"
+                                                     Value="ComboBoxEdit">
+                                            <Setter Property="ContentTemplate"
+                                                    Value="{StaticResource EComboBoxTemplate}" />
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding Type.EPropertyType, Mode=OneTime}"
+                                                     Value="TextBox">
+                                            <Setter Property="ContentTemplate"
+                                                    Value="{StaticResource ETextBoxTemplate}" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </ContentControl.Style>
+                        </ContentControl>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
                 <ListView.ItemContainerStyle>
-                    <Style TargetType="{x:Type ListViewItem}">
-                        <Setter Property="Template">
-                            <Setter.Value>
-                                <ControlTemplate TargetType="{x:Type ListBoxItem}">
-                                    <Border Name="Border"
-                                            BorderBrush="{TemplateBinding BorderBrush}"
-                                            BorderThickness="{TemplateBinding BorderThickness}"
-                                            Background="{TemplateBinding Background}">
-                                        <ContentPresenter Content="{TemplateBinding Content}"
-                                                          ContentTemplate="{TemplateBinding ContentTemplate}"
-                                                          Margin="{TemplateBinding Padding}" />
-                                    </Border>
-                                </ControlTemplate>
-                            </Setter.Value>
-                        </Setter>
-                        <Setter Property="Focusable"
-                                Value="False" />
-                        <Style.Triggers>
-                            <Trigger Property="IsMouseOver"
-                                     Value="True">
-                                <Setter Property="Background"
-                                        Value="Transparent" />
-                                <Setter Property="BorderBrush"
-                                        Value="Transparent" />
-                            </Trigger>
-                        </Style.Triggers>
-                    </Style>
+                    <Style BasedOn="{StaticResource PropertyItems}"
+                           TargetType="{x:Type ListViewItem}"></Style>
                 </ListView.ItemContainerStyle>
-                <ListView.ItemsSource>
-                    <Binding Path="PropertyItems.Items" />
-                </ListView.ItemsSource>
             </ListView>
         </Grid>
         <UniformGrid Columns="2"
                      Grid.Column="2"
                      Grid.Row="3"
                      HorizontalAlignment="Right"
+                     Margin="5"
                      Width="250">
-            <Button Click="OK_Click"
+            <Button Click="OK_Button_Click"
                     Content="OK" />
-            <Button Click="Cancel_Click" Content="Cancel" />
+            <Button Click="Cancel_Button_Click" Content="Cancel" />
         </UniformGrid>
     </Grid>
 </Window>

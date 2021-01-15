@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.Text.RegularExpressions;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 
@@ -10,6 +11,7 @@ namespace WindowDictionary.Property.Editor
     public partial class EComboBox : ListViewItem
     {
         #region Properties
+        #region Property - PropertyItem : PropertyItem
 
         /// <summary>
         /// Gets or Sets the <see cref="PropertyItem"/> element/>
@@ -26,22 +28,7 @@ namespace WindowDictionary.Property.Editor
         public static readonly DependencyProperty PropertyItemProperty =
             DependencyProperty.Register("PropertyItem", typeof(PropertyItem), typeof(EComboBox));
 
-        /// <summary>
-        /// Gets the <see cref="Popup">Popup</see> element.
-        /// </summary>
-        public Popup Popup
-        {
-            get { return this.popup; }
-        }
-
-        /// <summary>
-        /// Gets the <see cref="TextBlock">TextBlock</see> element within the <see cref="Popup">Popup</see> element.
-        /// </summary>
-        public TextBlock PopupTextBlock
-        {
-            get { return this.popupText; }
-        }
-
+        #endregion
         #endregion
 
         #region Constructors
@@ -54,6 +41,31 @@ namespace WindowDictionary.Property.Editor
             DataContext = this;
 
             InitializeComponent();
+        }
+
+        #endregion
+
+        #region Delegates, Events, Handlers
+
+        private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (!(sender is ComboBox box))
+                return;
+
+            Regex regex = new Regex(this.PropertyItem.Regex);
+            if (!regex.IsMatch(box.SelectedItem.ToString()))
+            {
+                MessageBox.Show(this.PropertyItem.Help, "Error", MessageBoxButton.OK);
+
+                if (e.RemovedItems.Count > 0)
+                    box.SelectedItem = e.RemovedItems[0];
+            }
+        }
+
+        private void Property_Loaded(object sender, RoutedEventArgs e)
+        {
+            if (PropertyItem.Values.Count > 0)
+                PropertyItem.SelectedValue = PropertyItem.Values[0];
         }
 
         #endregion

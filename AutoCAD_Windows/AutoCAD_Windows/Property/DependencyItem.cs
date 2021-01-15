@@ -8,7 +8,7 @@ namespace WindowDictionary.Property
     /// Represents a remote property to depend on
     /// </summary>
     [Serializable]
-    public class DependencyItem : DependencyObject
+    public class DependencyItem : DependencyObject, ICloneable
     {
         #region Properties
         #region Property - Code : string
@@ -30,7 +30,7 @@ namespace WindowDictionary.Property
             DependencyProperty.Register("Code", typeof(string), typeof(DependencyItem));
 
         #endregion
-        #region Property - Property : PropertyGroup
+        #region Property - Property : string
 
         /// <summary>
         /// Get or Set the property name to depend on
@@ -67,8 +67,26 @@ namespace WindowDictionary.Property
         public static readonly DependencyProperty RegexProperty =
             DependencyProperty.Register("Regex", typeof(string), typeof(DependencyItem));
 
-
         #endregion
+        #endregion
+
+        #region Methods
+
+        /// <summary>
+        /// Clones this object
+        /// </summary>
+        /// <returns></returns>
+        public object Clone()
+        {
+            DependencyItem dependency = new DependencyItem()
+            {
+                Code = this.Code,
+                Property = this.Property,
+                Regex = this.Regex,
+            };
+            return dependency;
+        }
+
         #endregion
     }
 }

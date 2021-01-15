@@ -31,37 +31,23 @@
             <ColumnDefinition Width="2*"/>
             <ColumnDefinition Width="3*"/>
         </Grid.ColumnDefinitions>
-        <TextBlock Text="{Binding Path=PropertyItem.PropertyName}" />
-        <ComboBox x:Name="combobox"
-                  x:FieldModifier="private"
-                  SelectedIndex="{Binding Path=PropertyItem.ValueIndex}"
+        <TextBlock Text="{Binding Path=PropertyItem.Name}" />
+        <ComboBox SelectedItem="{Binding Path=PropertyItem.SelectedValue}"
                   ItemsSource="{Binding Path=PropertyItem.Values}"
-                  Grid.Column="1" />
-        <Popup x:Name="popup"
-               x:FieldModifier="private"
-               AllowsTransparency="True"
-               IsOpen="False"
-               Placement="Top"
-               PopupAnimation="Slide"
-               StaysOpen="True"
-               Visibility="Visible"
-               VerticalOffset="-1">
-            <Popup.PlacementTarget>
-                <Binding ElementName="combobox" />
-            </Popup.PlacementTarget>
-            <Border Background="White"
-                    BorderBrush="Red"
-                    BorderThickness="1"
-                    CornerRadius="3"
-                    Margin="1,1,1,1">
-                <TextBlock x:Name="popupText"
-                           x:FieldModifier="private"
-                           Foreground="Red"
-                           HorizontalAlignment="Center"
-                           VerticalAlignment="Center"
-                           Margin="0"
-                           TextWrapping="Wrap" />
-            </Border>
-        </Popup>
+                  SelectionChanged="ComboBox_SelectionChanged"
+                  Grid.Column="1"
+                  Loaded="Property_Loaded">
+            <ComboBox.Style>
+                <Style TargetType="{x:Type ComboBox}">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding PropertyItem.Type.EPropertyType}"
+                                     Value="ComboBoxEdit">
+                            <Setter Property="IsEditable"
+                                    Value="True" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </ComboBox.Style>
+        </ComboBox>
     </Grid>
 </ListViewItem>

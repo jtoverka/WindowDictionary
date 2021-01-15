@@ -13,7 +13,7 @@ namespace WindowDictionary.Property
     /// Represents a group of property items and other property groups
     /// </summary>
     [Serializable]
-    public class PropertyGroup : INotifyPropertyChanged, IPropertyControl
+    public class PropertyGroup : INotifyPropertyChanged, IPropertyControl, ICloneable
     {
         #region Fields
 
@@ -75,13 +75,15 @@ namespace WindowDictionary.Property
         /// <summary>
         /// Gets the Collection of other <see cref="PropertyGroup">Property Groups</see> in a hierarchy
         /// </summary>
-        [XmlElement("PropertyGroups")]
+        [XmlArray("PropertyGroups")]
+        [XmlArrayItem("PropertyGroup")]
         public ObservableCollection<PropertyGroup> PropertyGroups { get; } = new ObservableCollection<PropertyGroup>();
 
         /// <summary>
         /// Gets the Collection of <see cref="PropertyItem">Property Items</see> within this group
         /// </summary>
-        [XmlElement("PropertyItems")]
+        [XmlArray("PropertyItems")]
+        [XmlArrayItem("PropertyItem")]
         public ObservableCollection<PropertyItem> PropertyItems { get; } = new ObservableCollection<PropertyItem>();
 
         #endregion
@@ -125,6 +127,27 @@ namespace WindowDictionary.Property
                 }
             }
             return true;
+        }
+
+        /// <summary>
+        /// Clones this object
+        /// </summary>
+        /// <returns></returns>
+        public object Clone()
+        {
+            PropertyGroup group = new PropertyGroup()
+            {
+                Title = this.Title,
+            };
+            foreach (PropertyGroup item in this.PropertyGroups)
+            {
+                group.PropertyGroups.Add(item.Clone() as PropertyGroup);
+            }
+            foreach(PropertyItem item in this.PropertyItems)
+            {
+                group.PropertyItems.Add(item.Clone() as PropertyItem);
+            }
+            return group;
         }
 
         #endregion

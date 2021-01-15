@@ -9,6 +9,9 @@ namespace WindowDictionary.Resources
     /// </summary>
     public partial class WindowControl : UserControl
     {
+        #region Properties
+        #region Property - Window : Window
+
         private Window _Window;
 
         /// <summary>
@@ -20,13 +23,59 @@ namespace WindowDictionary.Resources
             set { _Window = value; }
         }
 
+        #endregion
+        #region Property - MinVisibility : bool
+
+        /// <summary>
+        /// Gets or Sets the minimize button visibility
+        /// </summary>
+        public Visibility MinVisibility
+        {
+            get { return (Visibility)GetValue(MinVisibilityProperty); }
+            set { SetValue(MinVisibilityProperty, value); }
+        }
+
+        /// <summary>
+        /// Using a DependencyProperty as the backing store for MinVisibility.  This enables animation, styling, binding, etc...
+        /// </summary>
+        public static readonly DependencyProperty MinVisibilityProperty =
+            DependencyProperty.Register("MinVisibility", typeof(Visibility), typeof(WindowControl));
+
+        #endregion
+        #region Property - MaxVisibility : bool
+
+        /// <summary>
+        /// Gets or Sets the maximize button visibility
+        /// </summary>
+        public Visibility MaxVisibility
+        {
+            get { return (Visibility)GetValue(MaxVisibilityProperty); }
+            set { SetValue(MaxVisibilityProperty, value); }
+        }
+
+        /// <summary>
+        /// Using a DependencyProperty as the backing store for MaxVisibility.  This enables animation, styling, binding, etc...
+        /// </summary>
+        public static readonly DependencyProperty MaxVisibilityProperty =
+            DependencyProperty.Register("MaxVisibility", typeof(Visibility), typeof(WindowControl));
+
+        #endregion
+        #endregion
+
+        #region Constructors
+
         /// <summary>
         /// Initializes a new instance of this class.
         /// </summary>
         public WindowControl()
         {
+            this.DataContext = this;
+            this.MinVisibility = Visibility.Visible;
+            this.MaxVisibility = Visibility.Visible;
             InitializeComponent();
         }
+
+        #endregion
 
         #region Delegates, Events, Handlers
 
